@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "festejar",
+    "slug": "festejar",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/splashscreen.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splashscreen.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/splashscreen.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./assets/splashscreen.png"
+    }
+  }
+}
