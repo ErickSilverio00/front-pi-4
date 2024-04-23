@@ -13,6 +13,7 @@ import { fetchEspacos } from "../../services/Espacos";
 import foto1 from "../../../assets/teste-img/foto1.jpg";
 import foto2 from "../../../assets/teste-img/foto2.jpg";
 import foto3 from "../../../assets/teste-img/foto3.jpg";
+import { formatarMoeda } from "../../utils/funcoes";
 
 // ------------ Telas Tabs ------------ //
 const renderIcon = (route, focused) => {
@@ -44,134 +45,6 @@ const renderIcon = (route, focused) => {
   );
 };
 
-const FirstRoute = () => (
-  <SafeAreaView
-    style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-  >
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.containerConteudo}
-    >
-      <View style={styles.containerApresentacoes}>
-        <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={[foto1, foto2, foto3]}
-        />
-        <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={[foto1, foto2, foto3]}
-        />
-        <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={[foto1, foto2, foto3]}
-        />
-        {/* <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={
-            "https://images.unsplash.com/photo-1536940385103-c729049165e6?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTl8fHBhcnR5fGVufDB8fDB8fHww"
-          }
-        /> */}
-      </View>
-    </ScrollView>
-  </SafeAreaView>
-);
-
-const SecondRoute = () => (
-  <SafeAreaView
-    style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-  >
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.containerConteudo}
-    >
-      <View style={styles.containerApresentacoes}>
-        <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={[foto1, foto2, foto3]}
-        />
-        <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={[foto1, foto2, foto3]}
-        />
-      </View>
-    </ScrollView>
-  </SafeAreaView>
-);
-
-const ThirdRoute = () => (
-  <SafeAreaView
-    style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-  >
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.containerConteudo}
-    >
-      <View style={styles.containerApresentacoes}>
-        <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={[foto1, foto2, foto3]}
-        />
-      </View>
-    </ScrollView>
-  </SafeAreaView>
-);
-
-const FourthRoute = () => (
-  <SafeAreaView
-    style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-  >
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.containerConteudo}
-    >
-      <View style={styles.containerApresentacoes}>
-        <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={[foto1, foto2, foto3]}
-        />
-        <ApresentacaoEspaco
-          nomeEspaco={"Espaço Festa"}
-          bairroEspaco={"Setor Santa Genoveva"}
-          cidadeEspaco={"Goiânia"}
-          preco={"R$ 789,90"}
-          fotos={[foto1, foto2, foto3]}
-        />
-      </View>
-    </ScrollView>
-  </SafeAreaView>
-);
-
-const renderScene = SceneMap({
-  first: FirstRoute,
-  second: SecondRoute,
-  third: ThirdRoute,
-  fourth: FourthRoute,
-});
-
 export default function Pesquisar() {
   const [index, setIndex] = useState(0);
   const [espacos, setEspacos] = useState([]);
@@ -181,6 +54,15 @@ export default function Pesquisar() {
     { key: "third", title: "Na piscina" },
     { key: "fourth", title: "Ao ar livre" },
   ]);
+
+  const carregarEspacos = async () => {
+    try {
+      const espacosDisponiveis = await fetchEspacos();
+      setEspacos(espacosDisponiveis);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const renderTabBar = (props) => (
     <TabBar
@@ -204,18 +86,117 @@ export default function Pesquisar() {
     />
   );
 
-  const carregarEspacos = async () => {
-    try {
-      const espacosDisponiveis = await fetchEspacos();
-      setEspacos(espacosDisponiveis.data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  const FirstRoute = () => (
+    <SafeAreaView
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.containerConteudo}
+      >
+        <View style={styles.containerApresentacoes}>
+          {espacos?.map((espaco, index) => (
+            <ApresentacaoEspaco
+              key={index}
+              nomeEspaco={espaco.nome_espaco}
+              bairroEspaco={espaco?.endereco?.bairro}
+              cidadeEspaco={espaco?.endereco?.cidade}
+              preco={formatarMoeda(espaco.valor_diaria)}
+              fotos={espaco.imagens_espaco}
+            />
+          ))}
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
 
-  // useEffect(() => {
-  //   carregarEspacos();
-  // }, []);
+  const SecondRoute = () => (
+    <SafeAreaView
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.containerConteudo}
+      >
+        <View style={styles.containerApresentacoes}>
+          <ApresentacaoEspaco
+            nomeEspaco={"Espaço Festa"}
+            bairroEspaco={"Setor Santa Genoveva"}
+            cidadeEspaco={"Goiânia"}
+            preco={"R$ 789,90"}
+            fotos={[foto1, foto2, foto3]}
+          />
+          <ApresentacaoEspaco
+            nomeEspaco={"Espaço Festa"}
+            bairroEspaco={"Setor Santa Genoveva"}
+            cidadeEspaco={"Goiânia"}
+            preco={"R$ 789,90"}
+            fotos={[foto1, foto2, foto3]}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+
+  const ThirdRoute = () => (
+    <SafeAreaView
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.containerConteudo}
+      >
+        <View style={styles.containerApresentacoes}>
+          <ApresentacaoEspaco
+            nomeEspaco={"Espaço Festa"}
+            bairroEspaco={"Setor Santa Genoveva"}
+            cidadeEspaco={"Goiânia"}
+            preco={"R$ 789,90"}
+            fotos={[foto1, foto2, foto3]}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+
+  const FourthRoute = () => (
+    <SafeAreaView
+      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        style={styles.containerConteudo}
+      >
+        <View style={styles.containerApresentacoes}>
+          <ApresentacaoEspaco
+            nomeEspaco={"Espaço Festa"}
+            bairroEspaco={"Setor Santa Genoveva"}
+            cidadeEspaco={"Goiânia"}
+            preco={"R$ 789,90"}
+            fotos={[foto1, foto2, foto3]}
+          />
+          <ApresentacaoEspaco
+            nomeEspaco={"Espaço Festa"}
+            bairroEspaco={"Setor Santa Genoveva"}
+            cidadeEspaco={"Goiânia"}
+            preco={"R$ 789,90"}
+            fotos={[foto1, foto2, foto3]}
+          />
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+
+  const renderScene = SceneMap({
+    first: FirstRoute,
+    second: SecondRoute,
+    third: ThirdRoute,
+    fourth: FourthRoute,
+  });
+
+  useEffect(() => {
+    carregarEspacos();
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

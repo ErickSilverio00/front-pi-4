@@ -1,6 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, TextInput } from "react-native";
-import { View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import SliderCarrossel from "../SliderCarrossel";
 import colors from "../../styles/colors";
@@ -12,6 +11,11 @@ export default function ApresentacaoEspaco({
   cidadeEspaco,
   preco,
 }) {
+  const blocks = fotos.map((foto) => ({
+    type: "image",
+    content: { uri: foto },
+  }));
+
   return (
     <View>
       <View style={styles.containerCarrossel}>
@@ -21,9 +25,7 @@ export default function ApresentacaoEspaco({
           color={colors.branco}
           style={styles.iconeCurtir}
         />
-        <SliderCarrossel
-          blocks={fotos.map((foto) => ({ type: "image", content: foto }))}
-        />
+        <SliderCarrossel blocks={blocks} />
       </View>
       <View style={styles.containerTextos}>
         <Text style={styles.textoEspaco}>{nomeEspaco}</Text>

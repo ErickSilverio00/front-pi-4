@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const baseURL = "http://localhost:3001";
+const baseURL = "http://192.168.0.223:3001";
 
 export const fetchEspacos = async () => {
   try {
