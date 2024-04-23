@@ -14,6 +14,7 @@ import foto1 from "../../../assets/teste-img/foto1.jpg";
 import foto2 from "../../../assets/teste-img/foto2.jpg";
 import foto3 from "../../../assets/teste-img/foto3.jpg";
 
+// ------------ Telas Tabs ------------ //
 const renderIcon = (route, focused) => {
   let iconName;
 
