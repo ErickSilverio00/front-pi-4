@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const baseURL = "http://192.168.0.223:3001";
+const baseURL = "https://back-pi-4-production.up.railway.app";
 
 export const fetchEspacos = async () => {
   try {

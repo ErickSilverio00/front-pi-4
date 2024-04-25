@@ -3,25 +3,35 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import colors from "../../styles/colors";
+import { TouchableOpacity } from "react-native";
 
-export default function CampoPesquisaFiltro() {
+export default function CampoPesquisaFiltro({
+  onPressSearchIcon,
+  onPressFilterIcon,
+}) {
   const [textoPesquisa, setTextoPesquisa] = useState("");
 
   return (
     <View style={styles.container}>
       <View style={styles.containerLeft}>
-        <MaterialIcons name="search" size={24} color={colors.corTextoPreto} />
+        <TouchableOpacity activeOpacity={1} onPress={onPressSearchIcon}>
+          <MaterialIcons name="search" size={24} color={colors.corTextoPreto} />
+        </TouchableOpacity>
         <TextInput
           style={styles.textInput}
-          placeholder="Onde deseja festar?"
+          placeholder="Onde deseja festejar?"
           placeholderTextColor={colors.corTextoPreto}
           onChangeText={(texto) => setTextoPesquisa(texto)}
           value={textoPesquisa}
         />
       </View>
-      <View style={styles.containerIconFilter}>
+      <TouchableOpacity
+        activeOpacity={1}
+        onPress={onPressFilterIcon}
+        style={styles.containerIconFilter}
+      >
         <FontAwesome5 name="sliders-h" size={18} color={colors.corTextoPreto} />
-      </View>
+      </TouchableOpacity>
     </View>
   );
 }
