@@ -10,40 +10,7 @@ import { View } from "react-native";
 import { ScrollView } from "react-native";
 import ApresentacaoEspaco from "../../components/ApresentacaoEspaco";
 import { fetchEspacos } from "../../services/Espacos";
-import foto1 from "../../../assets/teste-img/foto1.jpg";
-import foto2 from "../../../assets/teste-img/foto2.jpg";
-import foto3 from "../../../assets/teste-img/foto3.jpg";
 import { formatarMoeda } from "../../utils/funcoes";
-
-// ------------ Telas Tabs ------------ //
-const renderIcon = (route, focused) => {
-  let iconName;
-
-  switch (route.key) {
-    case "first":
-      iconName = "cake";
-      break;
-    case "second":
-      iconName = "restaurant";
-      break;
-    case "third":
-      iconName = "pool";
-      break;
-    case "fourth":
-      iconName = "wb-sunny";
-      break;
-    default:
-      iconName = "cake";
-  }
-
-  return (
-    <MaterialIcons
-      name={iconName}
-      size={24}
-      color={focused ? colors.primaria : colors.cinzaEscuro}
-    />
-  );
-};
 
 export default function Pesquisar() {
   const [index, setIndex] = useState(0);
@@ -62,6 +29,35 @@ export default function Pesquisar() {
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const renderIcon = (route, focused) => {
+    let iconName;
+
+    switch (route.key) {
+      case "first":
+        iconName = "cake";
+        break;
+      case "second":
+        iconName = "restaurant";
+        break;
+      case "third":
+        iconName = "pool";
+        break;
+      case "fourth":
+        iconName = "wb-sunny";
+        break;
+      default:
+        iconName = "cake";
+    }
+
+    return (
+      <MaterialIcons
+        name={iconName}
+        size={24}
+        color={focused ? colors.primaria : colors.cinzaEscuro}
+      />
+    );
   };
 
   const renderTabBar = (props) => (
@@ -87,104 +83,83 @@ export default function Pesquisar() {
   );
 
   const FirstRoute = () => (
-    <SafeAreaView
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.containerConteudo}
     >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.containerConteudo}
-      >
-        <View style={styles.containerApresentacoes}>
-          {espacos?.map((espaco, index) => (
-            <ApresentacaoEspaco
-              key={index}
-              nomeEspaco={espaco.nome_espaco}
-              bairroEspaco={espaco?.endereco?.bairro}
-              cidadeEspaco={espaco?.endereco?.cidade}
-              preco={formatarMoeda(espaco.valor_diaria)}
-              fotos={espaco.imagens_espaco}
-            />
-          ))}
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+      <View style={styles.containerApresentacoes}>
+        {espacos?.map((espaco, index) => (
+          <ApresentacaoEspaco
+            key={index}
+            nomeEspaco={espaco.nome_espaco}
+            bairroEspaco={espaco?.endereco?.bairro}
+            cidadeEspaco={espaco?.endereco?.cidade}
+            preco={formatarMoeda(espaco.valor_diaria)}
+            fotos={espaco.imagens_espaco}
+          />
+        ))}
+      </View>
+    </ScrollView>
   );
 
   const SecondRoute = () => (
-    <SafeAreaView
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.containerConteudo}
     >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.containerConteudo}
-      >
-        <View style={styles.containerApresentacoes}>
+      <View style={styles.containerApresentacoes}>
+        {espacos?.map((espaco, index) => (
           <ApresentacaoEspaco
-            nomeEspaco={"Espaço Festa"}
-            bairroEspaco={"Setor Santa Genoveva"}
-            cidadeEspaco={"Goiânia"}
-            preco={"R$ 789,90"}
-            fotos={[foto1, foto2, foto3]}
+            key={index}
+            nomeEspaco={espaco.nome_espaco}
+            bairroEspaco={espaco?.endereco?.bairro}
+            cidadeEspaco={espaco?.endereco?.cidade}
+            preco={formatarMoeda(espaco.valor_diaria)}
+            fotos={espaco.imagens_espaco}
           />
-          <ApresentacaoEspaco
-            nomeEspaco={"Espaço Festa"}
-            bairroEspaco={"Setor Santa Genoveva"}
-            cidadeEspaco={"Goiânia"}
-            preco={"R$ 789,90"}
-            fotos={[foto1, foto2, foto3]}
-          />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        ))}
+      </View>
+    </ScrollView>
   );
 
   const ThirdRoute = () => (
-    <SafeAreaView
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.containerConteudo}
     >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.containerConteudo}
-      >
-        <View style={styles.containerApresentacoes}>
+      <View style={styles.containerApresentacoes}>
+        {espacos?.map((espaco, index) => (
           <ApresentacaoEspaco
-            nomeEspaco={"Espaço Festa"}
-            bairroEspaco={"Setor Santa Genoveva"}
-            cidadeEspaco={"Goiânia"}
-            preco={"R$ 789,90"}
-            fotos={[foto1, foto2, foto3]}
+            key={index}
+            nomeEspaco={espaco.nome_espaco}
+            bairroEspaco={espaco?.endereco?.bairro}
+            cidadeEspaco={espaco?.endereco?.cidade}
+            preco={formatarMoeda(espaco.valor_diaria)}
+            fotos={espaco.imagens_espaco}
           />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        ))}
+      </View>
+    </ScrollView>
   );
 
   const FourthRoute = () => (
-    <SafeAreaView
-      style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      style={styles.containerConteudo}
     >
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        style={styles.containerConteudo}
-      >
-        <View style={styles.containerApresentacoes}>
+      <View style={styles.containerApresentacoes}>
+        {espacos?.map((espaco, index) => (
           <ApresentacaoEspaco
-            nomeEspaco={"Espaço Festa"}
-            bairroEspaco={"Setor Santa Genoveva"}
-            cidadeEspaco={"Goiânia"}
-            preco={"R$ 789,90"}
-            fotos={[foto1, foto2, foto3]}
+            key={index}
+            nomeEspaco={espaco.nome_espaco}
+            bairroEspaco={espaco?.endereco?.bairro}
+            cidadeEspaco={espaco?.endereco?.cidade}
+            preco={formatarMoeda(espaco.valor_diaria)}
+            fotos={espaco.imagens_espaco}
           />
-          <ApresentacaoEspaco
-            nomeEspaco={"Espaço Festa"}
-            bairroEspaco={"Setor Santa Genoveva"}
-            cidadeEspaco={"Goiânia"}
-            preco={"R$ 789,90"}
-            fotos={[foto1, foto2, foto3]}
-          />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        ))}
+      </View>
+    </ScrollView>
   );
 
   const renderScene = SceneMap({
@@ -202,7 +177,10 @@ export default function Pesquisar() {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <View style={styles.containerFilter}>
-        <CampoPesquisaFiltro />
+        <CampoPesquisaFiltro
+          onPressSearchIcon={() => {}}
+          onPressFilterIcon={() => {}}
+        />
       </View>
       <TabView
         navigationState={{ index, routes }}

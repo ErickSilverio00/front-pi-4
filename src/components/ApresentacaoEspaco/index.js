@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import Icon from "react-native-vector-icons/Feather";
 import SliderCarrossel from "../SliderCarrossel";
 import colors from "../../styles/colors";
 
@@ -11,21 +10,31 @@ export default function ApresentacaoEspaco({
   cidadeEspaco,
   preco,
 }) {
-  const blocks = fotos.map((foto) => ({
-    type: "image",
-    content: { uri: foto },
-  }));
+  const [curtido, setCurtido] = useState(false);
+
+  const aoClicarEmCurtir = () => {
+    if (curtido === true) {
+      setCurtido(false);
+    } else {
+      setCurtido(true);
+    }
+  };
+
+  const blocks = fotos.map((foto) => {
+    return (
+      typeof foto === "string" && { type: "image", content: { uri: foto } }
+    );
+  });
 
   return (
     <View>
       <View style={styles.containerCarrossel}>
-        <Icon
-          name="heart"
-          size={22}
-          color={colors.branco}
-          style={styles.iconeCurtir}
+        <SliderCarrossel
+          blocks={blocks}
+          curtido={curtido}
+          setCurtido={setCurtido}
+          aoClicarEmCurtir={aoClicarEmCurtir}
         />
-        <SliderCarrossel blocks={blocks} />
       </View>
       <View style={styles.containerTextos}>
         <Text style={styles.textoEspaco}>{nomeEspaco}</Text>
@@ -39,11 +48,6 @@ export default function ApresentacaoEspaco({
 }
 
 const styles = StyleSheet.create({
-  iconeCurtir: {
-    position: "absolute",
-    right: 10,
-    top: 10,
-  },
   containerCarrossel: {
     display: "flex",
     flexDirection: "row",

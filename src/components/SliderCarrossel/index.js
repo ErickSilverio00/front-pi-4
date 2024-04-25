@@ -1,4 +1,9 @@
 import React, { useRef, useState } from "react";
+import Pagination2 from "./Pagination2";
+import colors from "../../styles/colors";
+import { TouchableOpacity } from "react-native";
+import Icon from "react-native-vector-icons/Feather";
+import { AntDesign } from "@expo/vector-icons";
 import {
   Animated,
   Dimensions,
@@ -7,10 +12,13 @@ import {
   StyleSheet,
   View,
 } from "react-native";
-import Pagination2 from "./Pagination2";
-import colors from "../../styles/colors";
 
-export default function SliderCarrossel({ blocks }) {
+export default function SliderCarrossel({
+  blocks,
+  curtido,
+  setCurtido,
+  aoClicarEmCurtir,
+}) {
   const [index, setIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
@@ -57,10 +65,30 @@ export default function SliderCarrossel({ blocks }) {
             return <View style={styles.blockContainer}>{item.content}</View>;
           } else if (item.type === "image") {
             return (
-              <Image
-                source={item.content}
-                style={styles.blockContainerImagem}
-              />
+              <>
+                <Image
+                  source={item.content}
+                  style={styles.blockContainerImagem}
+                />
+                <TouchableOpacity onPress={aoClicarEmCurtir}>
+                  {curtido && (
+                    <AntDesign
+                      name="heart"
+                      size={32}
+                      color={colors.primaria}
+                      style={styles.iconeCurtir}
+                    />
+                  )}
+                  {!curtido && (
+                    <Icon
+                      name="heart"
+                      size={32}
+                      color={colors.branco}
+                      style={styles.iconeCurtir}
+                    />
+                  )}
+                </TouchableOpacity>
+              </>
             );
           }
         }}
@@ -71,7 +99,6 @@ export default function SliderCarrossel({ blocks }) {
         onScroll={handleOnScroll}
         onViewableItemsChanged={handleOnViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
-        contentContainerStyle={styles.flatListContentContainer}
       />
       <Pagination2
         data={blocks}
@@ -98,5 +125,10 @@ const styles = StyleSheet.create({
     height: height * 0.3,
     borderRadius: 10,
     marginHorizontal: 16,
+  },
+  iconeCurtir: {
+    position: "absolute",
+    right: 30,
+    top: 10,
   },
 });
