@@ -1,25 +1,39 @@
-import React from "react";
-import { SafeAreaView, StyleSheet, Text } from "react-native";
+import React, { useState } from "react";
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../../styles/colors";
+import Login from "./FluxoDeAutenticacao/Login";
+import Cadastro from "./FluxoDeAutenticacao/Cadastro";
 
 export default function Perfil() {
+  const [loginAtivo, setLoginAtivo] = useState(true);
+  const [cadastroAtivo, setCadastroAtivo] = useState(false);
+
+  const navegarParaTelaDeCadastro = () => {
+    setCadastroAtivo(true);
+    setLoginAtivo(false);
+  };
+
+  const navegarParaTelaDeLogin = () => {
+    setLoginAtivo(true);
+    setCadastroAtivo(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.estiloTexto}>Conteúdo do Perfil</Text>
+      {loginAtivo && (
+        <Login navegarParaTelaDeCadastro={navegarParaTelaDeCadastro} />
+      )}
+
+      {cadastroAtivo && (
+        <Cadastro navegarParaTelaDeLogin={navegarParaTelaDeLogin} />
+      )}
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: colors.branco,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  estiloTexto: {
-    fontFamily: "Quicksand600",
-    fontSize: 18,
-    color: colors.corTextoPreto,
+    flex: 1,
   },
 });

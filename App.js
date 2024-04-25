@@ -9,6 +9,7 @@ import {
   Quicksand_700Bold,
 } from "@expo-google-fonts/quicksand";
 import CarregamentoDeTela from "./src/pages/CarregamentoDeTela";
+import { ErroProvider } from "./src/contexts/ErroCampoTextoContext";
 
 export default function App() {
   const [fonteCarregada] = useFonts({
@@ -21,6 +22,10 @@ export default function App() {
   if (!fonteCarregada) {
     return <CarregamentoDeTela />;
   } else {
-    return <RotasPrincipais />;
+    return (
+      <ErroProvider>
+        <RotasPrincipais />
+      </ErroProvider>
+    );
   }
 }
