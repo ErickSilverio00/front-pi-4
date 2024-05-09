@@ -1,17 +1,96 @@
-import React from "react";
-import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useState } from "react";
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import colors from "../../../../styles/colors";
 import CabecalhoTitulo from "../../../../components/CabecalhoTitulo";
 import CampoTexto from "../../../../components/CampoTexto";
 import useCampoTexto from "../../../../hooks/useCampoTexto";
 import Botao from "../../../../components/Botao";
 import ImagemLogin from "../../../../../assets/imagemLogin1.png";
+import { useNavigation } from "@react-navigation/native";
+import useCamposLogin from "../../../../hooks/FluxoDeAutenticacao/useCamposLogin";
+import useAuthStore from "../../../../hooks/useAuthStore";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import Toast from "react-native-toast-message";
+import { registerLogin } from "../../../../services/Usuarios";
 
-export default function Login({ navegarParaTelaDeCadastro }) {
+export default function Login() {
+  const navigation = useNavigation();
   const { mostrarSenha, mudarVisibilidade } = useCampoTexto();
+  const {
+    email,
+    setEmail,
+    emailErro,
+    setEmailErro,
+    senha,
+    setSenha,
+    senhaErro,
+    setSenhaErro,
+    validarCampos,
+  } = useCamposLogin();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const confirmarLogin = async () => {
+    try {
+      setIsLoading(true);
+
+      const objetoDeEnvio = {
+        email_usuario: email,
+        senha_usuario: senha,
+      };
+
+      if (validarCampos()) {
+        const response = await registerLogin(objetoDeEnvio);
+        if (response.message === "Usuário logado com sucesso") {
+          const accessToken = response.accessToken;
+          const userEmail = response.usuario;
+          const idUsuario = response.idUsuario;
+
+          await AsyncStorage.setItem("accessToken", accessToken);
+          await AsyncStorage.setItem("userEmail", userEmail);
+          await AsyncStorage.setItem("idUsuario", idUsuario);
+
+          useAuthStore.getState().login(accessToken, userEmail, idUsuario);
+
+          Toast.show({
+            type: "success",
+            text1: "Login bem-sucedido!",
+            text2: "Você já está conectado na sua conta!",
+            visibilityTime: 4000,
+            autoHide: true,
+          });
+        } else {
+          Toast.show({
+            type: "error",
+            text1: "Erro ao fazer login",
+            text2: response.mensagem,
+            visibilityTime: 4000,
+            autoHide: true,
+          });
+        }
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao fazer login",
+        text2: error?.response?.data?.message,
+        visibilityTime: 4000,
+        autoHide: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
-    <>
-      <CabecalhoTitulo titulo="Entrar" />
+    <View style={styles.containerLogin}>
+      <CabecalhoTitulo titulo="Login" />
       <View style={styles.containerLegenda}>
         <Text style={styles.textoLegenda}>Faça seu login agora mesmo</Text>
       </View>
@@ -19,21 +98,21 @@ export default function Login({ navegarParaTelaDeCadastro }) {
         <View style={styles.containerCamposForm}>
           <CampoTexto
             label="E-mail"
-            // erro={nomeUsuarioErro !== ""}
-            // mensagemErro={nomeUsuarioErro}
-            // onChangeText={(texto) => {
-            //   setNomeUsuario(texto);
-            //   setNomeUsuarioErro("");
-            // }}
+            erro={emailErro !== ""}
+            mensagemErro={emailErro}
+            onChangeText={(texto) => {
+              setEmail(texto);
+              setEmailErro("");
+            }}
           />
           <CampoTexto
             label="Senha"
-            // erro={senhaErro !== ""}
-            // mensagemErro={senhaErro}
-            // onChangeText={(texto) => {
-            //   setSenha(texto);
-            //   setSenhaErro("");
-            // }}
+            erro={senhaErro !== ""}
+            mensagemErro={senhaErro}
+            onChangeText={(texto) => {
+              setSenha(texto);
+              setSenhaErro("");
+            }}
             tipo="senha"
             mostrarSenha={mostrarSenha}
             Icone={mostrarSenha ? "eye" : "eye-off"}
@@ -41,35 +120,41 @@ export default function Login({ navegarParaTelaDeCadastro }) {
             aoMudarVisibilidade={mudarVisibilidade}
           />
         </View>
-        <TouchableOpacity>
+        <TouchableOpacity
+          style={styles.containerEsqueciSenha}
+          onPress={() => navigation.navigate("EsqueciSenha")}
+        >
           <Text style={styles.textoEsqueciSenha}>Esqueci minha senha</Text>
         </TouchableOpacity>
         <View style={styles.containerBotao}>
           <Botao
-            // aoPressionarBotao={esqueciSenha}
             texto="Entrar"
             style={styles.estiloBotao}
-            // isLoading={isLoading}
+            isLoading={isLoading}
             tamanhoIconeCarregamento={36}
+            aoPressionarBotao={confirmarLogin}
           />
         </View>
         <View style={styles.containerIrParaCadastro}>
           <Text style={styles.textoIrParaCadastro}>
             Não tem uma conta? {"\n"}{" "}
-            <TouchableOpacity onPress={navegarParaTelaDeCadastro}>
+            <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
               <Text style={styles.estiloCadastro}>Cadastre-se</Text>
             </TouchableOpacity>
           </Text>
         </View>
         <Image source={ImagemLogin} style={styles.imagemLogin} />
       </View>
-    </>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  containerLogin: {
+    flex: 1,
+    backgroundColor: colors.branco,
+  },
   containerLegenda: {
-    display: "flex",
     paddingTop: 15,
   },
   textoLegenda: {
@@ -79,23 +164,24 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   containerConteudo: {
-    display: "flex",
+    flex: 1,
     flexDirection: "column",
     marginTop: 20,
   },
   containerCamposForm: {
-    display: "flex",
     flexDirection: "column",
     gap: 15,
-    marginHorizontal: 20,
+    marginHorizontal: 16,
+  },
+  containerEsqueciSenha: {
+    alignSelf: "flex-end",
+    marginRight: 16,
+    marginVertical: 15,
   },
   textoEsqueciSenha: {
     fontFamily: "Quicksand400",
     fontSize: 14,
     color: colors.primaria,
-    textAlign: "right",
-    marginVertical: 15,
-    marginHorizontal: 20,
   },
   estiloIcone: {
     position: "absolute",
@@ -110,10 +196,9 @@ const styles = StyleSheet.create({
     fontFamily: "Quicksand600",
     fontSize: 16,
     color: colors.branco,
-    marginHorizontal: 20,
+    marginHorizontal: 16,
   },
   containerIrParaCadastro: {
-    display: "flex",
     marginTop: 30,
   },
   textoIrParaCadastro: {
@@ -130,9 +215,10 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
   },
   imagemLogin: {
-    width: "100%",
-    height: "60%",
-    objectFit: "contain",
+    flex: 1,
+    width: null,
+    height: null,
+    resizeMode: "cover",
     marginTop: 10,
   },
 });

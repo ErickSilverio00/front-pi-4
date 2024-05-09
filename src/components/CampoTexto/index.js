@@ -21,6 +21,7 @@ export default function CampoTexto({
   Icone,
   styleIcone,
   tipo,
+  tipoInput,
   mostrarSenha,
   valorInicial,
   aoMudarVisibilidade,
@@ -68,6 +69,7 @@ export default function CampoTexto({
               onChangeText(novoTexto);
             }
           }}
+          keyboardType={tipoInput}
           secureTextEntry={tipo === "senha" && !mostrarSenha}
         />
         {tipo === "senha" && (

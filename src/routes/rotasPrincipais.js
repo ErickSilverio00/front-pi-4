@@ -7,6 +7,7 @@ import Pesquisar from "../pages/Pesquisar";
 import Curtidos from "../pages/Curtidos";
 import Mensagens from "../pages/Mensagens";
 import Perfil from "../pages/Perfil";
+import RotasPerfil from "./rotasPerfil";
 
 const Tab = createBottomTabNavigator();
 
@@ -37,7 +38,7 @@ export default function RotasPrincipais() {
         <Tab.Screen name="Pesquisar" component={Pesquisar} />
         <Tab.Screen name="Curtidos" component={Curtidos} />
         <Tab.Screen name="Mensagens" component={Mensagens} />
-        <Tab.Screen name="Perfil" component={Perfil} />
+        <Tab.Screen name="Perfil" component={RotasPerfil} />
       </Tab.Navigator>
     </NavigationContainer>
   );

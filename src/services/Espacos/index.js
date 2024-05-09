@@ -2,9 +2,9 @@ import Axios from "axios";
 
 const baseURL = "https://back-pi-4-production.up.railway.app";
 
-export const fetchEspacos = async () => {
+export const fetchEspacos = async (idUsuario) => {
   try {
-    const response = await Axios.get(`${baseURL}/espacos`);
+    const response = await Axios.get(`${baseURL}/espacos/${idUsuario}`);
     return response.data.espacos || [];
   } catch (error) {
     console.error("Erro ao buscar os espaços: ", error);

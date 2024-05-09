@@ -1,5 +1,11 @@
 import React from "react";
-import { TouchableOpacity, Text, View, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 
 export default function Botao({
   aoPressionarBotao,
@@ -9,16 +15,26 @@ export default function Botao({
   corIcone,
   style,
   isLoading,
-  tamanhoIconeCarregamento
+  tamanhoIconeCarregamento,
 }) {
   return (
-    <TouchableOpacity onPress={aoPressionarBotao} disabled={isLoading}>
+    <TouchableOpacity
+      onPress={aoPressionarBotao}
+      disabled={isLoading}
+      activeOpacity={0.6}
+    >
       <View style={[styles.containerBotao, style]}>
         {isLoading ? (
-          <ActivityIndicator color="white" style={styles.loadingAnimation} size={tamanhoIconeCarregamento}/> 
+          <ActivityIndicator
+            color="white"
+            style={styles.loadingAnimation}
+            size={tamanhoIconeCarregamento}
+          />
         ) : (
           <>
-            {Icone && <Icone name={Icone} size={tamanhoIcone} color={corIcone} />}
+            {Icone && (
+              <Icone name={Icone} size={tamanhoIcone} color={corIcone} />
+            )}
             {texto && <Text style={style}>{texto}</Text>}
           </>
         )}
