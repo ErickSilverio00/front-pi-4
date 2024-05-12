@@ -104,6 +104,12 @@ const useCamposCadastro = () => {
     return true;
   };
 
+  const validarRedefinicaoDeSenha = () => {
+    const isSenhaValida = validarSenha();
+    const isSenhaConfirmadaValida = validarSenhaCofirmada();
+    return isSenhaValida && isSenhaConfirmadaValida;
+  };
+
   const validarCampos = () => {
     const isNomeUsuarioValido = validarNomeDeUsuario();
     const isEmailValido = validarEmail();
@@ -141,6 +147,7 @@ const useCamposCadastro = () => {
     senhaConfirmadaErro,
     setSenhaConfirmadaErro,
     validarCampos,
+    validarRedefinicaoDeSenha,
     erroCheckbox,
     setErroCheckbox,
   };

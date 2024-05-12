@@ -13,27 +13,122 @@ import TopoPersonalizado from "../../../../components/TopoPersonalizado";
 import { useNavigation } from "@react-navigation/native";
 import CampoTexto from "../../../../components/CampoTexto";
 import useCampoTexto from "../../../../hooks/useCampoTexto";
+import Toast from "react-native-toast-message";
+import {
+  confirmResetPassword,
+  requestResetPassword,
+  verifyResetCode,
+} from "../../../../services/Usuarios";
+import useCamposCadastro from "../../../../hooks/FluxoDeAutenticacao/useCamposCadastro";
 
 export default function EsqueciSenha() {
   const navigation = useNavigation();
   const { mostrarSenha, mudarVisibilidade } = useCampoTexto();
+  const {
+    senha,
+    setSenha,
+    senhaErro,
+    setSenhaErro,
+    senhaConfirmada,
+    setSenhaConfirmada,
+    senhaConfirmadaErro,
+    setSenhaConfirmadaErro,
+    validarRedefinicaoDeSenha,
+  } = useCamposCadastro();
+  const [email, setEmail] = useState("");
+  const [emailErro, setEmailErro] = useState("");
+  const [codigo, setCodigo] = useState("");
+  const [codigoErro, setCodigoErro] = useState("");
   const [emailEnviado, setEmailEnviado] = useState(false);
   const [codigoEnviado, setCodigoEnviado] = useState(false);
-  const [senhaRedefinida, setSenhaRedefinida] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-  const aoEnviarEmail = () => {
-    setEmailEnviado(true);
+  const aoEnviarEmail = async () => {
+    try {
+      setIsLoading(true);
+      if (email === "") {
+        setEmailErro("Campo Obrigatório");
+        return;
+      }
+      await requestResetPassword(email);
+      Toast.show({
+        type: "success",
+        text1: "Envio feito com sucesso!",
+        text2: "Veja a sua caixa de e-mails e copie o código!",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+      setEmailEnviado(true);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao enviar e-mail!",
+        text2: error.response.data.message,
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const aoEnviarCodigo = () => {
-    setEmailEnviado(false);
-    setCodigoEnviado(true);
+  const aoEnviarCodigo = async () => {
+    try {
+      setIsLoading(true);
+      if (email === "") {
+        setCodigoErro("Campo Obrigatório");
+        return;
+      }
+      await verifyResetCode(email, codigo);
+      Toast.show({
+        type: "success",
+        text1: "Código correto!",
+        text2: "Mude a sua senha agora mesmo!",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+      setEmailEnviado(false);
+      setCodigoEnviado(true);
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao confirmar código!",
+        text2: error.response.data.message,
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  const aoRedefinirSenha = () => {
-    setCodigoEnviado(false);
-    setSenhaRedefinida(true);
+  const aoRedefinirSenha = async () => {
+    try {
+      setIsLoading(true);
+      if (!validarRedefinicaoDeSenha()) {
+        return;
+      }
+      await confirmResetPassword(email, senha);
+      Toast.show({
+        type: "success",
+        text1: "Senha alterada com sucesso!",
+        text2: "Faça o login agora mesmo!",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+      setCodigoEnviado(false);
+      navigation.goBack();
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro ao mudar sua senha!",
+        text2: error.response.data.message,
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,7 +141,7 @@ export default function EsqueciSenha() {
         mostrarIcones={false}
       />
       <View style={styles.containerConteudo}>
-        {!emailEnviado && !codigoEnviado && !senhaRedefinida && (
+        {!emailEnviado && !codigoEnviado && (
           <>
             <Text style={styles.textoConfirmacao}>
               Por favor, digite seu e-mail para que possamos enviar o código de
@@ -54,48 +149,56 @@ export default function EsqueciSenha() {
             </Text>
             <CampoTexto
               label="E-mail"
-              // erro={emailErro !== ""}
-              // mensagemErro={emailErro}
-              // onChangeText={(texto) => {
-              //   setEmail(texto);
-              //   setEmailErro("");
-              // }}
+              erro={emailErro !== ""}
+              mensagemErro={emailErro}
+              onChangeText={(texto) => {
+                setEmail(texto);
+                setEmailErro("");
+              }}
             />
             <Botao
               aoPressionarBotao={aoEnviarEmail}
-              texto="Confirmar"
+              texto="Enviar"
               style={styles.estiloBotao}
               isLoading={isLoading}
               tamanhoIconeCarregamento={36}
             />
           </>
         )}
-        {emailEnviado && !codigoEnviado && !senhaRedefinida && (
+        {emailEnviado && !codigoEnviado && (
           <View style={styles.containerCamposForm}>
             <Text style={styles.textoLabelLegenda}>
               Digite o código recebido no seu e-mail
             </Text>
-            <CampoTexto label="Código" />
+            <CampoTexto
+              label="Código"
+              erro={codigoErro !== ""}
+              mensagemErro={codigoErro}
+              onChangeText={(texto) => {
+                setCodigo(texto);
+                setCodigoErro("");
+              }}
+            />
             <Botao
               aoPressionarBotao={aoEnviarCodigo}
-              texto="Enviar"
+              texto="Confirmar"
               style={styles.estiloBotao}
               isLoading={isLoading}
               tamanhoIconeCarregamento={36}
             />
           </View>
         )}
-        {!emailEnviado && codigoEnviado && !senhaRedefinida && (
+        {!emailEnviado && codigoEnviado && (
           <View style={styles.containerCamposForm}>
             <Text style={styles.textoLabelLegenda}>Redefina sua senha</Text>
             <CampoTexto
               label="Senha"
-              // erro={senhaErro !== ""}
-              // mensagemErro={senhaErro}
-              // onChangeText={(texto) => {
-              //   setSenha(texto);
-              //   setSenhaErro("");
-              // }}
+              erro={senhaErro !== ""}
+              mensagemErro={senhaErro}
+              onChangeText={(texto) => {
+                setSenha(texto);
+                setSenhaErro("");
+              }}
               tipo="senha"
               mostrarSenha={mostrarSenha}
               Icone={mostrarSenha ? "eye" : "eye-off"}
@@ -104,12 +207,12 @@ export default function EsqueciSenha() {
             />
             <CampoTexto
               label="Confirmar senha"
-              // erro={senhaErro !== ""}
-              // mensagemErro={senhaErro}
-              // onChangeText={(texto) => {
-              //   setSenha(texto);
-              //   setSenhaErro("");
-              // }}
+              erro={senhaConfirmadaErro !== ""}
+              mensagemErro={senhaConfirmadaErro}
+              onChangeText={(texto) => {
+                setSenhaConfirmada(texto);
+                setSenhaConfirmadaErro("");
+              }}
               tipo="senha"
               mostrarSenha={mostrarSenha}
               Icone={mostrarSenha ? "eye" : "eye-off"}
@@ -120,14 +223,9 @@ export default function EsqueciSenha() {
               aoPressionarBotao={aoRedefinirSenha}
               texto="Enviar"
               style={styles.estiloBotao}
-              // isLoading={isLoading}
+              isLoading={isLoading}
               tamanhoIconeCarregamento={36}
             />
-          </View>
-        )}
-        {senhaRedefinida && (
-          <View style={styles.containerSenhaRedefinida}>
-            <Text>Senha redefinida com sucesso!</Text>
           </View>
         )}
       </View>

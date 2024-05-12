@@ -31,3 +31,44 @@ export const registerLogin = async (loginData) => {
     throw error;
   }
 };
+
+export const requestResetPassword = async (email) => {
+  try {
+    const response = await Axios.post(`${baseURL}/usuarios/redefinir-senha`, {
+      email_usuario: email,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao solicitar redefinição de senha: ", error);
+    throw error;
+  }
+};
+
+export const verifyResetCode = async (email, codigoVerificador) => {
+  try {
+    const response = await Axios.post(`${baseURL}/usuarios/verificar-codigo`, {
+      email_usuario: email,
+      codigo_verificador: codigoVerificador,
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao verificar código de redefinição de senha: ", error);
+    throw error;
+  }
+};
+
+export const confirmResetPassword = async (email, novaSenha) => {
+  try {
+    const response = await Axios.post(
+      `${baseURL}/usuarios/redefinir-senha/confirmar`,
+      {
+        email_usuario: email,
+        senha_usuario: novaSenha,
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao confirmar redefinição de senha: ", error);
+    throw error;
+  }
+};
