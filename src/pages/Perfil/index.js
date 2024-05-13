@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Modal,
   SafeAreaView,
@@ -15,16 +15,27 @@ import TopoPersonalizado from "../../components/TopoPersonalizado";
 import Icon from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
 import Botao from "../../components/Botao";
+import ApresentacaoEspaco from "../../components/ApresentacaoEspaco";
+import { fetchEspacosCurtidos } from "../../services/Curtidos";
+import { fetchEspacos } from "../../services/Espacos";
+import { formatarMoeda } from "../../utils/funcoes";
 
 export default function Perfil() {
   const navigation = useNavigation();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const user = useAuthStore();
   const [mostrarConfiguracoes, setMostrarConfiguracoes] = useState(false);
+  const [espacos, setEspacos] = useState([]);
+  const [espacosCurtidos, setEspacosCurtidos] = useState([]);
 
   const listaDeIcones = ["menu"];
 
   const itensConfiguracoes = [
-    { name: "settings", texto: "Configurações e Suporte" },
+    { name: "home", texto: "Quero Anunciar Meu Espaço", tela: "SerAnunciante" },
+    {
+      name: "settings",
+      texto: "Configurações e Suporte",
+      tela: "Configuracoes",
+    },
   ];
 
   const aoPressionarIcone = (index) => {
@@ -33,10 +44,38 @@ export default function Perfil() {
     }
   };
 
+  const carregarEspacos = async () => {
+    try {
+      const espacosDisponiveis = await fetchEspacos(
+        user.idUsuario ? user.idUsuario : 0
+      );
+      setEspacos(espacosDisponiveis);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const carregarEspacosCurtidos = async () => {
+    try {
+      const espacos = await fetchEspacosCurtidos(Number(user.idUsuario));
+      setEspacosCurtidos(espacos);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      carregarEspacos();
+      carregarEspacosCurtidos();
+    });
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <SafeAreaView style={styles.container}>
-      {!isAuthenticated && <Login />}
-      {isAuthenticated && (
+      {!user.isAuthenticated && <Login />}
+      {user.isAuthenticated && (
         <>
           <TopoPersonalizado
             mostrarBotaoVoltar={false}
@@ -48,17 +87,65 @@ export default function Perfil() {
           />
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.conteudoGeral}>
-              <View style={styles.containerBotaoEditarPerfil}>
-                <Botao
-                  // aoPressionarBotao={() => {
-                  //   navigation.navigate("Login");
-                  // }}
-                  texto="Editar Perfil"
-                  style={styles.botaoEditarPerfil}
-                />
+              <View style={styles.conteudoCima}>
+                <View style={styles.containerFotoPerfil}>
+                  <Text style={styles.textoContainerFoto}>
+                    {user?.nomeUsuario?.charAt(0).toUpperCase()}
+                  </Text>
+                </View>
+                <Text style={styles.textoNomeUsuario}>{user?.nomeUsuario}</Text>
+              </View>
+              <View style={styles.conteudoBaixo}>
+                <View style={styles.containerEspacosJaReservados}>
+                  <View style={styles.containerEspacosJaReservadosCima}>
+                    <Text style={styles.subtituloContainer}>
+                      Espaços que já reservei
+                    </Text>
+                    <TouchableOpacity style={styles.botaoVerTodos}>
+                      Ver todos
+                    </TouchableOpacity>
+                  </View>
+                  <View style={styles.containerEspacosJaReservadosBaixo}>
+                    {espacos?.map((espaco, index) => (
+                      <ApresentacaoEspaco
+                        key={index}
+                        carregarEspacosCurtidos={carregarEspacosCurtidos}
+                        idEspaco={espaco.id_espaco}
+                        nomeEspaco={espaco.nome_espaco}
+                        bairroEspaco={espaco?.endereco?.bairro}
+                        cidadeEspaco={espaco?.endereco?.cidade}
+                        preco={formatarMoeda(espaco.valor_diaria)}
+                        fotos={espaco.imagens_espaco}
+                      />
+                    ))}
+                  </View>
+                </View>
+                <View style={styles.containerEspacosJaReservados}>
+                  <View style={styles.containerEspacosJaReservadosCima}>
+                    <Text style={styles.subtituloContainer}>
+                      Espaços curtidos
+                    </Text>
+                  </View>
+                  <View style={styles.containerEspacosJaReservadosBaixo}>
+                    {espacosCurtidos?.map((espaco, index) => (
+                      <ApresentacaoEspaco
+                        key={index}
+                        carregarEspacosCurtidos={carregarEspacosCurtidos}
+                        idEspaco={espaco.id_espaco}
+                        nomeEspaco={espaco.nome_espaco}
+                        bairroEspaco={espaco?.endereco?.bairro}
+                        cidadeEspaco={espaco?.endereco?.cidade}
+                        preco={formatarMoeda(espaco.valor_diaria)}
+                        fotos={espaco.imagens_espaco}
+                      />
+                    ))}
+                  </View>
+                </View>
               </View>
             </View>
           </ScrollView>
+
+          {/* Modal de opções */}
           <Modal
             visible={mostrarConfiguracoes}
             transparent={true}
@@ -76,7 +163,10 @@ export default function Perfil() {
                   {itensConfiguracoes.map((item, index) => (
                     <TouchableOpacity
                       key={index}
-                      onPress={() => navigation.navigate(index)}
+                      onPress={() => [
+                        navigation.navigate(item.tela),
+                        setMostrarConfiguracoes(false),
+                      ]}
                       style={styles.containerBotao}
                     >
                       <Icon
@@ -102,31 +192,63 @@ const styles = StyleSheet.create({
     backgroundColor: colors.branco,
     flex: 1,
   },
-  conteudoGeral: {
+  conteudoCima: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+    backgroundColor: colors.primaria,
+    height: 200,
+  },
+  containerFotoPerfil: {
+    width: 84,
+    height: 84,
+    borderRadius: 1000,
+    backgroundColor: colors.laranja,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textoContainerFoto: {
+    fontFamily: "Quicksand700",
+    fontSize: 24,
+    color: colors.branco,
+  },
+  textoNomeUsuario: {
+    fontFamily: "Quicksand700",
+    fontSize: 16,
+    color: colors.branco,
+  },
+  conteudoBaixo: {
+    marginTop: 16,
+    gap: 20,
+  },
+  containerEspacosJaReservados: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 10,
+  },
+  containerEspacosJaReservadosCima: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     marginHorizontal: 16,
   },
-  containerBotaoEditarPerfil: {
-    marginTop: 30,
-    //Android
-    elevation: 4,
-    //IOS
-    shadowColor: colors.preto,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.23,
-    shadowRadius: 2.62,
-  },
-  botaoEditarPerfil: {
-    backgroundColor: colors.primaria,
-    paddingVertical: 8,
-    borderRadius: 8,
-    alignItems: "center",
-    textAlign: "center",
+  subtituloContainer: {
     fontFamily: "Quicksand700",
-    color: colors.branco,
-    fontSize: 14,
+    fontSize: 16,
+    color: colors.corTextoPreto,
+  },
+  botaoVerTodos: {
+    fontFamily: "Quicksand700",
+    fontSize: 12,
+    color: colors.primaria,
+  },
+  containerEspacosJaReservadosBaixo: {
+    display: "flex",
+    flexDirection: "row",
+    overflow: "scroll",
   },
   modalFundo: {
     flex: 1,

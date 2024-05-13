@@ -70,14 +70,12 @@ export default function ApresentacaoEspaco({
 
   return (
     <View>
-      <View style={styles.containerCarrossel}>
-        <SliderCarrossel
-          blocks={blocks}
-          curtido={curtido}
-          setCurtido={setCurtido}
-          aoClicarEmCurtir={aoClicarEmCurtir}
-        />
-      </View>
+      <SliderCarrossel
+        blocks={blocks}
+        curtido={curtido}
+        setCurtido={setCurtido}
+        aoClicarEmCurtir={aoClicarEmCurtir}
+      />
       <View style={styles.containerTextos}>
         <Text style={styles.textoEspaco}>{nomeEspaco}</Text>
         <Text style={styles.textoLocalizacao}>
