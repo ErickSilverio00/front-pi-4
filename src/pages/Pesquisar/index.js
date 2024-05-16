@@ -13,8 +13,10 @@ import { fetchEspacos } from "../../services/Espacos";
 import { formatarMoeda } from "../../utils/funcoes";
 import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Pesquisar() {
+  const navigation = useNavigation();
   const user = useAuthStore();
   const espacosCurtidos = useEspacosCurtidos();
   const [index, setIndex] = useState(0);
@@ -186,8 +188,15 @@ export default function Pesquisar() {
   });
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      carregarEspacos();
+      carregarEspacosCurtidos();
+    });
+
     carregarEspacos();
     carregarEspacosCurtidos();
+
+    return unsubscribe;
   }, []);
 
   return (

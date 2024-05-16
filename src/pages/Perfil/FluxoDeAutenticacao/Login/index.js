@@ -50,7 +50,7 @@ export default function Login() {
         if (response.message === "Usuário logado com sucesso") {
           const accessToken = response.accessToken;
           const userEmail = response.usuario;
-          const idUsuario = response.idUsuario;
+          const idUsuario = response.idUsuario.toString();
           const nomeUsuario = response.nomeUsuario;
 
           await AsyncStorage.setItem("accessToken", accessToken);
@@ -69,6 +69,7 @@ export default function Login() {
             visibilityTime: 4000,
             autoHide: true,
           });
+          navigation.navigate("Perfil");
         } else {
           Toast.show({
             type: "error",

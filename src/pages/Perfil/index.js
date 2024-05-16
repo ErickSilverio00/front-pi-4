@@ -69,8 +69,13 @@ export default function Perfil() {
       carregarEspacos();
       carregarEspacosCurtidos();
     });
+
+    console.log(user);
+    carregarEspacos();
+    carregarEspacosCurtidos();
+
     return unsubscribe;
-  }, [navigation]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -101,23 +106,25 @@ export default function Perfil() {
                     <Text style={styles.subtituloContainer}>
                       Espaços que já reservei
                     </Text>
-                    <TouchableOpacity style={styles.botaoVerTodos}>
-                      Ver todos
+                    <TouchableOpacity>
+                      <Text style={styles.botaoVerTodos}>Ver todos</Text>
                     </TouchableOpacity>
                   </View>
                   <View style={styles.containerEspacosJaReservadosBaixo}>
-                    {espacos?.map((espaco, index) => (
-                      <ApresentacaoEspaco
-                        key={index}
-                        carregarEspacosCurtidos={carregarEspacosCurtidos}
-                        idEspaco={espaco.id_espaco}
-                        nomeEspaco={espaco.nome_espaco}
-                        bairroEspaco={espaco?.endereco?.bairro}
-                        cidadeEspaco={espaco?.endereco?.cidade}
-                        preco={formatarMoeda(espaco.valor_diaria)}
-                        fotos={espaco.imagens_espaco}
-                      />
-                    ))}
+                    <View style={styles.containerEspacosJaReservadosBaixo}>
+                      {espacos.length > 0 && (
+                        <ApresentacaoEspaco
+                          key={espacos[0]?.id_espaco}
+                          carregarEspacosCurtidos={carregarEspacosCurtidos}
+                          idEspaco={espacos[0]?.id_espaco}
+                          nomeEspaco={espacos[0]?.nome_espaco}
+                          bairroEspaco={espacos[0]?.endereco?.bairro}
+                          cidadeEspaco={espacos[0]?.endereco?.cidade}
+                          preco={formatarMoeda(espacos[0]?.valor_diaria)}
+                          fotos={espacos[0]?.imagens_espaco}
+                        />
+                      )}
+                    </View>
                   </View>
                 </View>
                 <View style={styles.containerEspacosJaReservados}>
@@ -125,20 +132,27 @@ export default function Perfil() {
                     <Text style={styles.subtituloContainer}>
                       Espaços curtidos
                     </Text>
+                    <TouchableOpacity>
+                      <Text style={styles.botaoVerTodos}>Ver todos</Text>
+                    </TouchableOpacity>
                   </View>
                   <View style={styles.containerEspacosJaReservadosBaixo}>
-                    {espacosCurtidos?.map((espaco, index) => (
-                      <ApresentacaoEspaco
-                        key={index}
-                        carregarEspacosCurtidos={carregarEspacosCurtidos}
-                        idEspaco={espaco.id_espaco}
-                        nomeEspaco={espaco.nome_espaco}
-                        bairroEspaco={espaco?.endereco?.bairro}
-                        cidadeEspaco={espaco?.endereco?.cidade}
-                        preco={formatarMoeda(espaco.valor_diaria)}
-                        fotos={espaco.imagens_espaco}
-                      />
-                    ))}
+                    <View style={styles.containerEspacosJaReservadosBaixo}>
+                      {espacosCurtidos.length > 0 && (
+                        <ApresentacaoEspaco
+                          key={espacosCurtidos[0]?.id_espaco}
+                          carregarEspacosCurtidos={carregarEspacosCurtidos}
+                          idEspaco={espacosCurtidos[0]?.id_espaco}
+                          nomeEspaco={espacosCurtidos[0]?.nome_espaco}
+                          bairroEspaco={espacosCurtidos[0]?.endereco?.bairro}
+                          cidadeEspaco={espacosCurtidos[0]?.endereco?.cidade}
+                          preco={formatarMoeda(
+                            espacosCurtidos[0]?.valor_diaria
+                          )}
+                          fotos={espacosCurtidos[0]?.imagens_espaco}
+                        />
+                      )}
+                    </View>
                   </View>
                 </View>
               </View>
@@ -241,14 +255,12 @@ const styles = StyleSheet.create({
     color: colors.corTextoPreto,
   },
   botaoVerTodos: {
-    fontFamily: "Quicksand700",
+    fontFamily: "Quicksand600",
     fontSize: 12,
     color: colors.primaria,
   },
   containerEspacosJaReservadosBaixo: {
     display: "flex",
-    flexDirection: "row",
-    overflow: "scroll",
   },
   modalFundo: {
     flex: 1,

@@ -24,7 +24,10 @@ export default function Configuracoes() {
             await AsyncStorage.removeItem("idUsuario");
             await AsyncStorage.removeItem("nomeUsuario");
             useAuthStore.getState().logout();
-            navigation.navigate("Login");
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Login" }],
+            });
           } catch (error) {
             Toast.show({
               type: "error",

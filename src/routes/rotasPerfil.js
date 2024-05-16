@@ -12,7 +12,7 @@ export default function RotasPerfil() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="perfil"
+        name="Perfil"
         component={Perfil}
         options={{ headerShown: false }}
       />

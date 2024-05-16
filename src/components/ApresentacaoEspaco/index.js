@@ -5,6 +5,7 @@ import colors from "../../styles/colors";
 import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
+import Toast from "react-native-toast-message";
 
 export default function ApresentacaoEspaco({
   fotos,
@@ -45,7 +46,13 @@ export default function ApresentacaoEspaco({
       }
       await carregarEspacosCurtidos(Number(user.idUsuario));
     } catch (error) {
-      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: error.response.data,
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   };
 
