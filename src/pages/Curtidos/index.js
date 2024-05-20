@@ -1,78 +1,113 @@
-import React, { useState } from "react";
-import { SafeAreaView, StyleSheet, Text , View } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../../styles/colors";
 import ApresentacaoEspaco from "../../components/ApresentacaoEspaco";
+import { formatarMoeda } from "../../utils/funcoes";
+import CabecalhoTitulo from "../../components/CabecalhoTitulo";
+import { ScrollView } from "react-native";
+import { fetchEspacosCurtidos } from "../../services/Curtidos";
+import useAuthStore from "../../hooks/useAuthStore";
+import { useNavigation } from "@react-navigation/native";
+import Astronauta from "../../../assets/astronauta.svg";
 
 export default function Curtidos() {
-  const [espacosCurtidos,setEspacosCurtidos] = useState([]);
+  const user = useAuthStore();
+  const navigation = useNavigation();
+  const [espacosCurtidos, setEspacosCurtidos] = useState([]);
 
   const carregarEspacosCurtidos = async () => {
     try {
-      const espacosDisponiveis = await fetchEspacos();
-      setEspacosCurtidos(espacosDisponiveis);
+      const espacos = await fetchEspacosCurtidos(Number(user.idUsuario));
+      setEspacosCurtidos(espacos);
     } catch (error) {
       console.error(error);
     }
-
   };
 
-
+  useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      carregarEspacosCurtidos();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   return (
     <SafeAreaView style={styles.container}>
-      <HeaderCurtidos/>
-      {espacosCurtidos?.map((espaco, index) => (
-            <ApresentacaoEspaco
-              key={index}
-              nomeEspaco={espaco.nome_espaco}
-              bairroEspaco={espaco?.endereco?.bairro}
-              cidadeEspaco={espaco?.endereco?.cidade}
-              preco={formatarMoeda(espaco.valor_diaria)}
-              fotos={espaco.imagens_espaco}
-            />
-          ))}
-          
+      <CabecalhoTitulo titulo="Curtidos" />
+      {espacosCurtidos.length > 0 && (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.containerCurtidos}>
+            {espacosCurtidos?.map((espaco, index) => (
+              <ApresentacaoEspaco
+                key={index}
+                carregarEspacosCurtidos={carregarEspacosCurtidos}
+                idEspaco={espaco.id_espaco}
+                nomeEspaco={espaco.nome_espaco}
+                bairroEspaco={espaco?.endereco?.bairro}
+                cidadeEspaco={espaco?.endereco?.cidade}
+                preco={formatarMoeda(espaco.valor_diaria)}
+                fotos={espaco.imagens_espaco}
+              />
+            ))}
+          </View>
+        </ScrollView>
+      )}
+      {espacosCurtidos.length === 0 && (
+        <View style={styles.containerZeroCurtidos}>
+          <Image source={Astronauta} style={styles.imagemAstronauta} />
+          <Text style={styles.textoLegendaNaoTem}>
+            Você ainda não curtiu nenhum espaço....
+          </Text>
+        </View>
+      )}
     </SafeAreaView>
   );
 }
-
-
-const HeaderCurtidos = () => {
-  return (
-    <View style={styles.headerContainer}>
-      <Text style={styles.headerText}>Curtidos</Text>
-      <View style={styles.headerLine} />
-    </View>
-   
-  );
-};
-
-
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.branco,
-    alignItems: 'center', // Apenas centralizar horizontalmente
   },
   headerContainer: {
-    width: '100%', // Garantir que o headerContainer tome a largura total
+    width: "100%",
     paddingTop: 10,
     paddingBottom: 5,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.branco,
   },
   headerText: {
-    fontFamily: 'Quicksand600',
+    fontFamily: "Quicksand600",
     fontSize: 24,
     color: colors.corTextoPreto,
-    marginTop: 10 ,
+    marginTop: 10,
   },
   headerLine: {
     height: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.14)', // Cor ajustada conforme solicitado
-    width: '80%',
+    backgroundColor: "rgba(0, 0, 0, 0.14)",
+    width: "80%",
     marginTop: 15,
+  },
+  containerCurtidos: {
+    display: "flex",
+    marginTop: 20,
+    gap: 20,
+  },
+  containerZeroCurtidos: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 20,
+  },
+  imagemAstronauta: {
+    width: "100%",
+    height: 150,
+    resizeMode: "contain",
+  },
+  textoLegendaNaoTem: {
+    fontFamily: "Quicksand600",
+    fontSize: 16,
+    color: colors.corTextoPreto,
+    textAlign: "center",
   },
 });

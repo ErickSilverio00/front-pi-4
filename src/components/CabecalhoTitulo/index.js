@@ -13,7 +13,7 @@ export default function CabecalhoTitulo({ titulo }) {
 const styles = StyleSheet.create({
   container: {
     display: "flex",
-    marginHorizontal: 20,
+    marginHorizontal: 16,
     borderBottomWidth: 1,
     borderColor: colors.cinzaMaisClaro,
   },
