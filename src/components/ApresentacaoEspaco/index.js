@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import SliderCarrossel from "../SliderCarrossel";
-import colors from "../../styles/colors";
 import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
@@ -15,6 +14,7 @@ export default function ApresentacaoEspaco({
   bairroEspaco,
   cidadeEspaco,
   preco,
+  aoClicar,
 }) {
   const navigation = useNavigation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -76,13 +76,15 @@ export default function ApresentacaoEspaco({
   });
 
   return (
-    <View>
-      <SliderCarrossel
-        blocks={blocks}
-        curtido={curtido}
-        setCurtido={setCurtido}
-        aoClicarEmCurtir={aoClicarEmCurtir}
-      />
+    <TouchableOpacity onPress={aoClicar}>
+      <View style={styles.containerCarrossel}>
+        <SliderCarrossel
+          blocks={blocks}
+          curtido={curtido}
+          setCurtido={setCurtido}
+          aoClicarEmCurtir={aoClicarEmCurtir}
+        />
+      </View>
       <View style={styles.containerTextos}>
         <Text style={styles.textoEspaco}>{nomeEspaco}</Text>
         <Text style={styles.textoLocalizacao}>
@@ -90,7 +92,7 @@ export default function ApresentacaoEspaco({
         </Text>
         <Text style={styles.textoPreco}>{preco}/noite</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
