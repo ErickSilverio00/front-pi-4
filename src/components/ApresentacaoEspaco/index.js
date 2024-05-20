@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import SliderCarrossel from "../SliderCarrossel";
 import colors from "../../styles/colors";
 import { useNavigation } from "@react-navigation/native";
@@ -14,6 +14,7 @@ export default function ApresentacaoEspaco({
   bairroEspaco,
   cidadeEspaco,
   preco,
+  aoClicar
 }) {
   const navigation = useNavigation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -69,7 +70,7 @@ export default function ApresentacaoEspaco({
   });
 
   return (
-    <View>
+    <TouchableOpacity onPress={aoClicar}>
       <View style={styles.containerCarrossel}>
         <SliderCarrossel
           blocks={blocks}
@@ -85,7 +86,7 @@ export default function ApresentacaoEspaco({
         </Text>
         <Text style={styles.textoPreco}>{preco}/noite</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
