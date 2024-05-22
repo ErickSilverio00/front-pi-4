@@ -1,23 +1,23 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import Pesquisar from "../pages/Pesquisar";
-import PaginaEspaco from "../pages/PaginaEspaco";
+import Mensagens from "../pages/Mensagens";
+import ChatScreen from "../pages/Mensagens/ChatScreen";
 
 const Stack = createNativeStackNavigator();
 
-export default function RotasPesquisar() {
+export default function RotasMensagens() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Pesquisar"
-        component={Pesquisar}
+        name="Mensagens"
+        component={Mensagens}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="PaginaEspaco"
-        component={PaginaEspaco}
+      {/* <Stack.Screen
+        name="ChatScreen"
+        component={ChatScreen}
         options={{ headerShown: false }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 }

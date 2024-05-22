@@ -1,6 +1,5 @@
 import React, { useRef, useState } from "react";
-import Pagination2 from "./Pagination2";
-import colors from "../../styles/colors";
+import Pagination2 from "./Pagination";
 import { TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import { AntDesign } from "@expo/vector-icons";
@@ -12,17 +11,20 @@ import {
   StyleSheet,
   View,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import colors from "../../../../styles/colors";
 
-export default function SliderCarrossel({
+export default function SliderInfoEspaco({
   blocks,
   curtido,
   setCurtido,
-  aoClicarNaImagem,
   aoClicarEmCurtir,
+  corDotPrimaria = true,
 }) {
   const [index, setIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
+  const navigation = useNavigation();
 
   const handleOnScroll = (event) => {
     Animated.event(
@@ -66,32 +68,10 @@ export default function SliderCarrossel({
             return <View style={styles.blockContainer}>{item.content}</View>;
           } else if (item.type === "image") {
             return (
-              <>
-                <TouchableOpacity onPress={aoClicarNaImagem} activeOpacity={1}>
-                  <Image
-                    source={item.content}
-                    style={styles.blockContainerImagem}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={aoClicarEmCurtir}>
-                  {curtido && (
-                    <AntDesign
-                      name="heart"
-                      size={32}
-                      color={colors.primaria}
-                      style={styles.iconeCurtir}
-                    />
-                  )}
-                  {!curtido && (
-                    <Icon
-                      name="heart"
-                      size={32}
-                      color={colors.branco}
-                      style={styles.iconeCurtir}
-                    />
-                  )}
-                </TouchableOpacity>
-              </>
+              <Image
+                source={item.content}
+                style={styles.blockContainerImagem}
+              />
             );
           }
         }}
@@ -103,11 +83,24 @@ export default function SliderCarrossel({
         onViewableItemsChanged={handleOnViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
       />
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.iconeVoltar}
+      >
+        <Icon name="arrow-left" size={28} color={colors.branco} />
+      </TouchableOpacity>
+      <TouchableOpacity onPress={aoClicarEmCurtir} style={styles.iconeCurtir}>
+        {curtido && (
+          <AntDesign name="heart" size={28} color={colors.primaria} />
+        )}
+        {!curtido && <Icon name="heart" size={28} color={colors.branco} />}
+      </TouchableOpacity>
       <Pagination2
         data={blocks}
         scrollX={scrollX}
         index={index}
         abrirProximaPagina={proximaPagina}
+        corDotPrimaria={corDotPrimaria}
       />
     </View>
   );
@@ -120,18 +113,19 @@ const styles = StyleSheet.create({
     backgroundColor: colors.branco,
   },
   blockContainer: {
-    width: width - 32,
-    marginHorizontal: 16,
+    width: width,
   },
   blockContainerImagem: {
-    width: width - 32,
-    height: height * 0.3,
-    borderRadius: 10,
-    marginHorizontal: 16,
+    width: width,
+  },
+  iconeVoltar: {
+    position: "absolute",
+    left: 16,
+    top: 10,
   },
   iconeCurtir: {
     position: "absolute",
-    right: 30,
+    right: 16,
     top: 10,
   },
 });

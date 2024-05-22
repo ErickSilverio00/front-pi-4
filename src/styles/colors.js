@@ -17,7 +17,6 @@ const colors = {
   primaria: "#B517E2",
   roxo700:"#9A0FBC" , 
 amarelo:"#FFE600",
-// marcus 
 cinzatxt:"#757575",
 };
 

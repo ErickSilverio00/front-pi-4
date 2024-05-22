@@ -9,22 +9,22 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import IconImagem, { IconImagem} from "../../../assets/augustoanunciante.png"
+import IconImagem from "../../../assets/augustoanunciante.png"
 
-const MessagesScreen = () => {
+const Mensagens = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [messages, setMessages] = useState([
     {
       id: 1,
       name: "João",
-      image: "https://example.com/joao.jpg",
+      image: "https://i.pinimg.com/originals/35/46/16/354616b397e95443285b8a4b111f1100.jpg",
       message: "Olá, como você está?",
       newMessage: true,
     },
     {
       id: 2,
       name: "Maria",
-      image: "https://example.com/maria.jpg",
+      image: "https://i.pinimg.com/originals/35/46/16/354616b397e95443285b8a4b111f1100.jpg",
       message: "Tudo bem, obrigado!",
       newMessage: false,
     },
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   //Barra de pesquisa, aonde fica todo o design da barra de pesquisa 
    barraPesquisa:{
             height: 40,
-            borderColor: "#3c3c",//teste cor MUDAR PAR 3c3c3c
+            borderColor: "#3c3c3c",//teste cor MUDAR PAR 3c3c3c
             borderRadius: 20,
             borderWidth: 1,
             paddingHorizontal: 16,
@@ -147,6 +147,11 @@ const styles = StyleSheet.create({
       padding: 16,
       borderBottomWidth: 1,
       borderBottomColor: "#ccc",
+    },
+    barraMensagemD: {
+      display:"flex",
+      flexDirection:"row",
+
     },
  // =======================
  //responsavel aonde ficara a lista das mensagens,parte do usuario msn ex: joão e maria
@@ -193,4 +198,4 @@ const styles = StyleSheet.create({
 
 });
 
-export default MessagesScreen;
+export default Mensagens;

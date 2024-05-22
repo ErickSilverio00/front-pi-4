@@ -1,16 +1,16 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import Pesquisar from "../pages/Pesquisar";
+import Curtidos from "../pages/Curtidos";
 import PaginaEspaco from "../pages/PaginaEspaco";
 
 const Stack = createNativeStackNavigator();
 
-export default function RotasPesquisar() {
+export default function RotasCurtidos() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Pesquisar"
-        component={Pesquisar}
+        name="Curtidos"
+        component={Curtidos}
         options={{ headerShown: false }}
       />
       <Stack.Screen

@@ -21,7 +21,6 @@ export default function Pesquisar() {
   const espacosCurtidos = useEspacosCurtidos();
   const [index, setIndex] = useState(0);
   const [espacos, setEspacos] = useState([]);
-  const navigation = useNavigation()
   const [routes] = useState([
     { key: "first", title: "Aniversários" },
     { key: "second", title: "Churras" },
@@ -32,15 +31,6 @@ export default function Pesquisar() {
   const carregarEspacosCurtidos = async () => {
     try {
       await espacosCurtidos.fetchEspacosCurtidos(Number(user.idUsuario));
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const abrirEspaco = async () => {
-    try  
-    { 
-      navigation.navigate("PaginaEspaco")
     } catch (error) {
       console.error(error);
     }
@@ -116,15 +106,9 @@ export default function Pesquisar() {
       <View style={styles.containerApresentacoes}>
         {espacos?.map((espaco, index) => (
           <ApresentacaoEspaco
-            aoClicar={abrirEspaco}
             key={index}
             carregarEspacosCurtidos={carregarEspacosCurtidos}
-            idEspaco={espaco.id_espaco}
-            nomeEspaco={espaco.nome_espaco}
-            bairroEspaco={espaco?.endereco?.bairro}
-            cidadeEspaco={espaco?.endereco?.cidade}
-            preco={formatarMoeda(espaco.valor_diaria)}
-            fotos={espaco.imagens_espaco}
+            espaco={espaco}
           />
         ))}
       </View>
@@ -140,11 +124,8 @@ export default function Pesquisar() {
         {espacos?.map((espaco, index) => (
           <ApresentacaoEspaco
             key={index}
-            nomeEspaco={espaco.nome_espaco}
-            bairroEspaco={espaco?.endereco?.bairro}
-            cidadeEspaco={espaco?.endereco?.cidade}
-            preco={formatarMoeda(espaco.valor_diaria)}
-            fotos={espaco.imagens_espaco}
+            carregarEspacosCurtidos={carregarEspacosCurtidos}
+            espaco={espaco}
           />
         ))}
       </View>
@@ -160,11 +141,8 @@ export default function Pesquisar() {
         {espacos?.map((espaco, index) => (
           <ApresentacaoEspaco
             key={index}
-            nomeEspaco={espaco.nome_espaco}
-            bairroEspaco={espaco?.endereco?.bairro}
-            cidadeEspaco={espaco?.endereco?.cidade}
-            preco={formatarMoeda(espaco.valor_diaria)}
-            fotos={espaco.imagens_espaco}
+            carregarEspacosCurtidos={carregarEspacosCurtidos}
+            espaco={espaco}
           />
         ))}
       </View>
@@ -180,11 +158,8 @@ export default function Pesquisar() {
         {espacos?.map((espaco, index) => (
           <ApresentacaoEspaco
             key={index}
-            nomeEspaco={espaco.nome_espaco}
-            bairroEspaco={espaco?.endereco?.bairro}
-            cidadeEspaco={espaco?.endereco?.cidade}
-            preco={formatarMoeda(espaco.valor_diaria)}
-            fotos={espaco.imagens_espaco}
+            carregarEspacosCurtidos={carregarEspacosCurtidos}
+            espaco={espaco}
           />
         ))}
       </View>
