@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Pesquisar from './Pesquisar'; // Importe o componente Pesquisar aqui
+import Pesquisar from '../../Pesquisar'; // Importe o componente Pesquisar aqui
 
 const FiltrosScreen = () => {
   const [filtrosSelecionados, setFiltrosSelecionados] = useState([]);
@@ -23,7 +23,8 @@ const FiltrosScreen = () => {
         </ul>
       </div>
     </div>
-  );
+  );  
 };
 
 export default FiltrosScreen;
+

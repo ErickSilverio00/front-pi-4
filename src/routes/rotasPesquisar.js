@@ -3,6 +3,7 @@ import React from "react";
 import Pesquisar from "../pages/Pesquisar";
 import PaginaEspaco from "../pages/Pesquisar/PaginaEspaco";
 import Filtros from "../pages/Pesquisar/Filtros";
+import FiltrosScreen from "../pages/Pesquisar/Filtros/FiltrosScreen";
 
 
 const Stack = createNativeStackNavigator();
