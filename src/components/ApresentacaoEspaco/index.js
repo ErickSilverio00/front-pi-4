@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import SliderCarrossel from "../SliderCarrossel";
 import { useNavigation } from "@react-navigation/native";
 import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
 import Toast from "react-native-toast-message";
+import colors from "../../styles/colors";
+import { formatarMoeda } from "../../utils/funcoes";
 
 export default function ApresentacaoEspaco({
-  fotos,
   carregarEspacosCurtidos,
-  idEspaco,
-  nomeEspaco,
-  bairroEspaco,
-  cidadeEspaco,
-  preco,
-  aoClicar,
+  espaco,
 }) {
   const navigation = useNavigation();
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
@@ -23,8 +19,8 @@ export default function ApresentacaoEspaco({
   const [curtido, setCurtido] = useState(false);
 
   useEffect(() => {
-    setCurtido(espacoEstaCurtido(idEspaco));
-  }, [idEspaco]);
+    setCurtido(espacoEstaCurtido(espaco?.id_espaco));
+  }, [espaco?.id_espaco]);
 
   const aoClicarEmCurtir = async () => {
     try {
@@ -33,13 +29,13 @@ export default function ApresentacaoEspaco({
         return;
       }
       if (curtido) {
-        const idEspacoCurtido = findIdEspacoCurtido(idEspaco);
+        const idEspacoCurtido = findIdEspacoCurtido(espaco?.id_espaco);
         await espacosCurtidos.removerEspacoCurtido(idEspacoCurtido);
         setCurtido(false);
       } else {
         const curtidosData = {
           idUsuario: Number(user.idUsuario),
-          idEspaco: idEspaco,
+          idEspaco: espaco?.id_espaco,
         };
         await espacosCurtidos.adicionarEspacoCurtido(curtidosData);
         setCurtido(true);
@@ -58,41 +54,48 @@ export default function ApresentacaoEspaco({
 
   const espacoEstaCurtido = (idEspaco) => {
     return espacosCurtidos.espacosCurtidos.some(
-      (espaco) => espaco.id_espaco === idEspaco
+      (espaco) => espaco?.id_espaco === idEspaco
     );
   };
 
   const findIdEspacoCurtido = (idEspaco) => {
     const espacoCurtido = espacosCurtidos.espacosCurtidos.find(
-      (espaco) => espaco.id_espaco === idEspaco
+      (espaco) => espaco?.id_espaco === idEspaco
     );
     return espacoCurtido ? espacoCurtido.id_espaco_curtido : null;
   };
 
-  const blocks = fotos.map((foto) => {
-    return (
-      typeof foto === "string" && { type: "image", content: { uri: foto } }
-    );
-  });
+  const blocks =
+    espaco &&
+    espaco?.imagens_espaco.map((foto) => {
+      return (
+        typeof foto === "string" && { type: "image", content: { uri: foto } }
+      );
+    });
 
   return (
-    <TouchableOpacity onPress={aoClicar}>
+    <View>
       <View style={styles.containerCarrossel}>
         <SliderCarrossel
           blocks={blocks}
           curtido={curtido}
           setCurtido={setCurtido}
+          aoClicarNaImagem={() =>
+            navigation.navigate("PaginaEspaco", { espaco })
+          }
           aoClicarEmCurtir={aoClicarEmCurtir}
         />
       </View>
       <View style={styles.containerTextos}>
-        <Text style={styles.textoEspaco}>{nomeEspaco}</Text>
+        <Text style={styles.textoEspaco}>{espaco?.nome_espaco}</Text>
         <Text style={styles.textoLocalizacao}>
-          {bairroEspaco}, {cidadeEspaco}
+          {espaco?.endereco?.bairro}, {espaco?.endereco?.cidade}
         </Text>
-        <Text style={styles.textoPreco}>{preco}/noite</Text>
+        <Text style={styles.textoPreco}>
+          {espaco?.valor_diaria && formatarMoeda(espaco?.valor_diaria)}/noite
+        </Text>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 }
 

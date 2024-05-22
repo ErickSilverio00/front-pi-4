@@ -5,6 +5,8 @@ import Cadastro from "../pages/Perfil/FluxoDeAutenticacao/Cadastro";
 import EsqueciSenha from "../pages/Perfil/FluxoDeAutenticacao/EsqueciSenha";
 import Perfil from "../pages/Perfil";
 import Configuracoes from "../pages/Perfil/Configuracoes";
+import TornarAnunciante from "../pages/Perfil/TornarAnunciante";
+import PaginaEspaco from "../pages/PaginaEspaco";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +36,16 @@ export default function RotasPerfil() {
       <Stack.Screen
         name="Configuracoes"
         component={Configuracoes}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="TornarAnunciante"
+        component={TornarAnunciante}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="PaginaEspaco"
+        component={PaginaEspaco}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

@@ -14,11 +14,9 @@ import Login from "./FluxoDeAutenticacao/Login";
 import TopoPersonalizado from "../../components/TopoPersonalizado";
 import Icon from "react-native-vector-icons/Feather";
 import { useNavigation } from "@react-navigation/native";
-import Botao from "../../components/Botao";
 import ApresentacaoEspaco from "../../components/ApresentacaoEspaco";
 import { fetchEspacosCurtidos } from "../../services/Curtidos";
 import { fetchEspacos } from "../../services/Espacos";
-import { formatarMoeda } from "../../utils/funcoes";
 
 export default function Perfil() {
   const navigation = useNavigation();
@@ -30,7 +28,11 @@ export default function Perfil() {
   const listaDeIcones = ["menu"];
 
   const itensConfiguracoes = [
-    { name: "home", texto: "Quero Anunciar Meu Espaço", tela: "SerAnunciante" },
+    {
+      name: "home",
+      texto: "Quero Anunciar Meu Espaço",
+      tela: "TornarAnunciante",
+    },
     {
       name: "settings",
       texto: "Configurações e Suporte",
@@ -70,7 +72,6 @@ export default function Perfil() {
       carregarEspacosCurtidos();
     });
 
-    console.log(user);
     carregarEspacos();
     carregarEspacosCurtidos();
 
@@ -116,12 +117,7 @@ export default function Perfil() {
                         <ApresentacaoEspaco
                           key={espacos[0]?.id_espaco}
                           carregarEspacosCurtidos={carregarEspacosCurtidos}
-                          idEspaco={espacos[0]?.id_espaco}
-                          nomeEspaco={espacos[0]?.nome_espaco}
-                          bairroEspaco={espacos[0]?.endereco?.bairro}
-                          cidadeEspaco={espacos[0]?.endereco?.cidade}
-                          preco={formatarMoeda(espacos[0]?.valor_diaria)}
-                          fotos={espacos[0]?.imagens_espaco}
+                          espaco={espacos[0]}
                         />
                       )}
                     </View>
@@ -140,16 +136,9 @@ export default function Perfil() {
                     <View style={styles.containerEspacosJaReservadosBaixo}>
                       {espacosCurtidos.length > 0 && (
                         <ApresentacaoEspaco
-                          key={espacosCurtidos[0]?.id_espaco}
+                          key={espacos[0]?.id_espaco}
                           carregarEspacosCurtidos={carregarEspacosCurtidos}
-                          idEspaco={espacosCurtidos[0]?.id_espaco}
-                          nomeEspaco={espacosCurtidos[0]?.nome_espaco}
-                          bairroEspaco={espacosCurtidos[0]?.endereco?.bairro}
-                          cidadeEspaco={espacosCurtidos[0]?.endereco?.cidade}
-                          preco={formatarMoeda(
-                            espacosCurtidos[0]?.valor_diaria
-                          )}
-                          fotos={espacosCurtidos[0]?.imagens_espaco}
+                          espaco={espacos[0]}
                         />
                       )}
                     </View>

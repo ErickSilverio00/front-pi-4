@@ -15,10 +15,9 @@ const colors = {
   vermelhoEscuro: "#DC0000",
   laranja: "#FF9A3E",
   primaria: "#B517E2",
-  roxo700:"#9A0FBC" , 
-amarelo:"#FFE600",
-// marcus 
-cinzatxt:"#757575",
+  roxo700: "#9A0FBC",
+  amarelo: "#FFE600",
+  cinzatxt: "#757575",
 };
 
 export default colors;

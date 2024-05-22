@@ -44,12 +44,7 @@ export default function Curtidos() {
               <ApresentacaoEspaco
                 key={index}
                 carregarEspacosCurtidos={carregarEspacosCurtidos}
-                idEspaco={espaco.id_espaco}
-                nomeEspaco={espaco.nome_espaco}
-                bairroEspaco={espaco?.endereco?.bairro}
-                cidadeEspaco={espaco?.endereco?.cidade}
-                preco={formatarMoeda(espaco.valor_diaria)}
-                fotos={espaco.imagens_espaco}
+                espaco={espaco}
               />
             ))}
           </View>

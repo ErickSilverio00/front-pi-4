@@ -1,14 +1,14 @@
 import { Animated, Dimensions, StyleSheet, View } from "react-native";
 import React from "react";
-import colors from "../../styles/colors";
+import colors from "../../../../styles/colors";
 
 const { width } = Dimensions.get("screen");
 
-const Pagination2 = ({ data, scrollX, index }) => {
+const Pagination = ({ data, scrollX, index, corDotPrimaria = true }) => {
   return (
     <View style={styles.container}>
       <View style={styles.dots}>
-        {data?.map((_, idx) => {
+        {data.map((_, idx) => {
           const inputRange = [
             (idx - 1) * width,
             idx * width,
@@ -17,13 +17,17 @@ const Pagination2 = ({ data, scrollX, index }) => {
 
           const dotWidth = scrollX.interpolate({
             inputRange,
-            outputRange: [6, 15, 6],
+            outputRange: [6, 6, 6],
             extrapolate: "clamp",
           });
 
           const backgroundColor = scrollX.interpolate({
             inputRange,
-            outputRange: ["#ccc", colors.primaria, "#ccc"],
+            outputRange: [
+              "#ccc",
+              corDotPrimaria ? colors.primaria : colors.branco,
+              "#ccc",
+            ],
             extrapolate: "clamp",
           });
 
@@ -33,7 +37,11 @@ const Pagination2 = ({ data, scrollX, index }) => {
               style={[
                 styles.dot,
                 { width: dotWidth, backgroundColor },
-                idx == index && styles.dotActive,
+                idx == index && {
+                  backgroundColor: corDotPrimaria
+                    ? colors.primaria
+                    : colors.branco,
+                },
               ]}
             />
           );
@@ -43,7 +51,7 @@ const Pagination2 = ({ data, scrollX, index }) => {
   );
 };
 
-export default Pagination2;
+export default Pagination;
 
 const styles = StyleSheet.create({
   container: {
@@ -55,6 +63,8 @@ const styles = StyleSheet.create({
   dots: {
     flexDirection: "row",
     marginTop: 10,
+    position: "absolute",
+    bottom: 10,
   },
   dot: {
     width: 12,
@@ -62,8 +72,5 @@ const styles = StyleSheet.create({
     borderRadius: 6,
     marginHorizontal: 3,
     backgroundColor: "ccc",
-  },
-  dotActive: {
-    backgroundColor: colors.primaria,
   },
 });
