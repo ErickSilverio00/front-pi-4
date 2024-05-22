@@ -13,12 +13,15 @@ import { fetchEspacos } from "../../services/Espacos";
 import { formatarMoeda } from "../../utils/funcoes";
 import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
+import { useNavigation } from "@react-navigation/native";
 
 export default function Pesquisar() {
+  const navigation = useNavigation();
   const user = useAuthStore();
   const espacosCurtidos = useEspacosCurtidos();
   const [index, setIndex] = useState(0);
   const [espacos, setEspacos] = useState([]);
+  const navigation = useNavigation()
   const [routes] = useState([
     { key: "first", title: "Aniversários" },
     { key: "second", title: "Churras" },
@@ -29,6 +32,15 @@ export default function Pesquisar() {
   const carregarEspacosCurtidos = async () => {
     try {
       await espacosCurtidos.fetchEspacosCurtidos(Number(user.idUsuario));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const abrirEspaco = async () => {
+    try  
+    { 
+      navigation.navigate("PaginaEspaco")
     } catch (error) {
       console.error(error);
     }
@@ -104,6 +116,7 @@ export default function Pesquisar() {
       <View style={styles.containerApresentacoes}>
         {espacos?.map((espaco, index) => (
           <ApresentacaoEspaco
+            aoClicar={abrirEspaco}
             key={index}
             carregarEspacosCurtidos={carregarEspacosCurtidos}
             idEspaco={espaco.id_espaco}
@@ -186,8 +199,15 @@ export default function Pesquisar() {
   });
 
   useEffect(() => {
+    const unsubscribe = navigation.addListener("focus", () => {
+      carregarEspacos();
+      carregarEspacosCurtidos();
+    });
+
     carregarEspacos();
     carregarEspacosCurtidos();
+
+    return unsubscribe;
   }, []);
 
   return (

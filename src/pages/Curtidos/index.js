@@ -28,8 +28,11 @@ export default function Curtidos() {
     const unsubscribe = navigation.addListener("focus", () => {
       carregarEspacosCurtidos();
     });
+
+    carregarEspacosCurtidos();
+
     return unsubscribe;
-  }, [navigation]);
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

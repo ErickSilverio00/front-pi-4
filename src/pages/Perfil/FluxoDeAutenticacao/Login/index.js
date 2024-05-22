@@ -50,13 +50,17 @@ export default function Login() {
         if (response.message === "Usuário logado com sucesso") {
           const accessToken = response.accessToken;
           const userEmail = response.usuario;
-          const idUsuario = response.idUsuario;
+          const idUsuario = response.idUsuario.toString();
+          const nomeUsuario = response.nomeUsuario;
 
           await AsyncStorage.setItem("accessToken", accessToken);
           await AsyncStorage.setItem("userEmail", userEmail);
           await AsyncStorage.setItem("idUsuario", idUsuario);
+          await AsyncStorage.setItem("nomeUsuario", nomeUsuario);
 
-          useAuthStore.getState().login(accessToken, userEmail, idUsuario);
+          useAuthStore
+            .getState()
+            .login(accessToken, userEmail, idUsuario, nomeUsuario);
 
           Toast.show({
             type: "success",
@@ -65,6 +69,7 @@ export default function Login() {
             visibilityTime: 4000,
             autoHide: true,
           });
+          navigation.navigate("Perfil");
         } else {
           Toast.show({
             type: "error",

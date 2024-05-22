@@ -30,11 +30,17 @@ export default function App() {
         const storedAccessToken = await AsyncStorage.getItem("accessToken");
         const storedUserEmail = await AsyncStorage.getItem("userEmail");
         const storedUserId = await AsyncStorage.getItem("idUsuario");
+        const storedUserName = await AsyncStorage.getItem("nomeUsuario");
 
         if (storedAccessToken) {
           useAuthStore
             .getState()
-            .login(storedAccessToken, storedUserEmail, storedUserId);
+            .login(
+              storedAccessToken,
+              storedUserEmail,
+              storedUserId,
+              storedUserName
+            );
 
           const decodedToken = jwtDecode(storedAccessToken);
           const currentTime = Date.now() / 1000;

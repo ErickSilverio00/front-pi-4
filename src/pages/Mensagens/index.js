@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import IconImagem, { IconImagem} from "../../../assets/augustoanunciante.png"
 
 const MessagesScreen = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -77,7 +78,8 @@ useEffect(() => {
           >
             <View style={styles.barraMensagemD}>
               <Image
-                source={{ uri: item.image }}
+               source={{ uri: item.image }}
+               
                 style={styles.imgUsuarioMensagem}
               />
               <View style={styles.barraMensagemControle}>

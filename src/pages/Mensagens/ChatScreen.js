@@ -76,4 +76,6 @@ const ChatScreen = () => {
                 borderRadius: 8,
                 padding: 10 },
   });
+
+  
 export default ChatScreen;
