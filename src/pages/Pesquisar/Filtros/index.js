@@ -6,7 +6,7 @@ import { FontAwesome6 } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import CampoPesquisaFiltro from "../../../components/CampoPesquisaFiltro"; // Certifique-se de que este é o caminho correto
 
-// Resto do código permanece o mesmo
+
 
 
 // Componente reutilizável para os botões de cada categoria
