@@ -3,10 +3,10 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import Icon from "react-native-vector-icons/Feather";
 import colors from "../styles/colors";
-import Mensagens from "../pages/Mensagens";
-import RotasPerfil from "./rotasPerfil";
 import RotasPesquisar from "./rotasPesquisar";
 import RotasCurtidos from "./rotasCurtidos";
+import RotasMensagens from "./rotasMensagens";
+import RotasPerfil from "./rotasPerfil";
 
 const Tab = createBottomTabNavigator();
 
@@ -36,7 +36,7 @@ export default function RotasPrincipais() {
       >
         <Tab.Screen name="Pesquisar" component={RotasPesquisar} />
         <Tab.Screen name="Curtidos" component={RotasCurtidos} />
-        <Tab.Screen name="Mensagens" component={Mensagens} />
+        <Tab.Screen name="Mensagens" component={RotasMensagens} />
         <Tab.Screen name="Perfil" component={RotasPerfil} />
       </Tab.Navigator>
     </NavigationContainer>

@@ -71,3 +71,16 @@ export const removerFormatacaoCNPJ = (texto) => {
 export const removerFormatacaoCPF = (texto) => {
   return texto.replace(/[.-]/g, "");
 };
+
+export const normalizeKey = (key) => {
+  return key
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/-/g, "");
+};
+
+export const removerAcentos = (str) => {
+  return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+};

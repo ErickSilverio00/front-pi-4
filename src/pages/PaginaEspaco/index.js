@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Text,
   View,
@@ -8,31 +8,135 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../styles/colors";
-import Icon from "react-native-vector-icons/Feather";
-import { AntDesign } from "@expo/vector-icons";
-import { MaterialIcons } from "@expo/vector-icons";
-import { FontAwesome } from "@expo/vector-icons";
-import { Feather } from "@expo/vector-icons";
-import { Entypo } from "@expo/vector-icons";
+import {
+  AntDesign,
+  MaterialIcons,
+  FontAwesome,
+  FontAwesome5,
+  MaterialCommunityIcons,
+  Feather,
+  Entypo,
+} from "@expo/vector-icons";
 import SliderInfoEspaco from "./components/SliderInfoEspaco";
-import { useRoute } from "@react-navigation/native";
-import { formatarMoeda } from "../../utils/funcoes";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { formatarMoeda, normalizeKey } from "../../utils/funcoes";
 import ModalLocalizacao from "./components/ModalLocalizacao";
+import {
+  clima,
+  jogos,
+  situacoes,
+  tempo,
+  utilidades,
+} from "../../utils/opcoesFiltros";
+import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
+import useAuthStore from "../../hooks/useAuthStore";
+import { fetchEspacosCurtidos } from "../../services/Curtidos";
 
 export default function PaginaEspaco() {
   const route = useRoute();
   const { espaco } = route.params;
+  const navigation = useNavigation();
+  const user = useAuthStore();
+  const espacosCurtidos = useEspacosCurtidos();
   const [curtido, setCurtido] = useState(false);
   const [mostrarOpcoesApps, setMostrarOpcoesApps] = useState(false);
 
-  const fotos = espaco?.imagens_espaco || [];
-
-  const blocks = fotos.map((foto) => {
+  const blocks = espaco?.imagens_espaco.map((foto) => {
     return { type: "image", content: { uri: foto } };
   });
 
   const endereco = `${espaco?.endereco?.logradouro}, ${espaco?.endereco?.numero}, ${espaco?.endereco?.bairro}, ${espaco?.endereco?.cidade}, ${espaco?.endereco?.estado}`;
-  // const endereco = espaco?.nome_espaco;
+
+  const renderItensCategorias = (items, config) => {
+    return items.map((item) => {
+      const normalizedItem = normalizeKey(item);
+      const itemConfig = config[normalizedItem];
+      const IconComponent = getIconComponent(itemConfig?.tipoIcone);
+
+      return (
+        <View style={styles.card} key={item}>
+          <View style={styles.circle}>
+            <IconComponent
+              name={itemConfig?.icone}
+              size={22}
+              color={colors.primaria}
+            />
+          </View>
+          <Text style={styles.cardText}>{itemConfig?.nome || item}</Text>
+        </View>
+      );
+    });
+  };
+
+  const getIconComponent = (tipoIcone) => {
+    switch (tipoIcone) {
+      case "FontAwesome5":
+        return FontAwesome5;
+      case "MaterialIcons":
+        return MaterialIcons;
+      case "MaterialCommunityIcons":
+        return MaterialCommunityIcons;
+      case "Feather":
+        return Feather;
+      default:
+        return Feather;
+    }
+  };
+
+  const espacoEstaCurtido = (idEspaco) => {
+    return espacosCurtidos.espacosCurtidos.some(
+      (espaco) => espaco?.id_espaco === idEspaco
+    );
+  };
+
+  const findIdEspacoCurtido = (idEspaco) => {
+    const espacoCurtido = espacosCurtidos.espacosCurtidos.find(
+      (espaco) => espaco?.id_espaco === idEspaco
+    );
+    return espacoCurtido ? espacoCurtido.id_espaco_curtido : null;
+  };
+
+  const aoClicarEmCurtir = async () => {
+    try {
+      if (!user.isAuthenticated) {
+        navigation.navigate("Perfil");
+        return;
+      }
+      if (curtido) {
+        const idEspacoCurtido = findIdEspacoCurtido(espaco?.id_espaco);
+        await espacosCurtidos.removerEspacoCurtido(idEspacoCurtido);
+        setCurtido(false);
+      } else {
+        const curtidosData = {
+          idUsuario: Number(user.idUsuario),
+          idEspaco: espaco?.id_espaco,
+        };
+        await espacosCurtidos.adicionarEspacoCurtido(curtidosData);
+        setCurtido(true);
+      }
+      await carregarEspacosCurtidos(Number(user.idUsuario));
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: error.response.data,
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+    }
+  };
+
+  const carregarEspacosCurtidos = async () => {
+    try {
+      await fetchEspacosCurtidos(Number(user.idUsuario));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  useEffect(() => {
+    setCurtido(espacoEstaCurtido(espaco?.id_espaco));
+  }, [espaco?.id_espaco]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -44,7 +148,7 @@ export default function PaginaEspaco() {
                 blocks={blocks}
                 curtido={curtido}
                 setCurtido={setCurtido}
-                aoClicarEmCurtir={() => {}}
+                aoClicarEmCurtir={aoClicarEmCurtir}
                 corDotPrimaria={false}
               />
             </View>
@@ -63,10 +167,10 @@ export default function PaginaEspaco() {
               </TouchableOpacity>
             </View>
             <View style={styles.locationContainer}>
-              <Icon
+              <Feather
                 name="map-pin"
                 size={16}
-                color={colors.roxo700}
+                color={colors.primaria}
                 style={styles.iconeLocation}
               />
               <Text style={styles.locationText}>
@@ -78,10 +182,10 @@ export default function PaginaEspaco() {
         </View>
         <View style={styles.containerBtn}>
           <TouchableOpacity style={styles.secondaryButton}>
-            <Icon
+            <Feather
               name="phone"
               size={20}
-              color={colors.roxo700}
+              color={colors.primaria}
               style={styles.iconeCurtir}
             />
             <Text style={styles.buttonText}>Contato</Text>
@@ -90,9 +194,9 @@ export default function PaginaEspaco() {
             style={styles.secondaryButton}
             onPress={() => setMostrarOpcoesApps(true)}
           >
-            <Icon
+            <Feather
               name="map-pin"
-              color={colors.roxo700}
+              color={colors.primaria}
               size={20}
               style={styles.iconeCurtir}
             />
@@ -102,7 +206,7 @@ export default function PaginaEspaco() {
             <MaterialIcons
               name="cleaning-services"
               size={20}
-              color={colors.roxo700}
+              color={colors.primaria}
               style={styles.iconeCurtir}
             />
             <Text style={styles.buttonText}>Serviços</Text>
@@ -116,44 +220,48 @@ export default function PaginaEspaco() {
         </View>
         <View style={styles.descricaoContainer}>
           <Text style={styles.descricaoTitle}>Descrição do espaço</Text>
-          <Text numberOfLines={3} style={styles.descricaoText}>
-            {espaco?.descricao}
-          </Text>
+          <Text style={styles.descricaoText}>{espaco?.descricao}</Text>
         </View>
-        <View style={styles.cardsContainer}>
-          <View style={styles.card}>
-            <View style={styles.circle}>
-              <FontAwesome
-                name="birthday-cake"
-                size={22}
-                color={colors.roxo700}
-              />
+        {espaco && espaco?.tipo_situacao.length > 0 && (
+          <View style={styles.descricaoContainer}>
+            <Text style={styles.descricaoTitle}>Situações</Text>
+            <View style={styles.cardsContainer}>
+              {renderItensCategorias(espaco.tipo_situacao, situacoes)}
             </View>
-            <Text style={styles.cardText}>Aniversário</Text>
           </View>
-          <View style={styles.card}>
-            <View style={styles.circle}>
-              <MaterialIcons
-                name="work-outline"
-                size={22}
-                color={colors.roxo700}
-              />
+        )}
+        {espaco && espaco?.jogos_disponiveis.length > 0 && (
+          <View style={styles.descricaoContainer}>
+            <Text style={styles.descricaoTitle}>Jogos</Text>
+            <View style={styles.cardsContainer}>
+              {renderItensCategorias(espaco.jogos_disponiveis, jogos)}
             </View>
-            <Text style={styles.cardText}>Corporativo</Text>
           </View>
-          <View style={styles.card}>
-            <View style={styles.circle}>
-              <Feather name="sun" size={22} color={colors.roxo700} />
+        )}
+        {espaco && espaco?.periodo_ideal.length > 0 && (
+          <View style={styles.descricaoContainer}>
+            <Text style={styles.descricaoTitle}>Período do dia</Text>
+            <View style={styles.cardsContainer}>
+              {renderItensCategorias(espaco.periodo_ideal, tempo)}
             </View>
-            <Text style={styles.cardText}>Ao ar livre</Text>
           </View>
-          <View style={styles.card}>
-            <View style={styles.circle}>
-              <Entypo name="drink" size={22} color={colors.roxo700} />
+        )}
+        {espaco && espaco?.clima_ideal.length > 0 && (
+          <View style={styles.descricaoContainer}>
+            <Text style={styles.descricaoTitle}>Clima Ideal</Text>
+            <View style={styles.cardsContainer}>
+              {renderItensCategorias(espaco.clima_ideal, clima)}
             </View>
-            <Text style={styles.cardText}>Drink</Text>
           </View>
-        </View>
+        )}
+        {espaco && espaco?.utilidades_disponiveis.length > 0 && (
+          <View style={styles.descricaoContainer}>
+            <Text style={styles.descricaoTitle}>Utilidades</Text>
+            <View style={styles.cardsContainer}>
+              {renderItensCategorias(espaco.utilidades_disponiveis, utilidades)}
+            </View>
+          </View>
+        )}
         <View style={styles.priceContainer}>
           <Text style={styles.priceText}>
             <Text style={styles.price}>
@@ -175,6 +283,7 @@ export default function PaginaEspaco() {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -261,7 +370,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   buttonText: {
-    color: colors.roxo700,
+    color: colors.primaria,
     fontFamily: "Quicksand700",
   },
   vagasHorariosContainer: {
@@ -280,7 +389,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   vagasText: {
-    color: colors.roxo700,
+    color: colors.primaria,
     fontSize: 15,
     fontFamily: "Quicksand700",
   },
@@ -317,23 +426,23 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   maisInformacoesButtonText: {
-    color: colors.roxo700,
+    color: colors.primaria,
     fontFamily: "Quicksand700",
   },
   cardsContainer: {
+    display: "flex",
     flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 20,
+    flexWrap: "wrap",
     gap: 6,
   },
   card: {
+    flex: 1,
+    maxWidth: 125,
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 10,
     alignItems: "center",
     justifyContent: "center",
-    flex: 1,
   },
   circle: {
     width: 36,
@@ -346,21 +455,8 @@ const styles = StyleSheet.create({
   },
   cardText: {
     fontSize: 12,
-    color: colors.roxo700,
+    color: colors.primaria,
     fontFamily: "Quicksand700",
-  },
-  // fotos do espaço
-  fotosContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-around",
-    marginTop: 10,
-  },
-  fotoPequena: {
-    width: 69,
-    height: 70,
-    marginBottom: 10,
-    // preço
   },
   //preço
   priceContainer: {
@@ -372,7 +468,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   price: {
-    color: colors.roxo700,
+    color: colors.primaria,
     fontFamily: "Quicksand700",
     fontSize: 22,
   },
@@ -383,7 +479,7 @@ const styles = StyleSheet.create({
   },
   //btnpreco
   bookButton: {
-    backgroundColor: colors.roxo700,
+    backgroundColor: colors.primaria,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 10,

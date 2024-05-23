@@ -90,9 +90,7 @@ export default function SliderInfoEspaco({
         <Icon name="arrow-left" size={28} color={colors.branco} />
       </TouchableOpacity>
       <TouchableOpacity onPress={aoClicarEmCurtir} style={styles.iconeCurtir}>
-        {curtido && (
-          <AntDesign name="heart" size={28} color={colors.primaria} />
-        )}
+        {curtido && <AntDesign name="heart" size={28} color={colors.branco} />}
         {!curtido && <Icon name="heart" size={28} color={colors.branco} />}
       </TouchableOpacity>
       <Pagination2

@@ -1,15 +1,16 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
+import { StyleSheet, TextInput, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import colors from "../../styles/colors";
 import { TouchableOpacity } from "react-native";
 
-export default function CampoPesquisaFiltro({
-  onPressSearchIcon,
-  onPressFilterIcon,
-}) {
+export default function CampoPesquisa({ onPressSearchIcon, onChange }) {
   const [textoPesquisa, setTextoPesquisa] = useState("");
+
+  const handleTextChange = (texto) => {
+    setTextoPesquisa(texto);
+    onChange(texto);
+  };
 
   return (
     <View style={styles.container}>
@@ -19,19 +20,12 @@ export default function CampoPesquisaFiltro({
         </TouchableOpacity>
         <TextInput
           style={styles.textInput}
-          placeholder="Onde deseja festejar?"
+          placeholder="Pesquisar usuário"
           placeholderTextColor={colors.corTextoPreto}
-          onChangeText={(texto) => setTextoPesquisa(texto)}
+          onChangeText={handleTextChange}
           value={textoPesquisa}
         />
       </View>
-      <TouchableOpacity
-        activeOpacity={1}
-        onPress={onPressFilterIcon}
-        style={styles.containerIconFilter}
-      >
-        <Feather name="sliders" size={18} color={colors.corTextoPreto} />
-      </TouchableOpacity>
     </View>
   );
 }
@@ -40,7 +34,7 @@ const styles = StyleSheet.create({
   container: {
     display: "flex",
     flexDirection: "row",
-    width: "90%",
+    width: "100%",
     minHeight: 48,
     justifyContent: "space-between",
     alignItems: "center",
@@ -48,9 +42,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.branco,
     padding: 10,
     borderRadius: 50,
-    //Android
+    // Android
     elevation: 4,
-    //IOS
+    // iOS
     shadowColor: colors.preto,
     shadowOffset: {
       width: 0,
@@ -71,12 +65,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.corTextoPreto,
     width: "80%",
-  },
-  containerIconFilter: {
-    display: "flex",
-    borderWidth: 1,
-    borderColor: colors.cinzaMaisClaro,
-    borderRadius: "100%",
-    padding: 6,
   },
 });

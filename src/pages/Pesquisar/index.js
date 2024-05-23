@@ -3,7 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import { Text } from "react-native-paper";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 import colors from "../../styles/colors";
 import CampoPesquisaFiltro from "../../components/CampoPesquisaFiltro";
 import { View } from "react-native";
@@ -52,23 +52,28 @@ export default function Pesquisar() {
 
     switch (route.key) {
       case "first":
-        iconName = "cake";
+        iconName = "birthday-cake";
+        IconType = FontAwesome5;
         break;
       case "second":
-        iconName = "restaurant";
+        iconName = "outdoor-grill";
+        IconType = MaterialIcons;
         break;
       case "third":
         iconName = "pool";
+        IconType = MaterialIcons;
         break;
       case "fourth":
         iconName = "wb-sunny";
+        IconType = MaterialIcons;
         break;
       default:
-        iconName = "cake";
+        iconName = "birthday-cake";
+        IconType = FontAwesome5;
     }
 
     return (
-      <MaterialIcons
+      <IconType
         name={iconName}
         size={24}
         color={focused ? colors.primaria : colors.cinzaEscuro}
