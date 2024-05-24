@@ -25,7 +25,7 @@ import {
   clima,
   jogos,
   situacoes,
-  tempo,
+  periodoDia,
   utilidades,
 } from "../../utils/opcoesFiltros";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
@@ -55,13 +55,11 @@ export default function PaginaEspaco() {
 
       return (
         <View style={styles.card} key={item}>
-          <View style={styles.circle}>
-            <IconComponent
-              name={itemConfig?.icone}
-              size={22}
-              color={colors.primaria}
-            />
-          </View>
+          <IconComponent
+            name={itemConfig?.icone}
+            size={22}
+            color={colors.primaria}
+          />
           <Text style={styles.cardText}>{itemConfig?.nome || item}</Text>
         </View>
       );
@@ -222,59 +220,63 @@ export default function PaginaEspaco() {
           <Text style={styles.descricaoTitle}>Descrição do espaço</Text>
           <Text style={styles.descricaoText}>{espaco?.descricao}</Text>
         </View>
-        {espaco && espaco?.tipo_situacao.length > 0 && (
-          <View style={styles.descricaoContainer}>
-            <Text style={styles.descricaoTitle}>Situações</Text>
-            <View style={styles.cardsContainer}>
-              {renderItensCategorias(espaco.tipo_situacao, situacoes)}
+        <View style={styles.containerCategorias}>
+          {espaco && espaco?.tipo_situacao.length > 0 && (
+            <View style={styles.descricaoContainer}>
+              <Text style={styles.descricaoCard}>Situações</Text>
+              <View style={styles.cardsContainer}>
+                {renderItensCategorias(espaco.tipo_situacao, situacoes)}
+              </View>
             </View>
-          </View>
-        )}
-        {espaco && espaco?.jogos_disponiveis.length > 0 && (
-          <View style={styles.descricaoContainer}>
-            <Text style={styles.descricaoTitle}>Jogos</Text>
-            <View style={styles.cardsContainer}>
-              {renderItensCategorias(espaco.jogos_disponiveis, jogos)}
+          )}
+          {espaco && espaco?.jogos_disponiveis.length > 0 && (
+            <View style={styles.descricaoContainer}>
+              <Text style={styles.descricaoCard}>Jogos</Text>
+              <View style={styles.cardsContainer}>
+                {renderItensCategorias(espaco.jogos_disponiveis, jogos)}
+              </View>
             </View>
-          </View>
-        )}
-        {espaco && espaco?.periodo_ideal.length > 0 && (
-          <View style={styles.descricaoContainer}>
-            <Text style={styles.descricaoTitle}>Período do dia</Text>
-            <View style={styles.cardsContainer}>
-              {renderItensCategorias(espaco.periodo_ideal, tempo)}
+          )}
+          {espaco && espaco?.periodo_ideal.length > 0 && (
+            <View style={styles.descricaoContainer}>
+              <Text style={styles.descricaoCard}>Períodos do dia</Text>
+              <View style={styles.cardsContainer}>
+                {renderItensCategorias(espaco.periodo_ideal, periodoDia)}
+              </View>
             </View>
-          </View>
-        )}
-        {espaco && espaco?.clima_ideal.length > 0 && (
-          <View style={styles.descricaoContainer}>
-            <Text style={styles.descricaoTitle}>Clima Ideal</Text>
-            <View style={styles.cardsContainer}>
-              {renderItensCategorias(espaco.clima_ideal, clima)}
+          )}
+          {espaco && espaco?.clima_ideal.length > 0 && (
+            <View style={styles.descricaoContainer}>
+              <Text style={styles.descricaoCard}>Climas Ideais</Text>
+              <View style={styles.cardsContainer}>
+                {renderItensCategorias(espaco.clima_ideal, clima)}
+              </View>
             </View>
-          </View>
-        )}
-        {espaco && espaco?.utilidades_disponiveis.length > 0 && (
-          <View style={styles.descricaoContainer}>
-            <Text style={styles.descricaoTitle}>Utilidades</Text>
-            <View style={styles.cardsContainer}>
-              {renderItensCategorias(espaco.utilidades_disponiveis, utilidades)}
+          )}
+          {espaco && espaco?.utilidades_disponiveis.length > 0 && (
+            <View style={styles.descricaoContainer}>
+              <Text style={styles.descricaoCard}>Utilidades</Text>
+              <View style={styles.cardsContainer}>
+                {renderItensCategorias(
+                  espaco.utilidades_disponiveis,
+                  utilidades
+                )}
+              </View>
             </View>
-          </View>
-        )}
-        <View style={styles.priceContainer}>
-          <Text style={styles.priceText}>
-            <Text style={styles.price}>
-              {formatarMoeda(espaco?.valor_diaria)}
-            </Text>{" "}
-            /diária
-          </Text>
-          <TouchableOpacity style={styles.bookButton}>
-            <Text style={styles.bookButtonText}>Venha festejar!</Text>
-          </TouchableOpacity>
+          )}
         </View>
       </ScrollView>
-
+      <View style={styles.priceContainer}>
+        <Text style={styles.priceText}>
+          <Text style={styles.price}>
+            {formatarMoeda(espaco?.valor_diaria)}
+          </Text>{" "}
+          /diária
+        </Text>
+        <TouchableOpacity style={styles.bookButton}>
+          <Text style={styles.bookButtonText}>Venha festejar!</Text>
+        </TouchableOpacity>
+      </View>
       <ModalLocalizacao
         endereco={endereco}
         mostrarOpcoesApps={mostrarOpcoesApps}
@@ -287,7 +289,7 @@ export default function PaginaEspaco() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.cinzaMaisClaro,
+    backgroundColor: colors.branco,
   },
   content: {
     width: "100%",
@@ -359,15 +361,27 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 20,
     marginHorizontal: 16,
+    gap: 8,
   },
   secondaryButton: {
-    backgroundColor: "white",
-    paddingVertical: 10,
-    paddingHorizontal: 10,
-    gap: 8,
-    borderRadius: 8,
+    flex: 1,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: colors.branco,
+    padding: 10,
+    gap: 6,
+    borderRadius: 50,
+    //Android
+    elevation: 4,
+    //IOS
+    shadowColor: colors.corTextoPreto,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 4.62,
   },
   buttonText: {
     color: colors.primaria,
@@ -380,35 +394,36 @@ const styles = StyleSheet.create({
   },
   vagasHorariosButton: {
     width: "100%",
-    backgroundColor: "white",
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-    borderRadius: 8,
+    backgroundColor: colors.branco,
+    padding: 16,
+    borderRadius: 50,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    //Android
+    elevation: 4,
+    //IOS
+    shadowColor: colors.corTextoPreto,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 4.62,
   },
   vagasText: {
     color: colors.primaria,
     fontSize: 15,
     fontFamily: "Quicksand700",
   },
-  // Estilos para o texto "Horários as 10:00 AM"
   horariosText: {
     color: "black",
     fontSize: 15,
     fontFamily: "Quicksand400",
   },
-  //descrição
   descricaoContainer: {
     marginTop: 20,
     paddingHorizontal: 16,
-  },
-  descricaoHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
   },
   descricaoTitle: {
     fontSize: 20,
@@ -422,43 +437,46 @@ const styles = StyleSheet.create({
     fontFamily: "Quicksand600",
     color: colors.cinzatxt,
   },
-  maisInformacoesButton: {
-    alignSelf: "flex-start",
-  },
-  maisInformacoesButtonText: {
-    color: colors.primaria,
-    fontFamily: "Quicksand700",
+  containerCategorias: {
+    marginBottom: 20,
   },
   cardsContainer: {
     display: "flex",
     flexDirection: "row",
     flexWrap: "wrap",
-    gap: 6,
+    gap: 8,
+  },
+  descricaoCard: {
+    fontSize: 16,
+    fontWeight: "bold",
+    fontFamily: "Quicksand700",
+    marginBottom: 7,
   },
   card: {
     flex: 1,
-    maxWidth: 125,
-    backgroundColor: "#fff",
-    borderRadius: 10,
+    flexBasis: 100,
     padding: 10,
     alignItems: "center",
     justifyContent: "center",
-  },
-  circle: {
-    width: 36,
-    height: 36,
-    borderRadius: 30,
-    backgroundColor: "#F7F7F7",
-    alignItems: "center",
-    justifyContent: "center",
-    marginBottom: 10,
+    backgroundColor: colors.branco,
+    borderRadius: 10,
+    //Android
+    elevation: 4,
+    //IOS
+    shadowColor: colors.corTextoPreto,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.23,
+    shadowRadius: 4.62,
   },
   cardText: {
     fontSize: 12,
     color: colors.primaria,
     fontFamily: "Quicksand700",
+    marginTop: 6,
   },
-  //preço
   priceContainer: {
     backgroundColor: colors.branco,
     flexDirection: "row",
@@ -477,7 +495,6 @@ const styles = StyleSheet.create({
     color: "black",
     fontFamily: "Quicksand700",
   },
-  //btnpreco
   bookButton: {
     backgroundColor: colors.primaria,
     paddingVertical: 10,
@@ -485,7 +502,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   bookButtonText: {
-    color: "white",
+    color: colors.branco,
     fontSize: 16,
     fontFamily: "Quicksand700",
   },

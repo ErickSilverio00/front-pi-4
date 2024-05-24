@@ -57,7 +57,7 @@ export const jogos = {
   },
 };
 
-export const tempo = {
+export const periodoDia = {
   manha: { nome: "Manhã", icone: "sunrise", tipoIcone: "Feather" },
   tarde: { nome: "Tarde", icone: "sunset", tipoIcone: "Feather" },
   noite: { nome: "Noite", icone: "moon", tipoIcone: "Feather" },
@@ -93,7 +93,7 @@ export const utilidades = {
   fogao: { nome: "Fogão", icone: "stove", tipoIcone: "MaterialCommunityIcons" },
   cozinha: {
     nome: "Cozinha",
-    icone: "kitchen-set",
+    icone: "kitchen",
     tipoIcone: "MaterialIcons",
   },
   som: { nome: "Som", icone: "speaker", tipoIcone: "Feather" },
@@ -136,6 +136,6 @@ export const servicos = {
   cozinheiros: {
     nome: "Cozinheiros",
     icone: "soup-kitchen",
-    tipoIcone: "MaterialCommunityIcons",
+    tipoIcone: "MaterialIcons",
   },
 };

@@ -14,6 +14,7 @@ import { ErroProvider } from "./src/contexts/ErroCampoTextoContext";
 import useAuthStore from "./src/hooks/useAuthStore";
 import { jwtDecode } from "jwt-decode";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   const [fonteCarregada] = useFonts({
@@ -65,10 +66,12 @@ export default function App() {
   } else {
     return (
       <>
-        <ErroProvider>
-          <RotasPrincipais />
-        </ErroProvider>
-        <Toast />
+        <GestureHandlerRootView style={{ flex: 1 }}>
+          <ErroProvider>
+            <RotasPrincipais />
+          </ErroProvider>
+          <Toast />
+        </GestureHandlerRootView>
       </>
     );
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
@@ -10,10 +10,10 @@ import { View } from "react-native";
 import { ScrollView } from "react-native";
 import ApresentacaoEspaco from "../../components/ApresentacaoEspaco";
 import { fetchEspacos } from "../../services/Espacos";
-import { formatarMoeda } from "../../utils/funcoes";
 import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
 import { useNavigation } from "@react-navigation/native";
+import Filtros from "./Filtros";
 
 export default function Pesquisar() {
   const navigation = useNavigation();
@@ -21,6 +21,7 @@ export default function Pesquisar() {
   const espacosCurtidos = useEspacosCurtidos();
   const [index, setIndex] = useState(0);
   const [espacos, setEspacos] = useState([]);
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [routes] = useState([
     { key: "first", title: "Aniversários" },
     { key: "second", title: "Churras" },
@@ -28,27 +29,25 @@ export default function Pesquisar() {
     { key: "fourth", title: "Ao ar livre" },
   ]);
 
-  const carregarEspacosCurtidos = async () => {
+  const carregarEspacosCurtidos = useCallback(async () => {
     try {
       await espacosCurtidos.fetchEspacosCurtidos(Number(user.idUsuario));
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao carregar espaços curtidos:", error);
     }
-  };
+  }, [espacosCurtidos, user.idUsuario]);
 
-  const carregarEspacos = async () => {
+  const carregarEspacos = useCallback(async () => {
     try {
-      const espacosDisponiveis = await fetchEspacos(
-        user.idUsuario ? user.idUsuario : 0
-      );
+      const espacosDisponiveis = await fetchEspacos(user.idUsuario || 0);
       setEspacos(espacosDisponiveis);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao carregar espaços:", error);
     }
-  };
+  }, [user.idUsuario]);
 
   const renderIcon = (route, focused) => {
-    let iconName;
+    let iconName, IconType;
 
     switch (route.key) {
       case "first":
@@ -109,13 +108,15 @@ export default function Pesquisar() {
       style={styles.containerConteudo}
     >
       <View style={styles.containerApresentacoes}>
-        {espacos?.map((espaco, index) => (
-          <ApresentacaoEspaco
-            key={index}
-            carregarEspacosCurtidos={carregarEspacosCurtidos}
-            espaco={espaco}
-          />
-        ))}
+        {espacos
+          ?.filter((espaco) => espaco.tipo_situacao.includes("Aniversário"))
+          .map((espaco, index) => (
+            <ApresentacaoEspaco
+              key={index}
+              carregarEspacosCurtidos={carregarEspacosCurtidos}
+              espaco={espaco}
+            />
+          ))}
       </View>
     </ScrollView>
   );
@@ -126,13 +127,15 @@ export default function Pesquisar() {
       style={styles.containerConteudo}
     >
       <View style={styles.containerApresentacoes}>
-        {espacos?.map((espaco, index) => (
-          <ApresentacaoEspaco
-            key={index}
-            carregarEspacosCurtidos={carregarEspacosCurtidos}
-            espaco={espaco}
-          />
-        ))}
+        {espacos
+          ?.filter((espaco) => espaco.tipo_situacao.includes("Churrasco"))
+          .map((espaco, index) => (
+            <ApresentacaoEspaco
+              key={index}
+              carregarEspacosCurtidos={carregarEspacosCurtidos}
+              espaco={espaco}
+            />
+          ))}
       </View>
     </ScrollView>
   );
@@ -143,13 +146,17 @@ export default function Pesquisar() {
       style={styles.containerConteudo}
     >
       <View style={styles.containerApresentacoes}>
-        {espacos?.map((espaco, index) => (
-          <ApresentacaoEspaco
-            key={index}
-            carregarEspacosCurtidos={carregarEspacosCurtidos}
-            espaco={espaco}
-          />
-        ))}
+        {espacos
+          ?.filter((espaco) =>
+            espaco.utilidades_disponiveis.includes("Piscina")
+          )
+          .map((espaco, index) => (
+            <ApresentacaoEspaco
+              key={index}
+              carregarEspacosCurtidos={carregarEspacosCurtidos}
+              espaco={espaco}
+            />
+          ))}
       </View>
     </ScrollView>
   );
@@ -160,13 +167,15 @@ export default function Pesquisar() {
       style={styles.containerConteudo}
     >
       <View style={styles.containerApresentacoes}>
-        {espacos?.map((espaco, index) => (
-          <ApresentacaoEspaco
-            key={index}
-            carregarEspacosCurtidos={carregarEspacosCurtidos}
-            espaco={espaco}
-          />
-        ))}
+        {espacos
+          ?.filter((espaco) => espaco.clima_ideal.includes("Sol"))
+          .map((espaco, index) => (
+            <ApresentacaoEspaco
+              key={index}
+              carregarEspacosCurtidos={carregarEspacosCurtidos}
+              espaco={espaco}
+            />
+          ))}
       </View>
     </ScrollView>
   );
@@ -178,16 +187,13 @@ export default function Pesquisar() {
     fourth: FourthRoute,
   });
 
-  useEffect(() => {
-    const unsubscribe = navigation.addListener("focus", () => {
-      carregarEspacos();
-      carregarEspacosCurtidos();
-    });
+  const abrirFiltros = () => {
+    setMostrarFiltros(true);
+  };
 
+  useEffect(() => {
     carregarEspacos();
     carregarEspacosCurtidos();
-
-    return unsubscribe;
   }, []);
 
   return (
@@ -195,15 +201,21 @@ export default function Pesquisar() {
       <StatusBar barStyle="light-content" />
       <View style={styles.containerFilter}>
         <CampoPesquisaFiltro
-          onPressSearchIcon={() => {}}
-          onPressFilterIcon={() => {}}
+          onPressSearchIcon={() => setMostrarFiltros(false)}
+          onPressFilterIcon={abrirFiltros}
         />
       </View>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        renderTabBar={renderTabBar}
+      {!mostrarFiltros && (
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          renderTabBar={renderTabBar}
+        />
+      )}
+      <Filtros
+        mostrarFiltros={mostrarFiltros}
+        setMostrarFiltros={setMostrarFiltros}
       />
     </SafeAreaView>
   );

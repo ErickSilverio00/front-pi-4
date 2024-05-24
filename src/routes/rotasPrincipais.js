@@ -17,13 +17,13 @@ export default function RotasPrincipais() {
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ color }) => {
-            if (route.name === "Pesquisar") {
+            if (route.name === "RotasPesquisar") {
               return <Icon name="search" size={22} color={color} />;
-            } else if (route.name === "Curtidos") {
+            } else if (route.name === "RotasCurtidos") {
               return <Icon name="heart" size={22} color={color} />;
-            } else if (route.name === "Mensagens") {
+            } else if (route.name === "RotasMensagens") {
               return <Icon name="message-circle" size={22} color={color} />;
-            } else if (route.name === "Perfil") {
+            } else if (route.name === "RotasPerfil") {
               return <Icon name="user" size={22} color={color} />;
             }
           },
@@ -32,12 +32,13 @@ export default function RotasPrincipais() {
           tabBarLabelStyle: {
             fontFamily: "Quicksand600",
           },
+          tabBarLabel: route?.name.replace("Rotas", ""),
         })}
       >
-        <Tab.Screen name="Pesquisar" component={RotasPesquisar} />
-        <Tab.Screen name="Curtidos" component={RotasCurtidos} />
-        <Tab.Screen name="Mensagens" component={RotasMensagens} />
-        <Tab.Screen name="Perfil" component={RotasPerfil} />
+        <Tab.Screen name="RotasPesquisar" component={RotasPesquisar} />
+        <Tab.Screen name="RotasCurtidos" component={RotasCurtidos} />
+        <Tab.Screen name="RotasMensagens" component={RotasMensagens} />
+        <Tab.Screen name="RotasPerfil" component={RotasPerfil} />
       </Tab.Navigator>
     </NavigationContainer>
   );
