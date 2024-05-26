@@ -3,6 +3,9 @@ import React from "react";
 import Pesquisar from "../pages/Pesquisar";
 import PaginaEspaco from "../pages/PaginaEspaco";
 import Filtros from "../pages/Pesquisar/Filtros";
+import Servico from "../pages/PaginaEspaco/Servico";
+
+
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +25,11 @@ export default function RotasPesquisar() {
       <Stack.Screen
         name="Filtros"
         component={Filtros}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Servico"
+        component={Servico}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

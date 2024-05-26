@@ -200,15 +200,19 @@ export default function PaginaEspaco() {
             />
             <Text style={styles.buttonText}>Localização</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.secondaryButton}>
-            <MaterialIcons
-              name="cleaning-services"
-              size={20}
-              color={colors.primaria}
-              style={styles.iconeCurtir}
-            />
-            <Text style={styles.buttonText}>Serviços</Text>
-          </TouchableOpacity>
+          <TouchableOpacity
+  style={styles.secondaryButton}
+  onPress={() => navigation.navigate('Servico')}
+>
+  <MaterialIcons
+    name="cleaning-services"
+    size={20}
+    color={colors.primaria}
+    style={styles.iconeCurtir}
+  />
+  <Text style={styles.buttonText}>Serviços</Text>
+</TouchableOpacity>
+
         </View>
         <View style={styles.vagasHorariosContainer}>
           <TouchableOpacity style={styles.vagasHorariosButton}>
