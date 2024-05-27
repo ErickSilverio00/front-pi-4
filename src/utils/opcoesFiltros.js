@@ -97,7 +97,7 @@ export const utilidades = {
     tipoIcone: "MaterialIcons",
   },
   som: { nome: "Som", icone: "speaker", tipoIcone: "Feather" },
-  mesas: { nome: "Mesas", icone: "table", tipoIcone: "MaterialCommunityIcons" },
+  mesas: { nome: "Mesas", icone: "table-bar", tipoIcone: "MaterialIcons" },
   cadeiras: {
     nome: "Cadeiras",
     icone: "chair",

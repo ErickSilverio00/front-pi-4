@@ -483,7 +483,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 20,
-    marginTop: 20,
   },
   price: {
     color: colors.primaria,

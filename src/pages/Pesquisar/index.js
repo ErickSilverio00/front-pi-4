@@ -205,14 +205,12 @@ export default function Pesquisar() {
           onPressFilterIcon={abrirFiltros}
         />
       </View>
-      {!mostrarFiltros && (
-        <TabView
-          navigationState={{ index, routes }}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={renderTabBar}
-        />
-      )}
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        renderTabBar={renderTabBar}
+      />
       <Filtros
         mostrarFiltros={mostrarFiltros}
         setMostrarFiltros={setMostrarFiltros}

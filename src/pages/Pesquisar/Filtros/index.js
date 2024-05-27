@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   Pressable,
-  SafeAreaView,
   ScrollView,
   Modal,
   TouchableOpacity,
@@ -17,7 +16,6 @@ import {
   Feather,
   Ionicons,
 } from "@expo/vector-icons";
-
 import {
   situacoes,
   jogos,
@@ -27,6 +25,8 @@ import {
   servicos,
 } from "../../../utils/opcoesFiltros";
 import colors from "../../../styles/colors";
+import MultiSlider from "@ptomasroos/react-native-multi-slider";
+import RangeDataHora from "../../../components/RangeDataHora";
 
 const iconSets = {
   FontAwesome5,
@@ -87,6 +87,7 @@ const Category = ({ name, buttons, selectedButtons, toggleSelected }) => (
 );
 
 export default function Filtros({ mostrarFiltros, setMostrarFiltros }) {
+  const [values, setValues] = useState([0, 100]);
   const categories = {
     Situações: objectToArray(situacoes),
     Jogos: objectToArray(jogos),
@@ -125,6 +126,10 @@ export default function Filtros({ mostrarFiltros, setMostrarFiltros }) {
     // Implement logic to show more places
   };
 
+  const onValuesChange = (values) => {
+    setValues(values);
+  };
+
   return (
     <Modal
       visible={mostrarFiltros}
@@ -158,6 +163,35 @@ export default function Filtros({ mostrarFiltros, setMostrarFiltros }) {
             showsVerticalScrollIndicator={false}
           >
             <View style={styles.content}>
+              <View style={styles.containerSlider}>
+                <Text style={styles.tituloCabecalho}>
+                  Distância da sua Localização
+                </Text>
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.sliderText}>0 km</Text>
+                  <MultiSlider
+                    values={values}
+                    onValuesChange={onValuesChange}
+                    markerStyle={{ width: 24, height: 24 }}
+                    selectedStyle={{ backgroundColor: colors.primaria }}
+                  />
+                  <Text style={styles.sliderText}>100 km</Text>
+                </View>
+              </View>
+              <View style={styles.containerSlider}>
+                <Text style={styles.tituloCabecalho}>Variação de Preço</Text>
+                <View style={styles.sliderContainer}>
+                  <Text style={styles.sliderText}>R$0</Text>
+                  <MultiSlider
+                    values={values}
+                    onValuesChange={onValuesChange}
+                    markerStyle={{ width: 24, height: 24 }}
+                    selectedStyle={{ backgroundColor: colors.primaria }}
+                  />
+                  <Text style={styles.sliderText}>R$100</Text>
+                </View>
+              </View>
+              <RangeDataHora />
               {Object.keys(categories).map((category) => (
                 <Category
                   key={category}
@@ -220,12 +254,24 @@ const styles = StyleSheet.create({
     fontFamily: "Quicksand700",
     fontSize: 16,
     color: colors.corTextoPreto,
-    marginHorizontal: 2,
   },
   content: {
     paddingVertical: 20,
     paddingBottom: 40,
     paddingHorizontal: 16,
+  },
+  containerSlider: {
+    flexDirection: "column",
+  },
+  sliderContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  sliderText: {
+    fontFamily: "Quicksand600",
+    fontSize: 12,
+    color: colors.corTextoPreto,
   },
   categoryContainer: {
     marginBottom: 20,
