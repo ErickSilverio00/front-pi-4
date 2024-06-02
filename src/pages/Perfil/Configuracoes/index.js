@@ -51,7 +51,7 @@ export default function Configuracoes() {
           mostrarBotaoVoltar={true}
           aoPressionarBotaoVoltar={() => navigation.goBack()}
           mostrarTexto={true}
-          texto="Configurações e Suporte"
+          texto="Configurações"
           mostrarIcones={false}
         />
         <View style={styles.containerViews}>

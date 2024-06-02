@@ -181,12 +181,12 @@ export default function PaginaEspaco() {
         <View style={styles.containerBtn}>
           <TouchableOpacity style={styles.secondaryButton}>
             <Feather
-              name="phone"
+              name="message-circle"
               size={20}
               color={colors.primaria}
               style={styles.iconeCurtir}
             />
-            <Text style={styles.buttonText}>Contato</Text>
+            <Text style={styles.buttonText}>Mensagem</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.secondaryButton}
@@ -200,7 +200,10 @@ export default function PaginaEspaco() {
             />
             <Text style={styles.buttonText}>Localização</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.secondaryButton}>
+          <TouchableOpacity
+            style={styles.secondaryButton}
+            onPress={() => navigation.navigate("Servico", { espaco })}
+          >
             <MaterialIcons
               name="cleaning-services"
               size={20}

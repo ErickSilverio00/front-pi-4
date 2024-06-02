@@ -127,12 +127,7 @@ export const utilidades = {
 };
 
 export const servicos = {
-  limpeza: {
-    nome: "Limpeza",
-    icone: "cleaning-services",
-    tipoIcone: "MaterialIcons",
-  },
-  garcons: { nome: "Garçons", icone: "user-tie", tipoIcone: "FontAwesome5" },
+  garçons: { nome: "Garçons", icone: "user-tie", tipoIcone: "FontAwesome5" },
   cozinheiros: {
     nome: "Cozinheiros",
     icone: "soup-kitchen",
