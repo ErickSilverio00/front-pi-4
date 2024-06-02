@@ -10,7 +10,7 @@ import PaginaEspaco from "../pages/PaginaEspaco";
 import Servico from "../pages/PaginaEspaco/Servico";
 import EditarPerfil from "../pages/Perfil/EditarPerfil";
 import Suporte from "../pages/Perfil/Suporte";
-
+import Cadastrar from "../pages/Perfil/TornarAnunciante/cadastrar";
 const Stack = createNativeStackNavigator();
 
 export default function RotasPerfil() {
@@ -64,6 +64,11 @@ export default function RotasPerfil() {
       <Stack.Screen
         name="Servico"
         component={Servico}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Cadastrar"
+        component={Cadastrar}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
