@@ -273,9 +273,12 @@ export default function PaginaEspaco() {
           </Text>{" "}
           /diária
         </Text>
-        <TouchableOpacity style={styles.bookButton}>
-          <Text style={styles.bookButtonText}>Venha festejar!</Text>
-        </TouchableOpacity>
+        <TouchableOpacity
+        style={styles.bookButton}
+        onPress={() => navigation.navigate('InfoVendas')} // Use o nome da rota definido no Stack.Navigator
+      >
+        <Text style={styles.bookButtonText}>Venha festejar!</Text>
+      </TouchableOpacity>
       </View>
       <ModalLocalizacao
         endereco={endereco}
