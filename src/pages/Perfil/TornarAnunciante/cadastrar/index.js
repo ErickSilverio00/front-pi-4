@@ -153,7 +153,7 @@ const styles = StyleSheet.create({
   },
   botaoContinuar: {
     backgroundColor: colors.purple,
-  },
+  }, 
 });
 
 export default CadastrarEspacoDeFesta;
