@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, TextInput, View } from "react-native";
-import { MaterialIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import colors from "../../styles/colors";
 import { TouchableOpacity } from "react-native";
@@ -8,9 +7,10 @@ import { TouchableOpacity } from "react-native";
 export default function CampoPesquisaFiltro({
   onPressSearchIcon,
   onPressFilterIcon,
+  onSubmitEditing,
+  textoPesquisa,
+  setTextoPesquisa,
 }) {
-  const [textoPesquisa, setTextoPesquisa] = useState("");
-
   return (
     <View style={styles.container}>
       <View style={styles.containerLeft}>
@@ -23,6 +23,7 @@ export default function CampoPesquisaFiltro({
           placeholderTextColor={colors.corTextoPreto}
           onChangeText={(texto) => setTextoPesquisa(texto)}
           value={textoPesquisa}
+          onSubmitEditing={onSubmitEditing}
         />
       </View>
       <TouchableOpacity

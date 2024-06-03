@@ -14,6 +14,7 @@ import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
 import { useNavigation } from "@react-navigation/native";
 import Filtros from "./Filtros";
+import PesquisaFeita from "./PesquisaFeita";
 
 export default function Pesquisar() {
   const navigation = useNavigation();
@@ -21,7 +22,9 @@ export default function Pesquisar() {
   const espacosCurtidos = useEspacosCurtidos();
   const [index, setIndex] = useState(0);
   const [espacos, setEspacos] = useState([]);
+  const [textoPesquisa, setTextoPesquisa] = useState("");
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
+  const [pesquisaFeita, setPesquisaFeita] = useState(false);
   const [routes] = useState([
     { key: "first", title: "Aniversários" },
     { key: "second", title: "Churras" },
@@ -187,8 +190,21 @@ export default function Pesquisar() {
     fourth: FourthRoute,
   });
 
+  const handlePesquisaFeita = () => {
+    setPesquisaFeita(true);
+  };
+
   const abrirFiltros = () => {
     setMostrarFiltros(true);
+  };
+
+  const filtrarEspacos = () => {
+    try {
+      setMostrarFiltros(false);
+      setPesquisaFeita(true);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -199,22 +215,38 @@ export default function Pesquisar() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <View style={styles.containerFilter}>
-        <CampoPesquisaFiltro
-          onPressSearchIcon={() => setMostrarFiltros(false)}
-          onPressFilterIcon={abrirFiltros}
-        />
-      </View>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        renderTabBar={renderTabBar}
-      />
+      {!pesquisaFeita && (
+        <>
+          <View style={styles.containerFilter}>
+            <CampoPesquisaFiltro
+              onPressSearchIcon={() => setMostrarFiltros(false)}
+              onPressFilterIcon={abrirFiltros}
+              onSubmitEditing={handlePesquisaFeita}
+              textoPesquisa={textoPesquisa}
+              setTextoPesquisa={setTextoPesquisa}
+            />
+          </View>
+          <TabView
+            navigationState={{ index, routes }}
+            renderScene={renderScene}
+            onIndexChange={setIndex}
+            renderTabBar={renderTabBar}
+          />
+        </>
+      )}
       <Filtros
         mostrarFiltros={mostrarFiltros}
         setMostrarFiltros={setMostrarFiltros}
+        filtrarEspacos={filtrarEspacos}
       />
+      {pesquisaFeita && (
+        <PesquisaFeita
+          espacosFiltrados={espacos}
+          abrirFiltros={abrirFiltros}
+          fecharPesquisa={() => setPesquisaFeita(false)}
+          textoPesquisa={textoPesquisa}
+        />
+      )}
     </SafeAreaView>
   );
 }

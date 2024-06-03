@@ -86,7 +86,11 @@ const Category = ({ name, buttons, selectedButtons, toggleSelected }) => (
   </View>
 );
 
-export default function Filtros({ mostrarFiltros, setMostrarFiltros }) {
+export default function Filtros({
+  mostrarFiltros,
+  setMostrarFiltros,
+  filtrarEspacos,
+}) {
   const [values, setValues] = useState([0, 100]);
   const categories = {
     Situações: objectToArray(situacoes),
@@ -120,10 +124,6 @@ export default function Filtros({ mostrarFiltros, setMostrarFiltros }) {
 
   const limparFiltros = () => {
     setSelected(initializeSelectedState(categories));
-  };
-
-  const mostrarLugares = () => {
-    // Implement logic to show more places
   };
 
   const onValuesChange = (values) => {
@@ -216,7 +216,7 @@ export default function Filtros({ mostrarFiltros, setMostrarFiltros }) {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.footerButton}
-              onPress={mostrarLugares}
+              onPress={filtrarEspacos}
             >
               <Text style={styles.footerButtonText}>Filtrar</Text>
             </TouchableOpacity>

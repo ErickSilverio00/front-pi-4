@@ -15,6 +15,7 @@ import useAuthStore from "./src/hooks/useAuthStore";
 import { jwtDecode } from "jwt-decode";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import * as Location from "expo-location";
 
 export default function App() {
   const [fonteCarregada] = useFonts({
@@ -59,6 +60,23 @@ export default function App() {
     };
 
     verificarTokenArmazenado();
+  }, []);
+
+  useEffect(() => {
+    const solicitarPermissaoLocalizacao = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          console.log("Permissão para acessar a localização negada");
+          return;
+        }
+        const location = await Location.getCurrentPositionAsync({});
+      } catch (error) {
+        console.error("Erro ao solicitar permissão de localização:", error);
+      }
+    };
+
+    solicitarPermissaoLocalizacao();
   }, []);
 
   if (!fonteCarregada) {
