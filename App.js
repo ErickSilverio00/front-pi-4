@@ -84,12 +84,10 @@ export default function App() {
   } else {
     return (
       <>
-        <GestureHandlerRootView style={{ flex: 1 }}>
-          <ErroProvider>
-            <RotasPrincipais />
-          </ErroProvider>
-          <Toast />
-        </GestureHandlerRootView>
+        <ErroProvider>
+          <RotasPrincipais />
+        </ErroProvider>
+        <Toast />
       </>
     );
   }

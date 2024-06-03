@@ -77,7 +77,7 @@ const styles = StyleSheet.create({
     display: "flex",
     borderWidth: 1,
     borderColor: colors.cinzaMaisClaro,
-    borderRadius: "100%",
+    borderRadius: 200,
     padding: 6,
   },
 });
