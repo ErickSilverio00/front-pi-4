@@ -191,11 +191,20 @@ export default function Pesquisar() {
   });
 
   const handlePesquisaFeita = () => {
-    setPesquisaFeita(true);
+    if (textoPesquisa.length > 2) {
+      setPesquisaFeita(true);
+    } else {
+      setTextoPesquisa("");
+    }
   };
 
   const abrirFiltros = () => {
     setMostrarFiltros(true);
+  };
+
+  const fecharPesquisa = () => {
+    setPesquisaFeita(false);
+    setTextoPesquisa("");
   };
 
   const filtrarEspacos = () => {
@@ -243,7 +252,7 @@ export default function Pesquisar() {
         <PesquisaFeita
           espacosFiltrados={espacos}
           abrirFiltros={abrirFiltros}
-          fecharPesquisa={() => setPesquisaFeita(false)}
+          fecharPesquisa={fecharPesquisa}
           textoPesquisa={textoPesquisa}
         />
       )}
