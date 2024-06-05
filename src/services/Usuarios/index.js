@@ -12,12 +12,32 @@ export const fetchUsuarios = async () => {
   }
 };
 
+export const fetchUsuarioById = async (idUsuario) => {
+  try {
+    const response = await Axios.get(`${baseURL}/usuario/${idUsuario}`);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao buscar o usuario: ", error);
+    throw error;
+  }
+};
+
 export const registerUsuario = async (usuarioData) => {
   try {
     const response = await Axios.post(`${baseURL}/signup`, usuarioData);
     return response.data;
   } catch (error) {
     console.error("Erro ao cadastrar o usuário: ", error);
+    throw error;
+  }
+};
+
+export const updateUsuario = async (id, usuarioData) => {
+  try {
+    const response = await Axios.put(`${baseURL}/usuario/${id}`, usuarioData);
+    return response.data;
+  } catch (error) {
+    console.error("Erro ao atualizar o usuário: ", error);
     throw error;
   }
 };

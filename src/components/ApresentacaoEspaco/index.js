@@ -81,7 +81,10 @@ export default function ApresentacaoEspaco({
           curtido={curtido}
           setCurtido={setCurtido}
           aoClicarNaImagem={() =>
-            navigation.navigate("PaginaEspaco", { espaco })
+            navigation.navigate("RotasEspaco", {
+              screen: "PaginaEspaco",
+              params: { espaco },
+            })
           }
           aoClicarEmCurtir={aoClicarEmCurtir}
         />

@@ -1,27 +1,27 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import React from "react";
-import Pesquisar from "../pages/Pesquisar";
-import Filtros from "../pages/Pesquisar/Filtros";
-import RotasEspaco from "./rotasEspaco";
+import PaginaEspaco from "../pages/PaginaEspaco";
+import Servico from "../pages/PaginaEspaco/Servico";
+import InfoVendas from "../pages/PaginaEspaco/InfoVendas";
 
 const Stack = createNativeStackNavigator();
 
-export default function RotasPesquisar() {
+export default function RotasEspaco() {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="Pesquisar"
-        component={Pesquisar}
+        name="PaginaEspaco"
+        component={PaginaEspaco}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="Filtros"
-        component={Filtros}
+        name="InfoVendas"
+        component={InfoVendas}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="RotasEspaco"
-        component={RotasEspaco}
+        name="Servico"
+        component={Servico}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>

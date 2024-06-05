@@ -26,6 +26,7 @@ export default function CampoTexto({
   valorInicial,
   aoMudarVisibilidade,
   mostrarLabel = true,
+  editable = true,
 }) {
   const {
     estaFocado,
@@ -40,7 +41,7 @@ export default function CampoTexto({
     iconeAnimatedStyle,
     inputStyle,
     mudandoContainerPressionado,
-  } = useCampoTexto();
+  } = useCampoTexto(valorInicial);
 
   const corIcone = erro
     ? colors.vermelho
@@ -51,7 +52,11 @@ export default function CampoTexto({
   return (
     <TouchableWithoutFeedback onPress={mudandoContainerPressionado}>
       <View
-        style={[styles.container, { marginVertical: valorInicial ? 0 : 0 }]}
+        style={[
+          styles.container,
+          { marginVertical: valorInicial ? 0 : 0 },
+          !editable && styles.disabledContainer,
+        ]}
       >
         <AnimatedTextInput
           ref={inputRef}
@@ -59,10 +64,11 @@ export default function CampoTexto({
             styles.input,
             inputStyle,
             { paddingVertical: valorInicial ? 8 : 8 },
+            !editable && styles.disabledInput,
           ]}
           onFocus={mudandoFoco}
           onBlur={mudandoBlur}
-          value={texto || valorInicial}
+          value={texto}
           onChangeText={(novoTexto) => {
             mudandoTexto(novoTexto);
             if (onChangeText) {
@@ -71,6 +77,7 @@ export default function CampoTexto({
           }}
           keyboardType={tipoInput}
           secureTextEntry={tipo === "senha" && !mostrarSenha}
+          editable={editable}
         />
         {tipo === "senha" && (
           <TouchableWithoutFeedback onPress={aoMudarVisibilidade}>
@@ -134,5 +141,11 @@ const styles = StyleSheet.create({
     top: 0,
     right: 0,
     padding: 20,
+  },
+  disabledContainer: {
+    opacity: 0.5,
+  },
+  disabledInput: {
+    color: colors.corTextoPreto,
   },
 });

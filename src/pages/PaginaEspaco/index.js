@@ -276,7 +276,10 @@ export default function PaginaEspaco() {
           </Text>{" "}
           /diária
         </Text>
-        <TouchableOpacity style={styles.bookButton}>
+        <TouchableOpacity
+          style={styles.bookButton}
+          onPress={() => navigation.navigate("InfoVendas")}
+        >
           <Text style={styles.bookButtonText}>Venha festejar!</Text>
         </TouchableOpacity>
       </View>

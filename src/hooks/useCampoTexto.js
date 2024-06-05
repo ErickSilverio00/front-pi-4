@@ -11,12 +11,12 @@ import Animated, {
 import { useErro } from "../contexts/ErroCampoTextoContext";
 import colors from "../styles/colors";
 
-function useCampoTexto() {
+function useCampoTexto(valorInicial = "") {
   const [estaFocado, setEstaFocado] = useState(false);
-  const [texto, setTexto] = useState("");
+  const [texto, setTexto] = useState(valorInicial);
   const [erro, setErro] = useState(false);
   const [mostrarSenha, setMostrarSenha] = useState(false);
-  const posicaoLabel = useSharedValue(estaFocado || texto ? 0 : 1);
+  const posicaoLabel = useSharedValue(valorInicial ? 0 : 1);
   const inputRef = useRef(null);
   const { erroGlobal } = useErro();
 
@@ -44,14 +44,10 @@ function useCampoTexto() {
 
   const mudandoTexto = (novoTexto) => {
     setTexto(novoTexto);
-    posicaoLabel.value = withSpring(estaFocado || novoTexto ? 0 : 1, {
+    posicaoLabel.value = withSpring(novoTexto ? 0 : 1, {
       damping: 10,
       stiffness: 120,
       easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-      onRest: () => {
-        if (estaFocado || novoTexto) return;
-        runOnJS(() => (posicaoLabel.value = 1))();
-      },
     });
 
     setErro(false);
@@ -116,7 +112,7 @@ function useCampoTexto() {
     } else {
       Keyboard.dismiss();
       setEstaFocado(false);
-      posicaoLabel.value = withSpring(estaFocado || texto ? 0 : 1, {
+      posicaoLabel.value = withSpring(texto ? 0 : 1, {
         damping: 10,
         stiffness: 120,
         easing: Easing.bezier(0.25, 0.1, 0.25, 1),
