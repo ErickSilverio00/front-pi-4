@@ -14,30 +14,12 @@ export default function Botao({
   tamanhoIcone,
   corIcone,
   style,
-  isLoading,
-  tamanhoIconeCarregamento,
 }) {
   return (
-    <TouchableOpacity
-      onPress={aoPressionarBotao}
-      disabled={isLoading}
-      activeOpacity={0.6}
-    >
+    <TouchableOpacity onPress={aoPressionarBotao} activeOpacity={0.6}>
       <View style={[styles.containerBotao, style]}>
-        {isLoading ? (
-          <ActivityIndicator
-            color="white"
-            style={styles.loadingAnimation}
-            size={tamanhoIconeCarregamento}
-          />
-        ) : (
-          <>
-            {Icone && (
-              <Icone name={Icone} size={tamanhoIcone} color={corIcone} />
-            )}
-            {texto && <Text style={style}>{texto}</Text>}
-          </>
-        )}
+        {Icone && <Icone name={Icone} size={tamanhoIcone} color={corIcone} />}
+        {texto && <Text style={style}>{texto}</Text>}
       </View>
     </TouchableOpacity>
   );

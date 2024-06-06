@@ -9,13 +9,12 @@ import {
   Quicksand_600SemiBold,
   Quicksand_700Bold,
 } from "@expo-google-fonts/quicksand";
-import CarregamentoDeTela from "./src/pages/CarregamentoDeTela";
 import { ErroProvider } from "./src/contexts/ErroCampoTextoContext";
 import useAuthStore from "./src/hooks/useAuthStore";
 import { jwtDecode } from "jwt-decode";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 import * as Location from "expo-location";
+import { LoadingProvider } from "./src/contexts/LoadingContext";
 
 export default function App() {
   const [fonteCarregada] = useFonts({
@@ -80,14 +79,16 @@ export default function App() {
   }, []);
 
   if (!fonteCarregada) {
-    return <CarregamentoDeTela />;
+    return null;
   } else {
     return (
       <>
-        <ErroProvider>
-          <RotasPrincipais />
-        </ErroProvider>
-        <Toast />
+        <LoadingProvider>
+          <ErroProvider>
+            <RotasPrincipais />
+          </ErroProvider>
+          <Toast />
+        </LoadingProvider>
       </>
     );
   }

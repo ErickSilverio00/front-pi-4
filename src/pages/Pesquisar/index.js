@@ -15,11 +15,13 @@ import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
 import { useNavigation } from "@react-navigation/native";
 import Filtros from "./Filtros";
 import PesquisaFeita from "./PesquisaFeita";
+import { useLoading } from "../../contexts/LoadingContext";
 
 export default function Pesquisar() {
   const navigation = useNavigation();
   const user = useAuthStore();
   const espacosCurtidos = useEspacosCurtidos();
+  const { setIsLoading } = useLoading();
   const [index, setIndex] = useState(0);
   const [espacos, setEspacos] = useState([]);
   const [textoPesquisa, setTextoPesquisa] = useState("");
@@ -34,18 +36,24 @@ export default function Pesquisar() {
 
   const carregarEspacosCurtidos = useCallback(async () => {
     try {
+      setIsLoading(true);
       await espacosCurtidos.fetchEspacosCurtidos(Number(user.idUsuario));
     } catch (error) {
       console.error("Erro ao carregar espaços curtidos:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [espacosCurtidos, user.idUsuario]);
 
   const carregarEspacos = useCallback(async () => {
     try {
+      setIsLoading(true);
       const espacosDisponiveis = await fetchEspacos(user.idUsuario || 0);
       setEspacos(espacosDisponiveis);
     } catch (error) {
       console.error("Erro ao carregar espaços:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [user.idUsuario]);
 
@@ -209,10 +217,13 @@ export default function Pesquisar() {
 
   const filtrarEspacos = () => {
     try {
+      setIsLoading(true);
       setMostrarFiltros(false);
       setPesquisaFeita(true);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

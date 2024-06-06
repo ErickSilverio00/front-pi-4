@@ -7,6 +7,7 @@ import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
 import Toast from "react-native-toast-message";
 import colors from "../../styles/colors";
 import { formatarMoeda } from "../../utils/funcoes";
+import { useLoading } from "../../contexts/LoadingContext";
 
 export default function ApresentacaoEspaco({
   carregarEspacosCurtidos,
@@ -16,6 +17,7 @@ export default function ApresentacaoEspaco({
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
   const user = useAuthStore();
   const espacosCurtidos = useEspacosCurtidos();
+  const { setIsLoading } = useLoading();
   const [curtido, setCurtido] = useState(false);
 
   useEffect(() => {

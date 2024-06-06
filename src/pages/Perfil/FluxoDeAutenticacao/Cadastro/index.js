@@ -10,6 +10,7 @@ import { SafeAreaView } from "react-native";
 import useCamposCadastro from "../../../../hooks/FluxoDeAutenticacao/useCamposCadastro";
 import { registerUsuario } from "../../../../services/Usuarios";
 import Toast from "react-native-toast-message";
+import { useLoading } from "../../../../contexts/LoadingContext";
 
 export default function Cadastro() {
   const navigation = useNavigation();
@@ -37,7 +38,7 @@ export default function Cadastro() {
     setSenhaConfirmadaErro,
     validarCampos,
   } = useCamposCadastro();
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setIsLoading } = useLoading();
 
   const confirmarCadastro = async () => {
     try {

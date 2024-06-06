@@ -1,6 +1,6 @@
 import Axios from "axios";
 
-const baseURL = "https://back-pi-4-production.up.railway.app";
+const baseURL = process.env.EXPO_PUBLIC_API_URL;
 
 export const fetchEspacosCurtidos = async (idUsuario) => {
   try {

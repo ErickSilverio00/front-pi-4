@@ -31,12 +31,14 @@ import {
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
 import useAuthStore from "../../hooks/useAuthStore";
 import { fetchEspacosCurtidos } from "../../services/Curtidos";
+import { useLoading } from "../../contexts/LoadingContext";
 
 export default function PaginaEspaco() {
-  const route = useRoute();
   const { espaco } = route.params;
+  const route = useRoute();
   const navigation = useNavigation();
   const user = useAuthStore();
+  const { setIsLoading } = useLoading();
   const espacosCurtidos = useEspacosCurtidos();
   const [curtido, setCurtido] = useState(false);
   const [mostrarOpcoesApps, setMostrarOpcoesApps] = useState(false);
@@ -96,6 +98,7 @@ export default function PaginaEspaco() {
 
   const aoClicarEmCurtir = async () => {
     try {
+      setIsLoading(true);
       if (!user.isAuthenticated) {
         navigation.navigate("Perfil");
         return;
@@ -121,14 +124,19 @@ export default function PaginaEspaco() {
         visibilityTime: 2000,
         autoHide: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const carregarEspacosCurtidos = async () => {
     try {
+      setIsLoading(true);
       await fetchEspacosCurtidos(Number(user.idUsuario));
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

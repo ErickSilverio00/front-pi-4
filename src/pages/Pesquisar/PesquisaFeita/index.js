@@ -11,6 +11,7 @@ import colors from "../../../styles/colors";
 import useAuthStore from "../../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../../hooks/useEspacosCurtidos";
 import ApresentacaoEspaco from "../../../components/ApresentacaoEspaco";
+import { useLoading } from "../../../contexts/LoadingContext";
 
 export default function PesquisaFeita({
   abrirFiltros,
@@ -21,12 +22,16 @@ export default function PesquisaFeita({
   const user = useAuthStore();
   const espacosCurtidos = useEspacosCurtidos();
   const [texto, setTexto] = useState(textoPesquisa);
+  const { setIsLoading } = useLoading();
 
   const carregarEspacosCurtidos = useCallback(async () => {
     try {
+      setIsLoading(true);
       await espacosCurtidos.fetchEspacosCurtidos(Number(user.idUsuario));
     } catch (error) {
       console.error("Erro ao carregar espaços curtidos:", error);
+    } finally {
+      setIsLoading(false);
     }
   }, [espacosCurtidos, user.idUsuario]);
 

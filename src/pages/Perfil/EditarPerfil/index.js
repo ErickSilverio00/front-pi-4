@@ -11,11 +11,12 @@ import useAuthStore from "../../../hooks/useAuthStore";
 import { fetchUsuarioById, updateUsuario } from "../../../services/Usuarios";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useLoading } from "../../../contexts/LoadingContext";
 
 export default function EditarPerfil() {
   const navigation = useNavigation();
   const user = useAuthStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setIsLoading } = useLoading();
   const [usuarioBuscado, setUsuarioBuscado] = useState(false);
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [numeroTelefone, setNumeroTelefone] = useState("");
@@ -23,6 +24,7 @@ export default function EditarPerfil() {
   const buscarUsuario = async () => {
     try {
       const response = await fetchUsuarioById(user?.idUsuario);
+      setIsLoading(true);
 
       if (response && response.usuario) {
         setNomeUsuario(response.usuario.nome_usuario);
@@ -37,11 +39,14 @@ export default function EditarPerfil() {
         visibilityTime: 2000,
         autoHide: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const atualizarUsuario = async () => {
     try {
+      setIsLoading(true);
       const camposParaAtualizar = {
         nome_usuario: nomeUsuario,
         numero_telefone: numeroTelefone,
@@ -68,6 +73,8 @@ export default function EditarPerfil() {
         visibilityTime: 2000,
         autoHide: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -123,7 +130,6 @@ export default function EditarPerfil() {
           aoPressionarBotao={atualizarUsuario}
           texto="Atualizar dados"
           style={styles.estiloBotao}
-          isLoading={isLoading}
           tamanhoIconeCarregamento={36}
         />
       </View>

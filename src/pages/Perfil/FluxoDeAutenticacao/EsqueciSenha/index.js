@@ -20,6 +20,7 @@ import {
   verifyResetCode,
 } from "../../../../services/Usuarios";
 import useCamposCadastro from "../../../../hooks/FluxoDeAutenticacao/useCamposCadastro";
+import { useLoading } from "../../../../contexts/LoadingContext";
 
 export default function EsqueciSenha() {
   const navigation = useNavigation();
@@ -41,7 +42,7 @@ export default function EsqueciSenha() {
   const [codigoErro, setCodigoErro] = useState("");
   const [emailEnviado, setEmailEnviado] = useState(false);
   const [codigoEnviado, setCodigoEnviado] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setIsLoading } = useLoading();
 
   const aoEnviarEmail = async () => {
     try {

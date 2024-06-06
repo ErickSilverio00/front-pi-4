@@ -9,18 +9,23 @@ import { fetchEspacosCurtidos } from "../../services/Curtidos";
 import useAuthStore from "../../hooks/useAuthStore";
 import { useNavigation } from "@react-navigation/native";
 import Astronauta from "../../../assets/astronauta.svg";
+import { useLoading } from "../../contexts/LoadingContext";
 
 export default function Curtidos() {
   const user = useAuthStore();
   const navigation = useNavigation();
+  const { setIsLoading } = useLoading();
   const [espacosCurtidos, setEspacosCurtidos] = useState([]);
 
   const carregarEspacosCurtidos = async () => {
     try {
+      setIsLoading(true);
       const espacos = await fetchEspacosCurtidos(Number(user.idUsuario));
       setEspacosCurtidos(espacos);
     } catch (error) {
       console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 

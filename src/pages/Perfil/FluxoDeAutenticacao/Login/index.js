@@ -19,6 +19,7 @@ import useAuthStore from "../../../../hooks/useAuthStore";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import { registerLogin } from "../../../../services/Usuarios";
+import { useLoading } from "../../../../contexts/LoadingContext";
 
 export default function Login() {
   const navigation = useNavigation();
@@ -34,7 +35,7 @@ export default function Login() {
     setSenhaErro,
     validarCampos,
   } = useCamposLogin();
-  const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, setIsLoading } = useLoading();
 
   const confirmarLogin = async () => {
     try {

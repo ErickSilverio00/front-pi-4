@@ -19,10 +19,12 @@ import CabecalhoTitulo from "../../components/CabecalhoTitulo";
 import imgAnunciante from "../../../assets/imgAnunciante.png";
 import * as Sharing from "expo-sharing";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { useLoading } from "../../contexts/LoadingContext";
 
 export default function Perfil() {
   const navigation = useNavigation();
   const user = useAuthStore();
+  const { setIsLoading } = useLoading();
   const [espacos, setEspacos] = useState([]);
 
   const itensConfiguracoes = [
@@ -50,6 +52,7 @@ export default function Perfil() {
 
   const carregarEspacos = async () => {
     try {
+      setIsLoading(true);
       const espacosDisponiveis = await fetchEspacos(
         user.idUsuario ? user.idUsuario : 0
       );
@@ -63,11 +66,14 @@ export default function Perfil() {
         visibilityTime: 2000,
         autoHide: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const carregarEspacosCurtidos = async () => {
     try {
+      setIsLoading(true);
       await fetchEspacosCurtidos(Number(user.idUsuario));
     } catch (error) {
       Toast.show({
@@ -78,6 +84,8 @@ export default function Perfil() {
         visibilityTime: 2000,
         autoHide: true,
       });
+    } finally {
+      setIsLoading(false);
     }
   };
 
