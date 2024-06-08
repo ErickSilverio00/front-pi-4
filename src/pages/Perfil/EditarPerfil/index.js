@@ -1,5 +1,6 @@
+import { useCallback, useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { SafeAreaView } from "react-native";
 import TopoPersonalizado from "../../../components/TopoPersonalizado";
@@ -16,15 +17,16 @@ import { useLoading } from "../../../contexts/LoadingContext";
 export default function EditarPerfil() {
   const navigation = useNavigation();
   const user = useAuthStore();
-  const { isLoading, setIsLoading } = useLoading();
+  const { setIsLoading } = useLoading();
   const [usuarioBuscado, setUsuarioBuscado] = useState(false);
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [numeroTelefone, setNumeroTelefone] = useState("");
 
-  const buscarUsuario = async () => {
+  // Busca do usuário com useCallback
+  const buscarUsuario = useCallback(async () => {
     try {
-      const response = await fetchUsuarioById(user?.idUsuario);
       setIsLoading(true);
+      const response = await fetchUsuarioById(user?.idUsuario);
 
       if (response && response.usuario) {
         setNomeUsuario(response.usuario.nome_usuario);
@@ -42,9 +44,10 @@ export default function EditarPerfil() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user?.idUsuario]);
 
-  const atualizarUsuario = async () => {
+  // Atualização do usuário com useCallback
+  const atualizarUsuario = useCallback(async () => {
     try {
       setIsLoading(true);
       const camposParaAtualizar = {
@@ -57,6 +60,8 @@ export default function EditarPerfil() {
       );
 
       await AsyncStorage.setItem("nomeUsuario", nomeUsuario);
+      setNomeUsuario(nomeUsuario);
+      setNumeroTelefone(numeroTelefone);
 
       Toast.show({
         type: "success",
@@ -76,11 +81,11 @@ export default function EditarPerfil() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [nomeUsuario, numeroTelefone, user?.idUsuario]);
 
   useEffect(() => {
     buscarUsuario();
-  }, []);
+  }, [buscarUsuario]);
 
   return (
     <SafeAreaView style={styles.containerGeral}>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Text,
   View,
@@ -8,19 +8,20 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import colors from "../../styles/colors";
-import {
-  AntDesign,
-  MaterialIcons,
-  FontAwesome,
-  FontAwesome5,
-  MaterialCommunityIcons,
-  Feather,
-  Entypo,
-} from "@expo/vector-icons";
 import SliderInfoEspaco from "./components/SliderInfoEspaco";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { formatarMoeda, normalizeKey } from "../../utils/funcoes";
 import ModalLocalizacao from "./components/ModalLocalizacao";
+import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
+import useAuthStore from "../../hooks/useAuthStore";
+import { useLoading } from "../../contexts/LoadingContext";
+import {
+  AntDesign,
+  MaterialIcons,
+  FontAwesome5,
+  MaterialCommunityIcons,
+  Feather,
+} from "@expo/vector-icons";
 import {
   clima,
   jogos,
@@ -28,26 +29,55 @@ import {
   periodoDia,
   utilidades,
 } from "../../utils/opcoesFiltros";
-import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
-import useAuthStore from "../../hooks/useAuthStore";
-import { fetchEspacosCurtidos } from "../../services/Curtidos";
-import { useLoading } from "../../contexts/LoadingContext";
 
 export default function PaginaEspaco() {
-  const { espaco } = route.params;
   const route = useRoute();
+  const { espaco } = route.params;
   const navigation = useNavigation();
   const user = useAuthStore();
   const { setIsLoading } = useLoading();
-  const espacosCurtidos = useEspacosCurtidos();
-  const [curtido, setCurtido] = useState(false);
+  const { espacosCurtidos, adicionarEspacoCurtido, removerEspacoCurtido } =
+    useEspacosCurtidos();
+  const [curtido, setCurtido] = useState(espaco?.curtido);
   const [mostrarOpcoesApps, setMostrarOpcoesApps] = useState(false);
 
-  const blocks = espaco?.imagens_espaco.map((foto) => {
-    return { type: "image", content: { uri: foto } };
-  });
+  const aoClicarEmCurtir = async () => {
+    try {
+      setIsLoading(true);
+      if (!user?.isAuthenticated) {
+        navigation.navigate("Perfil");
+        return;
+      }
 
-  const endereco = `${espaco?.endereco?.logradouro}, ${espaco?.endereco?.numero}, ${espaco?.endereco?.bairro}, ${espaco?.endereco?.cidade}, ${espaco?.endereco?.estado}`;
+      if (curtido) {
+        const idEspacoCurtido = espacosCurtidos.find(
+          (item) => item.id_espaco === espaco?.id_espaco
+        )?.id_espaco_curtido;
+        if (idEspacoCurtido) {
+          await removerEspacoCurtido(idEspacoCurtido);
+          setCurtido(false);
+        }
+      } else {
+        const curtidosData = {
+          idUsuario: Number(user?.idUsuario),
+          idEspaco: espaco?.id_espaco,
+        };
+        await adicionarEspacoCurtido(curtidosData);
+        setCurtido(true);
+      }
+    } catch (error) {
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2:
+          "Ocorreu um erro ao curtir o espaço. Tente novamente mais tarde.",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const renderItensCategorias = (items, config) => {
     return items.map((item) => {
@@ -83,66 +113,14 @@ export default function PaginaEspaco() {
     }
   };
 
-  const espacoEstaCurtido = (idEspaco) => {
-    return espacosCurtidos.espacosCurtidos.some(
-      (espaco) => espaco?.id_espaco === idEspaco
-    );
-  };
+  const blocks =
+    espaco && espaco.imagens_espaco
+      ? espaco.imagens_espaco
+          .filter((foto) => typeof foto === "string")
+          .map((foto) => ({ type: "image", content: { uri: foto } }))
+      : [];
 
-  const findIdEspacoCurtido = (idEspaco) => {
-    const espacoCurtido = espacosCurtidos.espacosCurtidos.find(
-      (espaco) => espaco?.id_espaco === idEspaco
-    );
-    return espacoCurtido ? espacoCurtido.id_espaco_curtido : null;
-  };
-
-  const aoClicarEmCurtir = async () => {
-    try {
-      setIsLoading(true);
-      if (!user.isAuthenticated) {
-        navigation.navigate("Perfil");
-        return;
-      }
-      if (curtido) {
-        const idEspacoCurtido = findIdEspacoCurtido(espaco?.id_espaco);
-        await espacosCurtidos.removerEspacoCurtido(idEspacoCurtido);
-        setCurtido(false);
-      } else {
-        const curtidosData = {
-          idUsuario: Number(user.idUsuario),
-          idEspaco: espaco?.id_espaco,
-        };
-        await espacosCurtidos.adicionarEspacoCurtido(curtidosData);
-        setCurtido(true);
-      }
-      await carregarEspacosCurtidos(Number(user.idUsuario));
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Erro!",
-        text2: error.response.data,
-        visibilityTime: 2000,
-        autoHide: true,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  const carregarEspacosCurtidos = async () => {
-    try {
-      setIsLoading(true);
-      await fetchEspacosCurtidos(Number(user.idUsuario));
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    setCurtido(espacoEstaCurtido(espaco?.id_espaco));
-  }, [espaco?.id_espaco]);
+  const endereco = `${espaco?.endereco?.logradouro}, ${espaco?.endereco?.numero}, ${espaco?.endereco?.bairro}, ${espaco?.endereco?.cidade}, ${espaco?.endereco?.estado}`;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -153,7 +131,6 @@ export default function PaginaEspaco() {
               <SliderInfoEspaco
                 blocks={blocks}
                 curtido={curtido}
-                setCurtido={setCurtido}
                 aoClicarEmCurtir={aoClicarEmCurtir}
                 corDotPrimaria={false}
               />

@@ -1,6 +1,5 @@
-// LoadingContext.js
 import React, { createContext, useContext, useState } from "react";
-import { View, StyleSheet, ActivityIndicator } from "react-native";
+import { View, StyleSheet, ActivityIndicator, Modal } from "react-native";
 import colors from "../styles/colors";
 
 const LoadingContext = createContext();
@@ -11,13 +10,7 @@ export const LoadingProvider = ({ children }) => {
   return (
     <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
       {children}
-      {isLoading && (
-        <View style={styles.overlay}>
-          <View style={styles.indicator}>
-            <ActivityIndicator size="large" color={colors.primaria} />
-          </View>
-        </View>
-      )}
+      <LoadingOverlay isLoading={isLoading} />
     </LoadingContext.Provider>
   );
 };
@@ -28,6 +21,23 @@ export const useLoading = () => {
     throw new Error("useLoading must be used within a LoadingProvider");
   }
   return context;
+};
+
+const LoadingOverlay = ({ isLoading }) => {
+  return (
+    <Modal
+      visible={isLoading}
+      transparent={true}
+      animationType="fade"
+      statusBarTranslucent={true}
+    >
+      <View style={styles.overlay}>
+        <View style={styles.indicator}>
+          <ActivityIndicator size="large" color={colors.primaria} />
+        </View>
+      </View>
+    </Modal>
+  );
 };
 
 const styles = StyleSheet.create({

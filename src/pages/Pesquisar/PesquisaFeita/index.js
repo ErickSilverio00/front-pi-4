@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -8,10 +8,7 @@ import {
 } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import colors from "../../../styles/colors";
-import useAuthStore from "../../../hooks/useAuthStore";
-import useEspacosCurtidos from "../../../hooks/useEspacosCurtidos";
 import ApresentacaoEspaco from "../../../components/ApresentacaoEspaco";
-import { useLoading } from "../../../contexts/LoadingContext";
 
 export default function PesquisaFeita({
   abrirFiltros,
@@ -19,25 +16,7 @@ export default function PesquisaFeita({
   espacosFiltrados,
   textoPesquisa,
 }) {
-  const user = useAuthStore();
-  const espacosCurtidos = useEspacosCurtidos();
   const [texto, setTexto] = useState(textoPesquisa);
-  const { setIsLoading } = useLoading();
-
-  const carregarEspacosCurtidos = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      await espacosCurtidos.fetchEspacosCurtidos(Number(user.idUsuario));
-    } catch (error) {
-      console.error("Erro ao carregar espaços curtidos:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [espacosCurtidos, user.idUsuario]);
-
-  useEffect(() => {
-    carregarEspacosCurtidos();
-  }, []);
 
   useEffect(() => {
     setTexto(textoPesquisa);
@@ -64,11 +43,7 @@ export default function PesquisaFeita({
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.containerApresentacoes}>
           {espacosFiltrados.map((espaco, index) => (
-            <ApresentacaoEspaco
-              key={index}
-              carregarEspacosCurtidos={carregarEspacosCurtidos}
-              espaco={espaco}
-            />
+            <ApresentacaoEspaco key={index} espaco={espaco} />
           ))}
         </View>
       </ScrollView>

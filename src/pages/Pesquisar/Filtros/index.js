@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ import {
 import colors from "../../../styles/colors";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import RangeDataHora from "../../../components/RangeDataHora";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 const iconSets = {
   FontAwesome5,
@@ -87,10 +88,12 @@ const Category = ({ name, buttons, selectedButtons, toggleSelected }) => (
 );
 
 export default function Filtros({
+  bottomSheetRef,
   mostrarFiltros,
   setMostrarFiltros,
   filtrarEspacos,
 }) {
+  const snapPoints = useMemo(() => ["90%"], []);
   const [values, setValues] = useState([0, 100]);
   const categories = {
     Situações: objectToArray(situacoes),
@@ -136,7 +139,6 @@ export default function Filtros({
       transparent={true}
       animationType="slide"
       onRequestClose={() => setMostrarFiltros(false)}
-      onPointerDown={() => setMostrarFiltros(false)}
     >
       <View style={styles.modalFundo}>
         <TouchableOpacity
@@ -144,84 +146,97 @@ export default function Filtros({
           activeOpacity={1}
           onPress={() => setMostrarFiltros(false)}
         />
-        <View style={styles.modalConteudo}>
-          <View style={styles.containerCabecalhoFiltros}>
-            <Text style={styles.tituloCabecalho}>Filtros</Text>
-            <TouchableOpacity
-              onPress={() => setMostrarFiltros(false)}
-              activeOpacity={1}
-            >
-              <iconSets.Feather
-                name="x"
-                size={22}
-                color={colors.corTextoPreto}
-              />
-            </TouchableOpacity>
-          </View>
-          <ScrollView
-            contentContainerStyle={styles.scrollViewContent}
-            showsVerticalScrollIndicator={false}
-          >
-            <View style={styles.content}>
-              <View style={styles.containerSlider}>
-                <Text style={styles.tituloCabecalho}>
-                  Distância da sua Localização
-                </Text>
-                <View style={styles.sliderContainer}>
-                  <Text style={styles.sliderText}>0 km</Text>
-                  <MultiSlider
-                    values={values}
-                    onValuesChange={onValuesChange}
-                    markerStyle={{ width: 24, height: 24 }}
-                    selectedStyle={{ backgroundColor: colors.primaria }}
-                  />
-                  <Text style={styles.sliderText}>100 km</Text>
-                </View>
-              </View>
-              <View style={styles.containerSlider}>
-                <Text style={styles.tituloCabecalho}>Variação de Preço</Text>
-                <View style={styles.sliderContainer}>
-                  <Text style={styles.sliderText}>R$0</Text>
-                  <MultiSlider
-                    values={values}
-                    onValuesChange={onValuesChange}
-                    markerStyle={{ width: 24, height: 24 }}
-                    selectedStyle={{ backgroundColor: colors.primaria }}
-                  />
-                  <Text style={styles.sliderText}>R$100</Text>
-                </View>
-              </View>
-              <RangeDataHora />
-              {Object.keys(categories).map((category) => (
-                <Category
-                  key={category}
-                  name={category}
-                  buttons={categories[category]}
-                  selectedButtons={selected[category]}
-                  toggleSelected={toggleSelected}
-                />
-              ))}
-            </View>
-          </ScrollView>
-          <View style={styles.footerButtonsContainer}>
-            <TouchableOpacity
-              style={[styles.footerButton, { backgroundColor: colors.branco }]}
-              onPress={limparFiltros}
-            >
-              <Text
-                style={[styles.footerButtonText, { color: colors.primaria }]}
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          enablePanDownToClose={true}
+          onClose={() => setMostrarFiltros(false)}
+        >
+          <View style={styles.modalConteudo}>
+            <View style={styles.containerCabecalhoFiltros}>
+              <Text style={styles.tituloCabecalho}>Filtros</Text>
+              <TouchableOpacity
+                onPress={() => [
+                  bottomSheetRef.current?.close(),
+                  setMostrarFiltros(false),
+                ]}
               >
-                Limpar
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.footerButton}
-              onPress={filtrarEspacos}
+                <iconSets.Feather
+                  name="x"
+                  size={22}
+                  color={colors.corTextoPreto}
+                />
+              </TouchableOpacity>
+            </View>
+            <ScrollView
+              contentContainerStyle={styles.scrollViewContent}
+              showsVerticalScrollIndicator={false}
             >
-              <Text style={styles.footerButtonText}>Filtrar</Text>
-            </TouchableOpacity>
+              <View style={styles.content}>
+                <View style={styles.containerSlider}>
+                  <Text style={styles.tituloCabecalho}>
+                    Distância da sua Localização
+                  </Text>
+                  <View style={styles.sliderContainer}>
+                    <Text style={styles.sliderText}>0 km</Text>
+                    <MultiSlider
+                      values={values}
+                      onValuesChange={onValuesChange}
+                      markerStyle={{ width: 24, height: 24 }}
+                      selectedStyle={{ backgroundColor: colors.primaria }}
+                    />
+                    <Text style={styles.sliderText}>100 km</Text>
+                  </View>
+                </View>
+                <View style={styles.containerSlider}>
+                  <Text style={styles.tituloCabecalho}>Variação de Preço</Text>
+                  <View style={styles.sliderContainer}>
+                    <Text style={styles.sliderText}>R$0</Text>
+                    <MultiSlider
+                      values={values}
+                      onValuesChange={onValuesChange}
+                      markerStyle={{ width: 24, height: 24 }}
+                      selectedStyle={{ backgroundColor: colors.primaria }}
+                    />
+                    <Text style={styles.sliderText}>R$100</Text>
+                  </View>
+                </View>
+                <RangeDataHora />
+                {Object.keys(categories).map((category) => (
+                  <Category
+                    key={category}
+                    name={category}
+                    buttons={categories[category]}
+                    selectedButtons={selected[category]}
+                    toggleSelected={toggleSelected}
+                  />
+                ))}
+              </View>
+            </ScrollView>
+            <View style={styles.footerButtonsContainer}>
+              <TouchableOpacity
+                style={[
+                  styles.footerButton,
+                  { backgroundColor: colors.branco },
+                ]}
+                onPress={limparFiltros}
+              >
+                <Text
+                  style={[styles.footerButtonText, { color: colors.primaria }]}
+                >
+                  Limpar
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.footerButton}
+                onPress={filtrarEspacos}
+              >
+                <Text style={styles.footerButtonText}>Filtrar</Text>
+              </TouchableOpacity>
+            </View>
           </View>
-        </View>
+        </BottomSheet>
       </View>
     </Modal>
   );
@@ -237,8 +252,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.branco,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    paddingVertical: 20,
-    height: "95%",
+    paddingBottom: 20,
+    height: "100%",
   },
   scrollViewContent: {},
   containerCabecalhoFiltros: {

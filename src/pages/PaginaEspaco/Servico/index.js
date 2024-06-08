@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View, Text, StyleSheet, SafeAreaView, Pressable } from "react-native";
 import TopoPersonalizado from "../../../components/TopoPersonalizado";
 import { useNavigation, useRoute } from "@react-navigation/native";

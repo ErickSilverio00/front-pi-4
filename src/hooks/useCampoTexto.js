@@ -1,9 +1,8 @@
 import { useState, useRef } from "react";
-import Animated, {
+import {
   useSharedValue,
   withSpring,
   Easing,
-  runOnJS,
   interpolateColor,
   useAnimatedStyle,
   interpolate,

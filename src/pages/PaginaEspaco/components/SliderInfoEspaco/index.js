@@ -17,7 +17,6 @@ import colors from "../../../../styles/colors";
 export default function SliderInfoEspaco({
   blocks,
   curtido,
-  setCurtido,
   aoClicarEmCurtir,
   corDotPrimaria = true,
 }) {

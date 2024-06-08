@@ -1,9 +1,7 @@
 import React, { useRef, useState } from "react";
 import Pagination2 from "./Pagination2";
-import colors from "../../styles/colors";
+import colors from "../../../styles/colors";
 import { TouchableOpacity } from "react-native";
-import Icon from "react-native-vector-icons/Feather";
-import { AntDesign } from "@expo/vector-icons";
 import {
   Animated,
   Dimensions,
@@ -13,13 +11,7 @@ import {
   View,
 } from "react-native";
 
-export default function SliderCarrossel({
-  blocks,
-  curtido,
-  setCurtido,
-  aoClicarNaImagem,
-  aoClicarEmCurtir,
-}) {
+export default function SliderCarrossel({ blocks, aoClicarNaImagem }) {
   const [index, setIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
@@ -66,32 +58,12 @@ export default function SliderCarrossel({
             return <View style={styles.blockContainer}>{item.content}</View>;
           } else if (item.type === "image") {
             return (
-              <>
-                <TouchableOpacity onPress={aoClicarNaImagem} activeOpacity={1}>
-                  <Image
-                    source={item.content}
-                    style={styles.blockContainerImagem}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity onPress={aoClicarEmCurtir}>
-                  {curtido && (
-                    <AntDesign
-                      name="heart"
-                      size={32}
-                      color={colors.primaria}
-                      style={styles.iconeCurtir}
-                    />
-                  )}
-                  {!curtido && (
-                    <Icon
-                      name="heart"
-                      size={32}
-                      color={colors.branco}
-                      style={styles.iconeCurtir}
-                    />
-                  )}
-                </TouchableOpacity>
-              </>
+              <TouchableOpacity onPress={aoClicarNaImagem} activeOpacity={1}>
+                <Image
+                  source={item.content}
+                  style={styles.blockContainerImagem}
+                />
+              </TouchableOpacity>
             );
           }
         }}

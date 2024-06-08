@@ -1,12 +1,5 @@
 import React, { useState } from "react";
-import {
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../../../../styles/colors";
 import Botao from "../../../../components/Botao";
 import TopoPersonalizado from "../../../../components/TopoPersonalizado";

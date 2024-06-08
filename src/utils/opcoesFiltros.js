@@ -21,6 +21,11 @@ export const situacoes = {
     icone: "baby",
     tipoIcone: "FontAwesome5",
   },
+  casamento: {
+    nome: "Casamento",
+    icone: "heart",
+    tipoIcone: "Feather",
+  },
 };
 
 export const jogos = {
@@ -46,8 +51,8 @@ export const jogos = {
   },
   videogame: {
     nome: "Vídeo-Game",
-    icone: "game-controller",
-    tipoIcone: "Ionicons",
+    icone: "gamepad",
+    tipoIcone: "MaterialCommunityIcons",
   },
   karaoke: { nome: "Karaôke", icone: "mic", tipoIcone: "Feather" },
   brinquedoteca: {

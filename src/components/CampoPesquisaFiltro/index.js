@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
+import React from "react";
+import { StyleSheet, TextInput, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 import colors from "../../styles/colors";
 import { TouchableOpacity } from "react-native";
@@ -27,7 +27,6 @@ export default function CampoPesquisaFiltro({
         />
       </View>
       <TouchableOpacity
-        activeOpacity={1}
         onPress={onPressFilterIcon}
         style={styles.containerIconFilter}
       >

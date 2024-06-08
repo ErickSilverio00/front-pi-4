@@ -1,59 +1,55 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
-import { Text } from "react-native-paper";
-import { MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
-import colors from "../../styles/colors";
-import CampoPesquisaFiltro from "../../components/CampoPesquisaFiltro";
-import { View } from "react-native";
 import { ScrollView } from "react-native";
 import ApresentacaoEspaco from "../../components/ApresentacaoEspaco";
 import { fetchEspacos } from "../../services/Espacos";
 import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
-import { useNavigation } from "@react-navigation/native";
+import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Filtros from "./Filtros";
 import PesquisaFeita from "./PesquisaFeita";
 import { useLoading } from "../../contexts/LoadingContext";
+import CampoPesquisaFiltro from "../../components/CampoPesquisaFiltro";
+import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import colors from "../../styles/colors";
+import Toast from "react-native-toast-message";
 
 export default function Pesquisar() {
   const navigation = useNavigation();
   const user = useAuthStore();
-  const espacosCurtidos = useEspacosCurtidos();
   const { setIsLoading } = useLoading();
+  const bottomSheetRef = useRef(null);
   const [index, setIndex] = useState(0);
+  const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [espacos, setEspacos] = useState([]);
   const [textoPesquisa, setTextoPesquisa] = useState("");
-  const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [pesquisaFeita, setPesquisaFeita] = useState(false);
   const [routes] = useState([
     { key: "first", title: "Aniversários" },
-    { key: "second", title: "Churras" },
+    {
+      key: "second",
+      title: "Churras",
+    },
     { key: "third", title: "Na piscina" },
     { key: "fourth", title: "Ao ar livre" },
   ]);
 
-  const carregarEspacosCurtidos = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      await espacosCurtidos.fetchEspacosCurtidos(Number(user.idUsuario));
-    } catch (error) {
-      console.error("Erro ao carregar espaços curtidos:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  }, [espacosCurtidos, user.idUsuario]);
+  const { espacosCurtidos, fetchEspacosCurtidos } = useEspacosCurtidos();
 
   const carregarEspacos = useCallback(async () => {
     try {
-      setIsLoading(true);
       const espacosDisponiveis = await fetchEspacos(user.idUsuario || 0);
       setEspacos(espacosDisponiveis);
     } catch (error) {
-      console.error("Erro ao carregar espaços:", error);
-    } finally {
-      setIsLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: "Erro ao carregar espaços. Tente novamente mais tarde!",
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     }
   }, [user.idUsuario]);
 
@@ -122,11 +118,7 @@ export default function Pesquisar() {
         {espacos
           ?.filter((espaco) => espaco.tipo_situacao.includes("Aniversário"))
           .map((espaco, index) => (
-            <ApresentacaoEspaco
-              key={index}
-              carregarEspacosCurtidos={carregarEspacosCurtidos}
-              espaco={espaco}
-            />
+            <ApresentacaoEspaco key={index} espaco={espaco} />
           ))}
       </View>
     </ScrollView>
@@ -141,11 +133,7 @@ export default function Pesquisar() {
         {espacos
           ?.filter((espaco) => espaco.tipo_situacao.includes("Churrasco"))
           .map((espaco, index) => (
-            <ApresentacaoEspaco
-              key={index}
-              carregarEspacosCurtidos={carregarEspacosCurtidos}
-              espaco={espaco}
-            />
+            <ApresentacaoEspaco key={index} espaco={espaco} />
           ))}
       </View>
     </ScrollView>
@@ -162,11 +150,7 @@ export default function Pesquisar() {
             espaco.utilidades_disponiveis.includes("Piscina")
           )
           .map((espaco, index) => (
-            <ApresentacaoEspaco
-              key={index}
-              carregarEspacosCurtidos={carregarEspacosCurtidos}
-              espaco={espaco}
-            />
+            <ApresentacaoEspaco key={index} espaco={espaco} />
           ))}
       </View>
     </ScrollView>
@@ -181,11 +165,7 @@ export default function Pesquisar() {
         {espacos
           ?.filter((espaco) => espaco.clima_ideal.includes("Sol"))
           .map((espaco, index) => (
-            <ApresentacaoEspaco
-              key={index}
-              carregarEspacosCurtidos={carregarEspacosCurtidos}
-              espaco={espaco}
-            />
+            <ApresentacaoEspaco key={index} espaco={espaco} />
           ))}
       </View>
     </ScrollView>
@@ -208,6 +188,7 @@ export default function Pesquisar() {
 
   const abrirFiltros = () => {
     setMostrarFiltros(true);
+    bottomSheetRef.current?.expand();
   };
 
   const fecharPesquisa = () => {
@@ -219,18 +200,26 @@ export default function Pesquisar() {
     try {
       setIsLoading(true);
       setMostrarFiltros(false);
+      bottomSheetRef.current?.close();
       setPesquisaFeita(true);
     } catch (error) {
-      console.error(error);
+      Toast.show({
+        type: "error",
+        text1: "Erro!",
+        text2: `Erro ao filtrar espaços: ${error}`,
+        visibilityTime: 2000,
+        autoHide: true,
+      });
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    carregarEspacos();
-    carregarEspacosCurtidos();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      carregarEspacos();
+    }, [])
+  );
 
   return (
     <SafeAreaView style={styles.container}>
@@ -239,7 +228,7 @@ export default function Pesquisar() {
         <>
           <View style={styles.containerFilter}>
             <CampoPesquisaFiltro
-              onPressSearchIcon={() => setMostrarFiltros(false)}
+              onPressSearchIcon={() => bottomSheetRef.current?.close()}
               onPressFilterIcon={abrirFiltros}
               onSubmitEditing={handlePesquisaFeita}
               textoPesquisa={textoPesquisa}
@@ -257,6 +246,7 @@ export default function Pesquisar() {
       <Filtros
         mostrarFiltros={mostrarFiltros}
         setMostrarFiltros={setMostrarFiltros}
+        bottomSheetRef={bottomSheetRef}
         filtrarEspacos={filtrarEspacos}
       />
       {pesquisaFeita && (

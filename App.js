@@ -15,6 +15,7 @@ import { jwtDecode } from "jwt-decode";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 import * as Location from "expo-location";
 import { LoadingProvider } from "./src/contexts/LoadingContext";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function App() {
   const [fonteCarregada] = useFonts({
@@ -54,7 +55,13 @@ export default function App() {
           }
         }
       } catch (error) {
-        console.error("Erro ao recuperar token do AsyncStorage:", error);
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: `Erro ao recuperar token do AsyncStorage: ${error}`,
+          visibilityTime: 2000,
+          autoHide: true,
+        });
       }
     };
 
@@ -71,7 +78,13 @@ export default function App() {
         }
         const location = await Location.getCurrentPositionAsync({});
       } catch (error) {
-        console.error("Erro ao solicitar permissão de localização:", error);
+        Toast.show({
+          type: "error",
+          text1: "Erro!",
+          text2: `Erro ao solicitar permissão de localização: ${error}`,
+          visibilityTime: 2000,
+          autoHide: true,
+        });
       }
     };
 
@@ -82,14 +95,14 @@ export default function App() {
     return null;
   } else {
     return (
-      <>
+      <GestureHandlerRootView style={{ flex: 1 }}>
         <LoadingProvider>
           <ErroProvider>
             <RotasPrincipais />
           </ErroProvider>
           <Toast />
         </LoadingProvider>
-      </>
+      </GestureHandlerRootView>
     );
   }
 }

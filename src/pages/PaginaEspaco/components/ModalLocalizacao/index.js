@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo, useRef } from "react";
 import {
   Linking,
   Modal,
@@ -9,12 +9,16 @@ import {
 } from "react-native";
 import colors from "../../../../styles/colors";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import BottomSheet from "@gorhom/bottom-sheet";
 
 export default function ModalLocalizacao({
   mostrarOpcoesApps,
   setMostrarOpcoesApps,
   endereco,
 }) {
+  const bottomSheetRef = useRef(null);
+  const snapPoints = useMemo(() => ["30%"], []);
+
   const itensApps = [
     {
       name: "google-maps",
@@ -41,29 +45,47 @@ export default function ModalLocalizacao({
       visible={mostrarOpcoesApps}
       transparent={true}
       animationType="slide"
-      onRequestClose={() => setMostrarOpcoesApps(false)}
+      onRequestClose={() => [
+        setMostrarOpcoesApps(false),
+        bottomSheetRef.current?.close(),
+      ]}
     >
       <View style={styles.modalFundo}>
         <TouchableOpacity
           style={{ flex: 1 }}
           activeOpacity={1}
-          onPress={() => setMostrarOpcoesApps(false)}
+          onPress={() => [
+            setMostrarOpcoesApps(false),
+            bottomSheetRef.current?.close(),
+          ]}
         />
-        <View style={styles.modalConteudo}>
-          <View style={styles.containerModalConteudo}>
-            <Text style={styles.tituloModal}>Abrir com</Text>
-            {itensApps.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => aoEscolherApp(item.name)}
-                style={styles.containerBotao}
-              >
-                <Icon name={item.name} color={colors.corTextoPreto} size={32} />
-                <Text style={styles.textoBotao}>{item.texto}</Text>
-              </TouchableOpacity>
-            ))}
+        <BottomSheet
+          ref={bottomSheetRef}
+          index={0}
+          snapPoints={snapPoints}
+          enablePanDownToClose={true}
+          onClose={() => setMostrarOpcoesApps(false)}
+        >
+          <View style={styles.modalConteudo}>
+            <View style={styles.containerModalConteudo}>
+              <Text style={styles.tituloModal}>Abrir com</Text>
+              {itensApps.map((item, index) => (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => aoEscolherApp(item.name)}
+                  style={styles.containerBotao}
+                >
+                  <Icon
+                    name={item.name}
+                    color={colors.corTextoPreto}
+                    size={32}
+                  />
+                  <Text style={styles.textoBotao}>{item.texto}</Text>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
-        </View>
+        </BottomSheet>
       </View>
     </Modal>
   );
@@ -79,7 +101,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.branco,
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
-    paddingVertical: 20,
     paddingHorizontal: 16,
   },
   containerModalConteudo: {

@@ -1,18 +1,22 @@
 import { create } from "zustand";
 import {
   adicionarEspacoCurtido,
-  fetchEspacosCurtidos,
+  fetchEspacosCurtidos as fetchEspacosCurtidosAPI,
   removerEspacoCurtido,
 } from "../services/Curtidos";
 
-const useEspacosCurtidos = create((set) => ({
+const useEspacosCurtidos = create((set, get) => ({
   espacosCurtidos: [],
+  espacoEstaCurtido: (idEspaco) => {
+    return !!get().espacosCurtidos.find((item) => item.id_espaco === idEspaco);
+  },
   fetchEspacosCurtidos: async (idUsuario) => {
     try {
-      const favoritosData = await fetchEspacosCurtidos(idUsuario);
-      set({ espacosCurtidos: favoritosData });
+      const favoritosData = await fetchEspacosCurtidosAPI(idUsuario);
+      set({ espacosCurtidos: favoritosData || [] });
     } catch (error) {
       console.error("Erro ao buscar espaços curtidos: ", error);
+      set({ espacosCurtidos: [] });
     }
   },
   adicionarEspacoCurtido: async (favoritosData) => {
@@ -23,6 +27,7 @@ const useEspacosCurtidos = create((set) => ({
       }));
     } catch (error) {
       console.error("Erro ao adicionar curtido: ", error);
+      throw error;
     }
   },
   removerEspacoCurtido: async (idItemCurtido) => {
@@ -35,6 +40,7 @@ const useEspacosCurtidos = create((set) => ({
       }));
     } catch (error) {
       console.error("Erro ao remover item curtido: ", error);
+      throw error;
     }
   },
 }));
