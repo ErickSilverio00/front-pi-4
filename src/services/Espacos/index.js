@@ -41,3 +41,38 @@ export const deleteEspaco = async (id) => {
     throw error;
   }
 };
+
+export const fetchEspacoCampoPesquisa = async (idUsuario, campoPesquisa) => {
+  try {
+    const response = await Axios.get(
+      `${baseURL}/buscar-espacos-input/${idUsuario}?campoPesquisa=${encodeURIComponent(
+        campoPesquisa
+      )}`
+    );
+    return response.data || [];
+  } catch (error) {
+    console.error("Erro ao buscar os espaços: ", error);
+    throw error;
+  }
+};
+
+export const fetchEspacosWithFilters = async (idUsuario, filtros) => {
+  let url = `${baseURL}/buscar-espacos-filtros/${idUsuario}`;
+  const queryParameters = Object.keys(filtros)
+    .map((key) => {
+      return `${key}=${filtros[key].join(",")}`;
+    })
+    .join("&");
+
+  url = `${url}?${queryParameters}`;
+
+  console.log(url);
+
+  try {
+    const response = await Axios.get(url);
+    return response.data || [];
+  } catch (error) {
+    console.error("Erro ao buscar os espaços: ", error);
+    throw error;
+  }
+};

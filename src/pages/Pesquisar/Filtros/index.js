@@ -1,3 +1,4 @@
+// Filtros.js
 import React, { useMemo, useState } from "react";
 import {
   View,
@@ -28,6 +29,7 @@ import colors from "../../../styles/colors";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import RangeDataHora from "../../../components/RangeDataHora";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { objectToArray } from "../../../utils/funcoes";
 
 const iconSets = {
   FontAwesome5,
@@ -37,9 +39,6 @@ const iconSets = {
   Feather,
   Ionicons,
 };
-
-const objectToArray = (obj) =>
-  Object.keys(obj).map((key) => ({ ...obj[key], key }));
 
 const CategoryButton = ({ name, icon, selected, onPress, iconType }) => {
   const IconComponent = iconSets[iconType];
@@ -131,6 +130,28 @@ export default function Filtros({
 
   const onValuesChange = (values) => {
     setValues(values);
+  };
+
+  const construirFiltros = () => {
+    const filtros = {
+      situacoes: Object.keys(selected.Situações).filter(
+        (key) => selected.Situações[key]
+      ),
+      jogos: Object.keys(selected.Jogos).filter((key) => selected.Jogos[key]),
+      periodo_ideal: Object.keys(selected["Período do Dia"]).filter(
+        (key) => selected["Período do Dia"][key]
+      ),
+      clima_ideal: Object.keys(selected.Clima).filter(
+        (key) => selected.Clima[key]
+      ),
+      utilidades: Object.keys(selected.Utilidades).filter(
+        (key) => selected.Utilidades[key]
+      ),
+      servicos: Object.keys(selected["Serviços Adicionais"]).filter(
+        (key) => selected["Serviços Adicionais"][key]
+      ),
+    };
+    return filtros;
   };
 
   return (
@@ -230,7 +251,7 @@ export default function Filtros({
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.footerButton}
-                onPress={filtrarEspacos}
+                onPress={() => filtrarEspacos(construirFiltros())}
               >
                 <Text style={styles.footerButtonText}>Filtrar</Text>
               </TouchableOpacity>

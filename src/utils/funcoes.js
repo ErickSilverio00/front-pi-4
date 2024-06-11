@@ -84,3 +84,6 @@ export const normalizeKey = (key) => {
 export const removerAcentos = (str) => {
   return str.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 };
+
+export const objectToArray = (obj) =>
+  Object.keys(obj).map((key) => ({ ...obj[key], key }));

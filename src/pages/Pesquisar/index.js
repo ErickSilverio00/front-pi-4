@@ -4,7 +4,11 @@ import { SafeAreaView, StyleSheet, View, Text } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
 import { ScrollView } from "react-native";
 import ApresentacaoEspaco from "../../components/ApresentacaoEspaco";
-import { fetchEspacos } from "../../services/Espacos";
+import {
+  fetchEspacoCampoPesquisa,
+  fetchEspacos,
+  fetchEspacosWithFilters,
+} from "../../services/Espacos";
 import useAuthStore from "../../hooks/useAuthStore";
 import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
@@ -24,6 +28,7 @@ export default function Pesquisar() {
   const [index, setIndex] = useState(0);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [espacos, setEspacos] = useState([]);
+  const [espacosFiltrados, setEspacosFiltrados] = useState([]);
   const [textoPesquisa, setTextoPesquisa] = useState("");
   const [pesquisaFeita, setPesquisaFeita] = useState(false);
   const [routes] = useState([
@@ -35,8 +40,6 @@ export default function Pesquisar() {
     { key: "third", title: "Na piscina" },
     { key: "fourth", title: "Ao ar livre" },
   ]);
-
-  const { espacosCurtidos, fetchEspacosCurtidos } = useEspacosCurtidos();
 
   const carregarEspacos = useCallback(async () => {
     try {
@@ -178,8 +181,13 @@ export default function Pesquisar() {
     fourth: FourthRoute,
   });
 
-  const handlePesquisaFeita = () => {
+  const handlePesquisaInput = async () => {
     if (textoPesquisa.length > 2) {
+      const response = await fetchEspacoCampoPesquisa(
+        user?.idUsuario,
+        textoPesquisa
+      );
+      setEspacosFiltrados(response);
       setPesquisaFeita(true);
     } else {
       setTextoPesquisa("");
@@ -196,9 +204,11 @@ export default function Pesquisar() {
     setTextoPesquisa("");
   };
 
-  const filtrarEspacos = () => {
+  const filtrarEspacos = async (filtros) => {
     try {
       setIsLoading(true);
+      const response = await fetchEspacosWithFilters(user?.idUsuario, filtros);
+      setEspacosFiltrados(response);
       setMostrarFiltros(false);
       bottomSheetRef.current?.close();
       setPesquisaFeita(true);
@@ -224,24 +234,24 @@ export default function Pesquisar() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
+      <View style={styles.containerFilter}>
+        <CampoPesquisaFiltro
+          onPressSearchIcon={() => bottomSheetRef.current?.close()}
+          onPressFilterIcon={abrirFiltros}
+          onSubmitEditing={handlePesquisaInput}
+          textoPesquisa={textoPesquisa}
+          setTextoPesquisa={setTextoPesquisa}
+          pesquisaFeita={pesquisaFeita}
+          onPressCloseIcon={fecharPesquisa}
+        />
+      </View>
       {!pesquisaFeita && (
-        <>
-          <View style={styles.containerFilter}>
-            <CampoPesquisaFiltro
-              onPressSearchIcon={() => bottomSheetRef.current?.close()}
-              onPressFilterIcon={abrirFiltros}
-              onSubmitEditing={handlePesquisaFeita}
-              textoPesquisa={textoPesquisa}
-              setTextoPesquisa={setTextoPesquisa}
-            />
-          </View>
-          <TabView
-            navigationState={{ index, routes }}
-            renderScene={renderScene}
-            onIndexChange={setIndex}
-            renderTabBar={renderTabBar}
-          />
-        </>
+        <TabView
+          navigationState={{ index, routes }}
+          renderScene={renderScene}
+          onIndexChange={setIndex}
+          renderTabBar={renderTabBar}
+        />
       )}
       <Filtros
         mostrarFiltros={mostrarFiltros}
@@ -251,7 +261,7 @@ export default function Pesquisar() {
       />
       {pesquisaFeita && (
         <PesquisaFeita
-          espacosFiltrados={espacos}
+          espacosFiltrados={espacosFiltrados}
           abrirFiltros={abrirFiltros}
           fecharPesquisa={fecharPesquisa}
           textoPesquisa={textoPesquisa}

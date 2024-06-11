@@ -32,7 +32,7 @@ export default function Curtidos() {
   return (
     <SafeAreaView style={styles.container}>
       <CabecalhoTitulo titulo="Curtidos" />
-      {espacosCurtidos && espacosCurtidos?.length > 0 ? (
+      {espacosCurtidos && espacosCurtidos?.length > 0 && (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.containerCurtidos}>
             {espacosCurtidos &&
@@ -41,7 +41,8 @@ export default function Curtidos() {
               ))}
           </View>
         </ScrollView>
-      ) : (
+      )}
+      {espacosCurtidos?.length === 0 && (
         <View style={styles.containerZeroCurtidos}>
           <Image source={Astronauta} style={styles.imagemAstronauta} />
           <Text style={styles.textoLegendaNaoTem}>

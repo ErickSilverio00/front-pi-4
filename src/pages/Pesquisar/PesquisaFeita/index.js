@@ -1,65 +1,32 @@
-import React, { useEffect, useState } from "react";
-import {
-  ScrollView,
-  StyleSheet,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from "react-native";
-import { Feather } from "@expo/vector-icons";
+import React from "react";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import colors from "../../../styles/colors";
 import ApresentacaoEspaco from "../../../components/ApresentacaoEspaco";
 
-export default function PesquisaFeita({
-  abrirFiltros,
-  fecharPesquisa,
-  espacosFiltrados,
-  textoPesquisa,
-}) {
-  const [texto, setTexto] = useState(textoPesquisa);
-
-  useEffect(() => {
-    setTexto(textoPesquisa);
-  }, [textoPesquisa]);
-
+export default function PesquisaFeita({ espacosFiltrados }) {
   return (
     <>
-      <View style={styles.containerCampoPesquisa}>
-        <TextInput
-          style={styles.textInput}
-          placeholderTextColor={colors.corTextoPreto}
-          onChangeText={(texto) => setTexto(texto)}
-          value={texto}
-        />
-        <View style={styles.containerIcones}>
-          <TouchableOpacity onPress={abrirFiltros}>
-            <Feather name="sliders" size={24} color={colors.branco} />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={fecharPesquisa}>
-            <Feather name="x" size={24} color={colors.branco} />
-          </TouchableOpacity>
+      {espacosFiltrados?.length > 0 && (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.containerApresentacoes}>
+            {espacosFiltrados?.map((espaco, index) => (
+              <ApresentacaoEspaco key={index} espaco={espaco} />
+            ))}
+          </View>
+        </ScrollView>
+      )}
+      {espacosFiltrados?.length === 0 && (
+        <View style={styles.containerNenhumEspacoEncontrado}>
+          <Text style={styles.textoNaoEncontrado}>
+            Nenhum espaço encontrado!
+          </Text>
         </View>
-      </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.containerApresentacoes}>
-          {espacosFiltrados.map((espaco, index) => (
-            <ApresentacaoEspaco key={index} espaco={espaco} />
-          ))}
-        </View>
-      </ScrollView>
+      )}
     </>
   );
 }
 
 const styles = StyleSheet.create({
-  containerCampoPesquisa: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 10,
-    backgroundColor: colors.primaria,
-  },
   textInput: {
     display: "flex",
     fontFamily: "Quicksand600",
@@ -79,5 +46,17 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     marginVertical: 20,
     gap: 20,
+  },
+  containerNenhumEspacoEncontrado: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 16,
+  },
+  textoNaoEncontrado: {
+    fontFamily: "Quicksand600",
+    fontSize: 16,
+    color: colors.corTextoPreto,
+    textAlign: "center",
   },
 });

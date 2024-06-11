@@ -10,6 +10,8 @@ export default function CampoPesquisaFiltro({
   onSubmitEditing,
   textoPesquisa,
   setTextoPesquisa,
+  pesquisaFeita,
+  onPressCloseIcon,
 }) {
   return (
     <View style={styles.container}>
@@ -26,12 +28,22 @@ export default function CampoPesquisaFiltro({
           onSubmitEditing={onSubmitEditing}
         />
       </View>
-      <TouchableOpacity
-        onPress={onPressFilterIcon}
-        style={styles.containerIconFilter}
-      >
-        <Feather name="sliders" size={18} color={colors.corTextoPreto} />
-      </TouchableOpacity>
+      <View style={styles.coantainerRight}>
+        <TouchableOpacity
+          onPress={onPressFilterIcon}
+          style={styles.containerIconFilter}
+        >
+          <Feather name="sliders" size={18} color={colors.corTextoPreto} />
+        </TouchableOpacity>
+        {pesquisaFeita && (
+          <TouchableOpacity
+            onPress={onPressCloseIcon}
+            style={styles.containerIconFilter}
+          >
+            <Feather name="x" size={18} color={colors.corTextoPreto} />
+          </TouchableOpacity>
+        )}
+      </View>
     </View>
   );
 }
@@ -66,17 +78,20 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   textInput: {
-    display: "flex",
     fontFamily: "Quicksand600",
     fontSize: 14,
     color: colors.corTextoPreto,
-    width: "80%",
+    width: "70%",
+  },
+  coantainerRight: {
+    flexDirection: "row",
+    gap: 10,
   },
   containerIconFilter: {
     display: "flex",
     borderWidth: 1,
     borderColor: colors.cinzaMaisClaro,
-    borderRadius: 200,
+    borderRadius: 100,
     padding: 6,
   },
 });
