@@ -16,6 +16,7 @@ import {
   Entypo,
   Feather,
   Ionicons,
+  AntDesign,
 } from "@expo/vector-icons";
 import {
   situacoes,
@@ -27,7 +28,6 @@ import {
 } from "../../../utils/opcoesFiltros";
 import colors from "../../../styles/colors";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
-import RangeDataHora from "../../../components/RangeDataHora";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { objectToArray } from "../../../utils/funcoes";
 
@@ -38,6 +38,7 @@ const iconSets = {
   Entypo,
   Feather,
   Ionicons,
+  AntDesign,
 };
 
 const CategoryButton = ({ name, icon, selected, onPress, iconType }) => {
@@ -223,7 +224,6 @@ export default function Filtros({
                     <Text style={styles.sliderText}>R$100</Text>
                   </View>
                 </View>
-                <RangeDataHora />
                 {Object.keys(categories).map((category) => (
                   <Category
                     key={category}

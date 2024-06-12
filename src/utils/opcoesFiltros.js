@@ -24,7 +24,7 @@ export const situacoes = {
   casamento: {
     nome: "Casamento",
     icone: "heart",
-    tipoIcone: "Feather",
+    tipoIcone: "AntDesign",
   },
 };
 
