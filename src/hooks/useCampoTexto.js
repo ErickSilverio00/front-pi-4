@@ -101,23 +101,10 @@ function useCampoTexto(valorInicial = "") {
       : estaFocado
       ? colors.primaria
       : colors.cinzaMaisClaro;
+
   const inputStyle = useAnimatedStyle(() => ({
     borderBottomColor: corBorderBottom,
   }));
-
-  const mudandoContainerPressionado = () => {
-    if (!estaFocado) {
-      inputRef.current.focus();
-    } else {
-      Keyboard.dismiss();
-      setEstaFocado(false);
-      posicaoLabel.value = withSpring(texto ? 0 : 1, {
-        damping: 10,
-        stiffness: 120,
-        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
-      });
-    }
-  };
 
   const mudarVisibilidade = () => {
     setMostrarSenha(!mostrarSenha);
@@ -136,7 +123,6 @@ function useCampoTexto(valorInicial = "") {
     corBorderBottom,
     iconeAnimatedStyle,
     inputStyle,
-    mudandoContainerPressionado,
     mostrarSenha,
     mudarVisibilidade,
   };

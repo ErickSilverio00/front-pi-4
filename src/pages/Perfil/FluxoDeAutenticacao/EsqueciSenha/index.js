@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../../../../styles/colors";
 import Botao from "../../../../components/Botao";
@@ -29,6 +29,10 @@ export default function EsqueciSenha() {
     setSenhaConfirmadaErro,
     validarRedefinicaoDeSenha,
   } = useCamposCadastro();
+  const emailRef = useRef(null);
+  const codigoRef = useRef(null);
+  const senhaRef = useRef(null);
+  const confirmarSenhaRef = useRef(null);
   const [email, setEmail] = useState("");
   const [emailErro, setEmailErro] = useState("");
   const [codigo, setCodigo] = useState("");
@@ -142,13 +146,17 @@ export default function EsqueciSenha() {
               redefinição de senha
             </Text>
             <CampoTexto
+              ref={emailRef}
               label="E-mail"
+              tipoInput="email-address"
+              returnKeyType="done"
               erro={emailErro !== ""}
               mensagemErro={emailErro}
               onChangeText={(texto) => {
                 setEmail(texto);
                 setEmailErro("");
               }}
+              onSubmitEditing={aoEnviarEmail}
             />
             <Botao
               aoPressionarBotao={aoEnviarEmail}
@@ -165,13 +173,16 @@ export default function EsqueciSenha() {
               Digite o código recebido no seu e-mail
             </Text>
             <CampoTexto
+              ref={codigoRef}
               label="Código"
+              returnKeyType="done"
               erro={codigoErro !== ""}
               mensagemErro={codigoErro}
               onChangeText={(texto) => {
                 setCodigo(texto);
                 setCodigoErro("");
               }}
+              onSubmitEditing={aoEnviarCodigo}
             />
             <Botao
               aoPressionarBotao={aoEnviarCodigo}
@@ -186,32 +197,42 @@ export default function EsqueciSenha() {
           <View style={styles.containerCamposForm}>
             <Text style={styles.textoLabelLegenda}>Redefina sua senha</Text>
             <CampoTexto
+              ref={senhaRef}
               label="Senha"
+              tipo="senha"
+              returnKeyType="next"
               erro={senhaErro !== ""}
               mensagemErro={senhaErro}
               onChangeText={(texto) => {
                 setSenha(texto);
                 setSenhaErro("");
               }}
-              tipo="senha"
               mostrarSenha={mostrarSenha}
               Icone={mostrarSenha ? "eye" : "eye-off"}
               styleIcone={styles.estiloIcone}
               aoMudarVisibilidade={mudarVisibilidade}
+              onSubmitEditing={() => {
+                if (confirmarSenhaRef.current) {
+                  confirmarSenhaRef.current.focus();
+                }
+              }}
             />
             <CampoTexto
+              ref={confirmarSenhaRef}
               label="Confirmar senha"
+              tipo="senha"
+              returnKeyType="done"
               erro={senhaConfirmadaErro !== ""}
               mensagemErro={senhaConfirmadaErro}
               onChangeText={(texto) => {
                 setSenhaConfirmada(texto);
                 setSenhaConfirmadaErro("");
               }}
-              tipo="senha"
               mostrarSenha={mostrarSenha}
               Icone={mostrarSenha ? "eye" : "eye-off"}
               styleIcone={styles.estiloIcone}
               aoMudarVisibilidade={mudarVisibilidade}
+              onSubmitEditing={aoRedefinirSenha}
             />
             <Botao
               aoPressionarBotao={aoRedefinirSenha}

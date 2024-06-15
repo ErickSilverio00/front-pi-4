@@ -1,7 +1,12 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import termosOfensivos from "../../utils/termosOfensivos";
 
 const useCamposCadastro = () => {
+  const nomeUsuarioRef = useRef(null);
+  const emailRef = useRef(null);
+  const numeroTelefoneRef = useRef(null);
+  const senhaRef = useRef(null);
+  const confirmarSenhaRef = useRef(null);
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [nomeUsuarioErro, setNomeUsuarioErro] = useState("");
   const [email, setEmail] = useState("");
@@ -126,6 +131,11 @@ const useCamposCadastro = () => {
   };
 
   return {
+    nomeUsuarioRef,
+    emailRef,
+    numeroTelefoneRef,
+    senhaRef,
+    confirmarSenhaRef,
     nomeUsuario,
     setNomeUsuario,
     nomeUsuarioErro,

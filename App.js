@@ -16,6 +16,7 @@ import { Toast } from "react-native-toast-message/lib/src/Toast";
 import * as Location from "expo-location";
 import { LoadingProvider } from "./src/contexts/LoadingContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import { SairDeFormularioProvider } from "./src/contexts/SairDeFormulariosContext";
 
 export default function App() {
   const [fonteCarregada] = useFonts({
@@ -96,12 +97,14 @@ export default function App() {
   } else {
     return (
       <GestureHandlerRootView style={{ flex: 1 }}>
-        <LoadingProvider>
-          <ErroProvider>
-            <RotasPrincipais />
-          </ErroProvider>
-          <Toast />
-        </LoadingProvider>
+        <SairDeFormularioProvider>
+          <LoadingProvider>
+            <ErroProvider>
+              <RotasPrincipais />
+            </ErroProvider>
+            <Toast />
+          </LoadingProvider>
+        </SairDeFormularioProvider>
       </GestureHandlerRootView>
     );
   }

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef } from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../../../../styles/colors";
 import CabecalhoTitulo from "../../../../components/CabecalhoTitulo";
@@ -18,6 +18,8 @@ export default function Login() {
   const navigation = useNavigation();
   const { mostrarSenha, mudarVisibilidade } = useCampoTexto();
   const {
+    emailRef,
+    senhaRef,
     email,
     setEmail,
     emailErro,
@@ -96,27 +98,38 @@ export default function Login() {
       <View style={styles.containerConteudo}>
         <View style={styles.containerCamposForm}>
           <CampoTexto
+            ref={emailRef}
             label="E-mail"
+            tipoInput="email-address"
+            returnKeyType="next"
             erro={emailErro !== ""}
             mensagemErro={emailErro}
             onChangeText={(texto) => {
               setEmail(texto);
               setEmailErro("");
             }}
+            onSubmitEditing={() => {
+              if (senhaRef.current) {
+                senhaRef.current.focus();
+              }
+            }}
           />
           <CampoTexto
+            ref={senhaRef}
             label="Senha"
+            tipo="senha"
+            returnKeyType="done"
             erro={senhaErro !== ""}
             mensagemErro={senhaErro}
             onChangeText={(texto) => {
               setSenha(texto);
               setSenhaErro("");
             }}
-            tipo="senha"
             mostrarSenha={mostrarSenha}
             Icone={mostrarSenha ? "eye" : "eye-off"}
             styleIcone={styles.estiloIcone}
             aoMudarVisibilidade={mudarVisibilidade}
+            onSubmitEditing={confirmarLogin}
           />
         </View>
         <TouchableOpacity

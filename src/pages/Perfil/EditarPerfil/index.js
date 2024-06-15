@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -18,6 +18,8 @@ export default function EditarPerfil() {
   const navigation = useNavigation();
   const user = useAuthStore();
   const { setIsLoading } = useLoading();
+  const nomeUsuarioRef = useRef(null);
+  const numeroTelefoneRef = useRef(null);
   const [usuarioBuscado, setUsuarioBuscado] = useState(false);
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [numeroTelefone, setNumeroTelefone] = useState("");
@@ -118,15 +120,23 @@ export default function EditarPerfil() {
           {usuarioBuscado && (
             <>
               <CampoTexto
+                ref={nomeUsuarioRef}
                 label="Nome de usuário"
+                returnKeyType="done"
                 valorInicial={nomeUsuario}
                 onChangeText={(texto) => setNomeUsuario(texto)}
+                onSubmitEditing={() => {
+                  if (numeroTelefoneRef.current) {
+                    numeroTelefoneRef.current.focus();
+                  }
+                }}
               />
               <CampoTexto
+                ref={numeroTelefoneRef}
                 label="Número de telefone"
                 valorInicial={numeroTelefone}
                 onChangeText={(texto) => setNumeroTelefone(texto)}
-                tipoInput="numeric"
+                tipoInput="number-pad"
               />
             </>
           )}

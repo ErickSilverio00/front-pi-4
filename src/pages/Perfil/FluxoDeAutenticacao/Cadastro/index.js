@@ -16,6 +16,11 @@ export default function Cadastro() {
   const navigation = useNavigation();
   const { mostrarSenha, mudarVisibilidade } = useCampoTexto();
   const {
+    nomeUsuarioRef,
+    emailRef,
+    numeroTelefoneRef,
+    senhaRef,
+    confirmarSenhaRef,
     nomeUsuario,
     setNomeUsuario,
     nomeUsuarioErro,
@@ -87,60 +92,92 @@ export default function Cadastro() {
       <View style={styles.containerConteudo}>
         <View style={styles.containerCamposForm}>
           <CampoTexto
+            ref={nomeUsuarioRef}
             label="Nome de usuário"
+            returnKeyType="next"
             erro={nomeUsuarioErro !== ""}
             mensagemErro={nomeUsuarioErro}
             onChangeText={(texto) => {
               setNomeUsuario(texto);
               setNomeUsuarioErro("");
             }}
+            onSubmitEditing={() => {
+              if (emailRef.current) {
+                emailRef.current.focus();
+              }
+            }}
           />
           <CampoTexto
+            ref={emailRef}
             label="E-mail"
+            tipoInput="email-address"
+            returnKeyType="next"
             erro={emailErro !== ""}
             mensagemErro={emailErro}
             onChangeText={(texto) => {
               setEmail(texto);
               setEmailErro("");
             }}
+            onSubmitEditing={() => {
+              if (numeroTelefoneRef.current) {
+                numeroTelefoneRef.current.focus();
+              }
+            }}
           />
           <CampoTexto
+            ref={numeroTelefoneRef}
             label="Número de telefone"
+            tipoInput="number-pad"
+            returnKeyType="next"
             erro={telefoneErro !== ""}
             mensagemErro={telefoneErro}
             onChangeText={(texto) => {
               setTelefone(texto);
               setTelefoneErro("");
             }}
-            tipoInput="numeric"
+            onSubmitEditing={() => {
+              if (senhaRef.current) {
+                senhaRef.current.focus();
+              }
+            }}
           />
           <CampoTexto
+            ref={senhaRef}
             label="Senha"
+            tipo="senha"
+            returnKeyType="next"
             erro={senhaErro !== ""}
             mensagemErro={senhaErro}
             onChangeText={(texto) => {
               setSenha(texto);
               setSenhaErro("");
             }}
-            tipo="senha"
             mostrarSenha={mostrarSenha}
             Icone={mostrarSenha ? "eye" : "eye-off"}
             styleIcone={styles.estiloIcone}
             aoMudarVisibilidade={mudarVisibilidade}
+            onSubmitEditing={() => {
+              if (confirmarSenhaRef.current) {
+                confirmarSenhaRef.current.focus();
+              }
+            }}
           />
           <CampoTexto
+            ref={confirmarSenhaRef}
             label="Confirmar senha"
+            tipo="senha"
+            returnKeyType="done"
             erro={senhaConfirmadaErro !== ""}
             mensagemErro={senhaConfirmadaErro}
             onChangeText={(texto) => {
               setSenhaConfirmada(texto);
               setSenhaConfirmadaErro("");
             }}
-            tipo="senha"
             mostrarSenha={mostrarSenha}
             Icone={mostrarSenha ? "eye" : "eye-off"}
             styleIcone={styles.estiloIcone}
             aoMudarVisibilidade={mudarVisibilidade}
+            onSubmitEditing={confirmarCadastro}
           />
         </View>
         <View style={styles.containerBotao}>
@@ -155,7 +192,7 @@ export default function Cadastro() {
         <View style={styles.containerIrParaLogin}>
           <Text style={styles.textoIrParaLogin}>
             Já tem uma conta? {"\n"}{" "}
-            <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+            <TouchableOpacity onPress={() => navigation.goBack()}>
               <Text style={styles.estiloLogin}>Faça login</Text>
             </TouchableOpacity>
           </Text>

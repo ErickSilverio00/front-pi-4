@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import {
   View,
   TextInput,
@@ -6,112 +6,126 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
-import Animated from "react-native-reanimated";
+import Animated, {
+  useSharedValue,
+  withSpring,
+  interpolateColor,
+  useAnimatedStyle,
+  Easing,
+  interpolate,
+} from "react-native-reanimated";
+import Icon from "react-native-vector-icons/Feather";
+
 import useCampoTexto from "../../hooks/useCampoTexto";
 import colors from "../../styles/colors";
-import Icon from "react-native-vector-icons/Feather";
 
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
-export default function CampoTexto({
-  label,
-  erro,
-  mensagemErro,
-  onChangeText,
-  Icone,
-  styleIcone,
-  tipo,
-  tipoInput,
-  mostrarSenha,
-  valorInicial,
-  aoMudarVisibilidade,
-  mostrarLabel = true,
-  editable = true,
-}) {
-  const {
-    estaFocado,
-    texto,
-    posicaoLabel,
-    erroGlobal,
-    inputRef,
-    mudandoFoco,
-    mudandoBlur,
-    mudandoTexto,
-    labelAnimatedStyle,
-    iconeAnimatedStyle,
-    inputStyle,
-    mudandoContainerPressionado,
-  } = useCampoTexto(valorInicial);
+const CampoTexto = forwardRef(
+  (
+    {
+      label,
+      erro,
+      mensagemErro,
+      onChangeText,
+      Icone,
+      styleIcone,
+      tipo,
+      tipoInput,
+      mostrarSenha,
+      valorInicial,
+      aoMudarVisibilidade,
+      mostrarLabel = true,
+      editable = true,
+      ...props
+    },
+    ref
+  ) => {
+    const {
+      estaFocado,
+      texto,
+      erroGlobal,
+      inputRef,
+      mudandoFoco,
+      mudandoBlur,
+      mudandoTexto,
+      labelAnimatedStyle,
+      iconeAnimatedStyle,
+      inputStyle,
+      mudandoContainerPressionado,
+    } = useCampoTexto(valorInicial);
 
-  const corIcone = erro
-    ? colors.vermelho
-    : estaFocado
-    ? colors.primaria
-    : colors.cinzaEscuro;
+    const corIcone = erro
+      ? colors.vermelho
+      : estaFocado
+      ? colors.primaria
+      : colors.cinzaEscuro;
 
-  return (
-    <TouchableWithoutFeedback onPress={mudandoContainerPressionado}>
-      <View
-        style={[
-          styles.container,
-          { marginVertical: valorInicial ? 0 : 0 },
-          !editable && styles.disabledContainer,
-        ]}
-      >
-        <AnimatedTextInput
-          ref={inputRef}
+    return (
+      <TouchableWithoutFeedback onPress={mudandoContainerPressionado}>
+        <View
           style={[
-            styles.input,
-            inputStyle,
-            { paddingVertical: valorInicial ? 8 : 8 },
-            !editable && styles.disabledInput,
+            styles.container,
+            { marginVertical: valorInicial ? 0 : 0 },
+            !editable && styles.disabledContainer,
           ]}
-          onFocus={mudandoFoco}
-          onBlur={mudandoBlur}
-          value={texto}
-          onChangeText={(novoTexto) => {
-            mudandoTexto(novoTexto);
-            if (onChangeText) {
-              onChangeText(novoTexto);
-            }
-          }}
-          keyboardType={tipoInput}
-          secureTextEntry={tipo === "senha" && !mostrarSenha}
-          editable={editable}
-        />
-        {tipo === "senha" && (
-          <TouchableWithoutFeedback onPress={aoMudarVisibilidade}>
-            <Animated.View style={[styles.iconContainer, iconeAnimatedStyle]}>
-              <Icon
-                size={20}
-                name={Icone}
-                style={[styleIcone, { color: corIcone }]}
-                onPress={() => {
-                  aoMudarVisibilidade(!mostrarSenha);
-                }}
-              />
-            </Animated.View>
-          </TouchableWithoutFeedback>
-        )}
-        {mostrarLabel && (
-          <Animated.Text
+        >
+          <AnimatedTextInput
+            ref={ref ? ref : inputRef}
             style={[
-              styles.label,
-              labelAnimatedStyle,
-              erro && styles.labelErro,
-              estaFocado && !erro && styles.labelFocado,
+              styles.input,
+              inputStyle,
+              { paddingVertical: valorInicial ? 8 : 8 },
+              !editable && styles.disabledInput,
             ]}
-          >
-            {label}
-          </Animated.Text>
-        )}
-        {(erro || erroGlobal) && (
-          <Text style={styles.erroTexto}>{mensagemErro}</Text>
-        )}
-      </View>
-    </TouchableWithoutFeedback>
-  );
-}
+            onFocus={mudandoFoco}
+            onBlur={mudandoBlur}
+            value={texto}
+            onChangeText={(novoTexto) => {
+              mudandoTexto(novoTexto);
+              if (onChangeText) {
+                onChangeText(novoTexto);
+              }
+            }}
+            keyboardType={tipoInput}
+            secureTextEntry={tipo === "senha" && !mostrarSenha}
+            editable={editable}
+            {...props}
+          />
+          {mostrarLabel && (
+            <Animated.Text
+              style={[
+                styles.label,
+                labelAnimatedStyle,
+                erro && styles.labelErro,
+                estaFocado && !erro && styles.labelFocado,
+              ]}
+            >
+              {label}
+            </Animated.Text>
+          )}
+          {tipo === "senha" && (
+            <TouchableWithoutFeedback onPress={aoMudarVisibilidade}>
+              <Animated.View style={[styles.iconContainer, iconeAnimatedStyle]}>
+                <Icon
+                  size={20}
+                  name={Icone}
+                  style={[styleIcone, { color: corIcone }]}
+                  onPress={() => {
+                    aoMudarVisibilidade(!mostrarSenha);
+                  }}
+                />
+              </Animated.View>
+            </TouchableWithoutFeedback>
+          )}
+          {(erro || erroGlobal) && (
+            <Text style={styles.erroTexto}>{mensagemErro}</Text>
+          )}
+        </View>
+      </TouchableWithoutFeedback>
+    );
+  }
+);
 
 const styles = StyleSheet.create({
   container: {},
@@ -149,3 +163,5 @@ const styles = StyleSheet.create({
     color: colors.corTextoPreto,
   },
 });
+
+export default CampoTexto;

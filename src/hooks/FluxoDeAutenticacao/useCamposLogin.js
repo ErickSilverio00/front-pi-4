@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 
 const useCamposLogin = () => {
+  const emailRef = useRef(null);
+  const senhaRef = useRef(null);
   const [email, setEmail] = useState("");
   const [emailErro, setEmailErro] = useState("");
   const [senha, setSenha] = useState("");
@@ -37,6 +39,8 @@ const useCamposLogin = () => {
   };
 
   return {
+    emailRef,
+    senhaRef,
     email,
     setEmail,
     emailErro,
