@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import colors from "../../../../styles/colors";
 import CabecalhoTitulo from "../../../../components/CabecalhoTitulo";
@@ -44,14 +44,16 @@ export default function Login() {
       if (validarCampos()) {
         const response = await registerLogin(objetoDeEnvio);
         if (response.message === "Usuário logado com sucesso") {
-          const accessToken = response.accessToken;
-          const userEmail = response.usuario;
-          const idUsuario = response.idUsuario.toString();
-          const nomeUsuario = response.nomeUsuario;
+          const {
+            accessToken,
+            usuario: userEmail,
+            idUsuario,
+            nomeUsuario,
+          } = response;
 
           await AsyncStorage.setItem("accessToken", accessToken);
           await AsyncStorage.setItem("userEmail", userEmail);
-          await AsyncStorage.setItem("idUsuario", idUsuario);
+          await AsyncStorage.setItem("idUsuario", idUsuario.toString());
           await AsyncStorage.setItem("nomeUsuario", nomeUsuario);
 
           useAuthStore
@@ -65,7 +67,10 @@ export default function Login() {
             visibilityTime: 4000,
             autoHide: true,
           });
-          navigation.navigate("Perfil");
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "Perfil" }],
+          });
         } else {
           Toast.show({
             type: "error",

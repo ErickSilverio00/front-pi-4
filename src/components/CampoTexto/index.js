@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React, { forwardRef, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -6,16 +6,8 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
 } from "react-native";
-import Animated, {
-  useSharedValue,
-  withSpring,
-  interpolateColor,
-  useAnimatedStyle,
-  Easing,
-  interpolate,
-} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import Icon from "react-native-vector-icons/Feather";
-
 import useCampoTexto from "../../hooks/useCampoTexto";
 import colors from "../../styles/colors";
 
@@ -37,6 +29,7 @@ const CampoTexto = forwardRef(
       aoMudarVisibilidade,
       mostrarLabel = true,
       editable = true,
+      mask = null,
       ...props
     },
     ref
@@ -52,8 +45,15 @@ const CampoTexto = forwardRef(
       labelAnimatedStyle,
       iconeAnimatedStyle,
       inputStyle,
-      mudandoContainerPressionado,
     } = useCampoTexto(valorInicial);
+
+    useEffect(() => {
+      if (mask) {
+        mudandoTexto(mask(texto));
+      } else {
+        mudandoTexto(texto);
+      }
+    }, [texto, tipo, mask]);
 
     const corIcone = erro
       ? colors.vermelho
@@ -61,8 +61,12 @@ const CampoTexto = forwardRef(
       ? colors.primaria
       : colors.cinzaEscuro;
 
+    const handleContainerPress = () => {
+      inputRef.current?.focus();
+    };
+
     return (
-      <TouchableWithoutFeedback onPress={mudandoContainerPressionado}>
+      <TouchableWithoutFeedback onPress={handleContainerPress}>
         <View
           style={[
             styles.container,
@@ -70,6 +74,18 @@ const CampoTexto = forwardRef(
             !editable && styles.disabledContainer,
           ]}
         >
+          {mostrarLabel && (
+            <Animated.Text
+              style={[
+                styles.label,
+                labelAnimatedStyle,
+                erro && styles.labelErro,
+                estaFocado && !erro && styles.labelFocado,
+              ]}
+            >
+              {label}
+            </Animated.Text>
+          )}
           <AnimatedTextInput
             ref={ref ? ref : inputRef}
             style={[
@@ -92,18 +108,6 @@ const CampoTexto = forwardRef(
             editable={editable}
             {...props}
           />
-          {mostrarLabel && (
-            <Animated.Text
-              style={[
-                styles.label,
-                labelAnimatedStyle,
-                erro && styles.labelErro,
-                estaFocado && !erro && styles.labelFocado,
-              ]}
-            >
-              {label}
-            </Animated.Text>
-          )}
           {tipo === "senha" && (
             <TouchableWithoutFeedback onPress={aoMudarVisibilidade}>
               <Animated.View style={[styles.iconContainer, iconeAnimatedStyle]}>
@@ -128,7 +132,9 @@ const CampoTexto = forwardRef(
 );
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    position: "relative",
+  },
   input: {
     borderBottomWidth: 1,
     fontSize: 16,

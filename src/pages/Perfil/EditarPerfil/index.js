@@ -13,6 +13,7 @@ import { fetchUsuarioById, updateUsuario } from "../../../services/Usuarios";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useLoading } from "../../../contexts/LoadingContext";
+import { maskPhoneNumber } from "../../../utils/masks";
 
 export default function EditarPerfil() {
   const navigation = useNavigation();
@@ -24,7 +25,6 @@ export default function EditarPerfil() {
   const [nomeUsuario, setNomeUsuario] = useState("");
   const [numeroTelefone, setNumeroTelefone] = useState("");
 
-  // Busca do usuário com useCallback
   const buscarUsuario = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -48,7 +48,6 @@ export default function EditarPerfil() {
     }
   }, [user?.idUsuario]);
 
-  // Atualização do usuário com useCallback
   const atualizarUsuario = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -122,7 +121,7 @@ export default function EditarPerfil() {
               <CampoTexto
                 ref={nomeUsuarioRef}
                 label="Nome de usuário"
-                returnKeyType="done"
+                returnKeyType="next"
                 valorInicial={nomeUsuario}
                 onChangeText={(texto) => setNomeUsuario(texto)}
                 onSubmitEditing={() => {
@@ -134,9 +133,11 @@ export default function EditarPerfil() {
               <CampoTexto
                 ref={numeroTelefoneRef}
                 label="Número de telefone"
-                valorInicial={numeroTelefone}
-                onChangeText={(texto) => setNumeroTelefone(texto)}
                 tipoInput="number-pad"
+                tipo="telefone"
+                valorInicial={numeroTelefone}
+                mask={maskPhoneNumber}
+                onChangeText={(texto) => setNumeroTelefone(texto)}
               />
             </>
           )}

@@ -11,6 +11,7 @@ import useCamposCadastro from "../../../../hooks/FluxoDeAutenticacao/useCamposCa
 import { registerUsuario } from "../../../../services/Usuarios";
 import Toast from "react-native-toast-message";
 import { useLoading } from "../../../../contexts/LoadingContext";
+import { maskPhoneNumber } from "../../../../utils/masks";
 
 export default function Cadastro() {
   const navigation = useNavigation();
@@ -129,6 +130,8 @@ export default function Cadastro() {
             label="Número de telefone"
             tipoInput="number-pad"
             returnKeyType="next"
+            tipo="telefone"
+            mask={maskPhoneNumber}
             erro={telefoneErro !== ""}
             mensagemErro={telefoneErro}
             onChangeText={(texto) => {
