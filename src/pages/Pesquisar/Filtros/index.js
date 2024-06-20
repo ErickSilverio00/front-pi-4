@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, useRef } from "react";
 import {
   View,
   Text,
@@ -29,6 +29,8 @@ import colors from "../../../styles/colors";
 import MultiSlider from "@ptomasroos/react-native-multi-slider";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { objectToArray } from "../../../utils/funcoes";
+import CampoTexto from "../../../components/CampoTexto";
+import Toast from "react-native-toast-message";
 
 const iconSets = {
   FontAwesome5,
@@ -93,6 +95,12 @@ export default function Filtros({
   filtrarEspacos,
 }) {
   const snapPoints = useMemo(() => ["90%"], []);
+  const valorMinimoRef = useRef(null);
+  const valorMaximoRef = useRef(null);
+  const [valorMinimo, setValorMinimo] = useState("");
+  const [valorMinimoErro, setValorMinimoErro] = useState("");
+  const [valorMaximo, setValorMaximo] = useState("");
+  const [valorMaximoErro, setValorMaximoErro] = useState("");
   const [values, setValues] = useState([0, 100]);
   const categories = {
     Situações: objectToArray(situacoes),
@@ -134,6 +142,8 @@ export default function Filtros({
 
   const construirFiltros = () => {
     const filtros = {
+      preco_minimo: valorMinimo ? Number(valorMinimo) : undefined,
+      preco_maximo: valorMaximo ? Number(valorMaximo) : undefined,
       situacoes: Object.keys(selected.Situações).filter(
         (key) => selected.Situações[key]
       ),
@@ -161,7 +171,7 @@ export default function Filtros({
       animationType="slide"
       onRequestClose={() => setMostrarFiltros(false)}
     >
-      <View style={styles.modalFundo}>
+      <View style={[styles.modalFundo]}>
         <TouchableOpacity
           style={{ flex: 1 }}
           activeOpacity={1}
@@ -213,14 +223,34 @@ export default function Filtros({
                 <View style={styles.containerSlider}>
                   <Text style={styles.tituloCabecalho}>Variação de Preço</Text>
                   <View style={styles.sliderContainer}>
-                    <Text style={styles.sliderText}>R$0</Text>
-                    <MultiSlider
-                      values={values}
-                      onValuesChange={onValuesChange}
-                      markerStyle={{ width: 24, height: 24 }}
-                      selectedStyle={{ backgroundColor: colors.primaria }}
-                    />
-                    <Text style={styles.sliderText}>R$100</Text>
+                    <View style={styles.containerCampoTexto}>
+                      <CampoTexto
+                        ref={valorMinimoRef}
+                        label="Mínimo"
+                        tipoInput="number-pad"
+                        returnKeyType="next"
+                        erro={valorMinimoErro !== ""}
+                        mensagemErro={valorMinimoErro}
+                        onChangeText={(texto) => {
+                          setValorMinimo(texto);
+                          setValorMinimoErro("");
+                        }}
+                      />
+                    </View>
+                    <View style={styles.containerCampoTexto}>
+                      <CampoTexto
+                        ref={valorMaximoRef}
+                        label="Máximo"
+                        tipoInput="number-pad"
+                        returnKeyType="next"
+                        erro={valorMaximoErro !== ""}
+                        mensagemErro={valorMaximoErro}
+                        onChangeText={(texto) => {
+                          setValorMaximo(texto);
+                          setValorMaximoErro("");
+                        }}
+                      />
+                    </View>
                   </View>
                 </View>
                 {Object.keys(categories).map((category) => (
@@ -258,6 +288,7 @@ export default function Filtros({
           </View>
         </BottomSheet>
       </View>
+      <Toast />
     </Modal>
   );
 }
@@ -302,6 +333,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginVertical: 10,
+  },
+  containerCampoTexto: {
+    width: "47%",
+    marginBottom: 10,
   },
   sliderText: {
     fontFamily: "Quicksand600",

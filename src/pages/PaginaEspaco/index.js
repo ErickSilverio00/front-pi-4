@@ -71,7 +71,7 @@ export default function PaginaEspaco() {
         text1: "Erro!",
         text2:
           "Ocorreu um erro ao curtir o espaço. Tente novamente mais tarde.",
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {

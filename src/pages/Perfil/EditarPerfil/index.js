@@ -40,7 +40,7 @@ export default function EditarPerfil() {
         type: "error",
         text1: "Erro ao buscar informações do usuário!",
         text2: error,
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {
@@ -68,7 +68,7 @@ export default function EditarPerfil() {
         type: "success",
         text1: "Dados salvos!",
         text2: "Seus novos dados foram salvos com sucesso!",
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } catch (error) {
@@ -76,7 +76,7 @@ export default function EditarPerfil() {
         type: "error",
         text1: "Erro ao atualizar seus dados, tente novamente!",
         text2: error,
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {
@@ -134,7 +134,6 @@ export default function EditarPerfil() {
                 ref={numeroTelefoneRef}
                 label="Número de telefone"
                 tipoInput="number-pad"
-                tipo="telefone"
                 valorInicial={numeroTelefone}
                 mask={maskPhoneNumber}
                 onChangeText={(texto) => setNumeroTelefone(texto)}

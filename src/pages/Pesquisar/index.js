@@ -50,7 +50,7 @@ export default function Pesquisar() {
         type: "error",
         text1: "Erro!",
         text2: "Erro ao carregar espaços. Tente novamente mais tarde!",
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     }
@@ -207,6 +207,23 @@ export default function Pesquisar() {
   const filtrarEspacos = async (filtros) => {
     try {
       setIsLoading(true);
+
+      if (
+        filtros.preco_minimo > 0 &&
+        filtros.preco_maximo > 0 &&
+        filtros.preco_minimo > filtros.preco_maximo
+      ) {
+        Toast.show({
+          type: "info",
+          text1: "Atenção!",
+          text2: "Preço mínimo não pode ser maior que o preço máximo",
+          visibilityTime: 3000,
+          autoHide: true,
+        });
+        setIsLoading(false);
+        return;
+      }
+
       const response = await fetchEspacosWithFilters(user?.idUsuario, filtros);
       setEspacosFiltrados(response);
       setMostrarFiltros(false);
@@ -217,7 +234,7 @@ export default function Pesquisar() {
         type: "error",
         text1: "Erro!",
         text2: `Erro ao filtrar espaços: ${error}`,
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {

@@ -134,6 +134,7 @@ const CampoTexto = forwardRef(
 const styles = StyleSheet.create({
   container: {
     position: "relative",
+    width: "100%",
   },
   input: {
     borderBottomWidth: 1,

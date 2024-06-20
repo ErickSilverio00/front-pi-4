@@ -63,7 +63,7 @@ export default function Perfil() {
         type: "error",
         text1: "Erro!",
         text2: `Erro ao tentar compartilhar o app: ${error}`,
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     }
@@ -80,7 +80,7 @@ export default function Perfil() {
         type: "error",
         text1: "Erro ao recuperar o nome de usuário!",
         text2: error,
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     }

@@ -64,7 +64,7 @@ export default function Login() {
             type: "success",
             text1: "Login bem-sucedido!",
             text2: "Você já está conectado na sua conta!",
-            visibilityTime: 4000,
+            visibilityTime: 3000,
             autoHide: true,
           });
           navigation.reset({
@@ -76,7 +76,7 @@ export default function Login() {
             type: "error",
             text1: "Erro ao fazer login",
             text2: response.mensagem,
-            visibilityTime: 4000,
+            visibilityTime: 3000,
             autoHide: true,
           });
         }
@@ -86,7 +86,7 @@ export default function Login() {
         type: "error",
         text1: "Erro ao fazer login",
         text2: error?.response?.data?.message,
-        visibilityTime: 4000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {

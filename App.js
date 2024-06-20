@@ -12,7 +12,7 @@ import {
 import { ErroProvider } from "./src/contexts/ErroCampoTextoContext";
 import useAuthStore from "./src/hooks/useAuthStore";
 import { jwtDecode } from "jwt-decode";
-import { Toast } from "react-native-toast-message/lib/src/Toast";
+import Toast from "react-native-toast-message";
 import * as Location from "expo-location";
 import { LoadingProvider } from "./src/contexts/LoadingContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
@@ -60,7 +60,7 @@ export default function App() {
           type: "error",
           text1: "Erro!",
           text2: `Erro ao recuperar token do AsyncStorage: ${error}`,
-          visibilityTime: 2000,
+          visibilityTime: 3000,
           autoHide: true,
         });
       }
@@ -83,7 +83,7 @@ export default function App() {
           type: "error",
           text1: "Erro!",
           text2: `Erro ao solicitar permissão de localização: ${error}`,
-          visibilityTime: 2000,
+          visibilityTime: 3000,
           autoHide: true,
         });
       }

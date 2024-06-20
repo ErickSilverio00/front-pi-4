@@ -53,7 +53,7 @@ export default function EsqueciSenha() {
         type: "success",
         text1: "Envio feito com sucesso!",
         text2: "Veja a sua caixa de e-mails e copie o código!",
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
       setEmailEnviado(true);
@@ -62,7 +62,7 @@ export default function EsqueciSenha() {
         type: "error",
         text1: "Erro ao enviar e-mail!",
         text2: error.response.data.message,
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {
@@ -82,7 +82,7 @@ export default function EsqueciSenha() {
         type: "success",
         text1: "Código correto!",
         text2: "Mude a sua senha agora mesmo!",
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
       setEmailEnviado(false);
@@ -92,7 +92,7 @@ export default function EsqueciSenha() {
         type: "error",
         text1: "Erro ao confirmar código!",
         text2: error.response.data.message,
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {
@@ -111,7 +111,7 @@ export default function EsqueciSenha() {
         type: "success",
         text1: "Senha alterada com sucesso!",
         text2: "Faça o login agora mesmo!",
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
       setCodigoEnviado(false);
@@ -121,7 +121,7 @@ export default function EsqueciSenha() {
         type: "error",
         text1: "Erro ao mudar sua senha!",
         text2: error.response.data.message,
-        visibilityTime: 2000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {

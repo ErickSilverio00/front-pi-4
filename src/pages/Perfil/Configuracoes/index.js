@@ -33,7 +33,7 @@ export default function Configuracoes() {
               type: "error",
               text1: "Erro ao sair da sua conta!",
               text2: error.response.data.message,
-              visibilityTime: 2000,
+              visibilityTime: 3000,
               autoHide: true,
             });
           }

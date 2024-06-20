@@ -67,7 +67,7 @@ export default function Cadastro() {
         type: "success",
         text1: "Cadastro bem-sucedido!",
         text2: "Faça seu login!",
-        visibilityTime: 4000,
+        visibilityTime: 3000,
         autoHide: true,
       });
       navigation.goBack();
@@ -76,7 +76,7 @@ export default function Cadastro() {
         type: "error",
         text1: "Erro no cadastro!",
         text2: error.response.errors[0].msg,
-        visibilityTime: 4000,
+        visibilityTime: 3000,
         autoHide: true,
       });
     } finally {
@@ -130,7 +130,6 @@ export default function Cadastro() {
             label="Número de telefone"
             tipoInput="number-pad"
             returnKeyType="next"
-            tipo="telefone"
             mask={maskPhoneNumber}
             erro={telefoneErro !== ""}
             mensagemErro={telefoneErro}
