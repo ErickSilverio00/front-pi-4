@@ -113,12 +113,11 @@ export default function PaginaEspaco() {
     }
   };
 
-  const blocks =
-    espaco && espaco.imagens_espaco
-      ? espaco.imagens_espaco
-          .filter((foto) => typeof foto === "string")
-          .map((foto) => ({ type: "image", content: { uri: foto } }))
-      : [];
+  const blocks = espaco?.imagens_espaco
+    ? espaco.imagens_espaco
+        .filter((foto) => typeof foto === "string")
+        .map((foto) => ({ type: "image", content: { uri: foto } }))
+    : [];
 
   const endereco = `${espaco?.endereco?.logradouro}, ${espaco?.endereco?.numero}, ${espaco?.endereco?.bairro}, ${espaco?.endereco?.cidade}, ${espaco?.endereco?.estado}`;
 
@@ -209,7 +208,7 @@ export default function PaginaEspaco() {
           <Text style={styles.descricaoText}>{espaco?.descricao}</Text>
         </View>
         <View style={styles.containerCategorias}>
-          {espaco && espaco?.tipo_situacao.length > 0 && (
+          {espaco?.tipo_situacao?.length > 0 && (
             <View style={styles.descricaoContainer}>
               <Text style={styles.descricaoCard}>Situações</Text>
               <View style={styles.cardsContainer}>
@@ -217,7 +216,7 @@ export default function PaginaEspaco() {
               </View>
             </View>
           )}
-          {espaco && espaco?.jogos_disponiveis.length > 0 && (
+          {espaco?.jogos_disponiveis?.length > 0 && (
             <View style={styles.descricaoContainer}>
               <Text style={styles.descricaoCard}>Jogos</Text>
               <View style={styles.cardsContainer}>
@@ -225,7 +224,7 @@ export default function PaginaEspaco() {
               </View>
             </View>
           )}
-          {espaco && espaco?.periodo_ideal.length > 0 && (
+          {espaco?.periodo_ideal?.length > 0 && (
             <View style={styles.descricaoContainer}>
               <Text style={styles.descricaoCard}>Períodos do dia</Text>
               <View style={styles.cardsContainer}>
@@ -233,7 +232,7 @@ export default function PaginaEspaco() {
               </View>
             </View>
           )}
-          {espaco && espaco?.clima_ideal.length > 0 && (
+          {espaco?.clima_ideal?.length > 0 && (
             <View style={styles.descricaoContainer}>
               <Text style={styles.descricaoCard}>Climas Ideais</Text>
               <View style={styles.cardsContainer}>
@@ -241,7 +240,7 @@ export default function PaginaEspaco() {
               </View>
             </View>
           )}
-          {espaco && espaco?.utilidades_disponiveis.length > 0 && (
+          {espaco?.utilidades_disponiveis?.length > 0 && (
             <View style={styles.descricaoContainer}>
               <Text style={styles.descricaoCard}>Utilidades</Text>
               <View style={styles.cardsContainer}>

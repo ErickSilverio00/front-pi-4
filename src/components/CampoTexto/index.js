@@ -1,4 +1,10 @@
-import React, { forwardRef, useEffect } from "react";
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react";
 import {
   View,
   TextInput,
@@ -30,6 +36,7 @@ const CampoTexto = forwardRef(
       mostrarLabel = true,
       editable = true,
       mask = null,
+      value,
       ...props
     },
     ref
@@ -48,12 +55,16 @@ const CampoTexto = forwardRef(
     } = useCampoTexto(valorInicial);
 
     useEffect(() => {
-      if (mask) {
-        mudandoTexto(mask(texto));
-      } else {
-        mudandoTexto(texto);
+      if (value !== undefined) {
+        mudandoTexto(value);
       }
-    }, [texto, tipo, mask]);
+    }, [value]);
+
+    useImperativeHandle(ref, () => ({
+      clear: () => {
+        mudandoTexto("");
+      },
+    }));
 
     const corIcone = erro
       ? colors.vermelho

@@ -11,7 +11,7 @@ import {
   View,
 } from "react-native";
 
-export default function SliderCarrossel({ blocks, aoClicarNaImagem }) {
+const SliderCarrossel = ({ blocks, aoClicarNaImagem }) => {
   const [index, setIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
   const flatListRef = useRef(null);
@@ -74,6 +74,7 @@ export default function SliderCarrossel({ blocks, aoClicarNaImagem }) {
         onScroll={handleOnScroll}
         onViewableItemsChanged={handleOnViewableItemsChanged}
         viewabilityConfig={viewabilityConfig}
+        keyExtractor={(_, idx) => idx.toString()}
       />
       <Pagination2
         data={blocks}
@@ -83,7 +84,7 @@ export default function SliderCarrossel({ blocks, aoClicarNaImagem }) {
       />
     </View>
   );
-}
+};
 
 const { width, height } = Dimensions.get("screen");
 
@@ -107,3 +108,5 @@ const styles = StyleSheet.create({
     top: 10,
   },
 });
+
+export default React.memo(SliderCarrossel);

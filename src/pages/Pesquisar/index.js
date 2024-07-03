@@ -1,8 +1,7 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useState, useMemo } from "react";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet, View, Text } from "react-native";
+import { SafeAreaView, StyleSheet, View, Text, ScrollView } from "react-native";
 import { TabView, TabBar, SceneMap } from "react-native-tab-view";
-import { ScrollView } from "react-native";
 import ApresentacaoEspaco from "../../components/ApresentacaoEspaco";
 import {
   fetchEspacoCampoPesquisa,
@@ -10,7 +9,6 @@ import {
   fetchEspacosWithFilters,
 } from "../../services/Espacos";
 import useAuthStore from "../../hooks/useAuthStore";
-import useEspacosCurtidos from "../../hooks/useEspacosCurtidos";
 import { useFocusEffect, useNavigation } from "@react-navigation/native";
 import Filtros from "./Filtros";
 import PesquisaFeita from "./PesquisaFeita";
@@ -24,7 +22,6 @@ export default function Pesquisar() {
   const navigation = useNavigation();
   const user = useAuthStore();
   const { setIsLoading } = useLoading();
-  const bottomSheetRef = useRef(null);
   const [index, setIndex] = useState(0);
   const [mostrarFiltros, setMostrarFiltros] = useState(false);
   const [espacos, setEspacos] = useState([]);
@@ -112,76 +109,62 @@ export default function Pesquisar() {
     />
   );
 
-  const FirstRoute = () => (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.containerConteudo}
-    >
-      <View style={styles.containerApresentacoes}>
-        {espacos
-          ?.filter((espaco) => espaco.tipo_situacao.includes("Aniversário"))
-          .map((espaco, index) => (
-            <ApresentacaoEspaco key={index} espaco={espaco} />
-          ))}
-      </View>
-    </ScrollView>
+  const renderScene = useMemo(
+    () =>
+      SceneMap({
+        first: () => (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.containerApresentacoes}>
+              {espacos
+                ?.filter((espaco) =>
+                  espaco.tipo_situacao.includes("Aniversário")
+                )
+                .map((espaco, index) => (
+                  <ApresentacaoEspaco key={index} espaco={espaco} />
+                ))}
+            </View>
+          </ScrollView>
+        ),
+        second: () => (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.containerApresentacoes}>
+              {espacos
+                ?.filter((espaco) => espaco.tipo_situacao.includes("Churrasco"))
+                .map((espaco, index) => (
+                  <ApresentacaoEspaco key={index} espaco={espaco} />
+                ))}
+            </View>
+          </ScrollView>
+        ),
+        third: () => (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.containerApresentacoes}>
+              {espacos
+                ?.filter((espaco) =>
+                  espaco.utilidades_disponiveis.includes("Piscina")
+                )
+                .map((espaco, index) => (
+                  <ApresentacaoEspaco key={index} espaco={espaco} />
+                ))}
+            </View>
+          </ScrollView>
+        ),
+        fourth: () => (
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <View style={styles.containerApresentacoes}>
+              {espacos
+                ?.filter((espaco) => espaco.clima_ideal.includes("Sol"))
+                .map((espaco, index) => (
+                  <ApresentacaoEspaco key={index} espaco={espaco} />
+                ))}
+            </View>
+          </ScrollView>
+        ),
+      }),
+    [espacos]
   );
 
-  const SecondRoute = () => (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.containerConteudo}
-    >
-      <View style={styles.containerApresentacoes}>
-        {espacos
-          ?.filter((espaco) => espaco.tipo_situacao.includes("Churrasco"))
-          .map((espaco, index) => (
-            <ApresentacaoEspaco key={index} espaco={espaco} />
-          ))}
-      </View>
-    </ScrollView>
-  );
-
-  const ThirdRoute = () => (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.containerConteudo}
-    >
-      <View style={styles.containerApresentacoes}>
-        {espacos
-          ?.filter((espaco) =>
-            espaco.utilidades_disponiveis.includes("Piscina")
-          )
-          .map((espaco, index) => (
-            <ApresentacaoEspaco key={index} espaco={espaco} />
-          ))}
-      </View>
-    </ScrollView>
-  );
-
-  const FourthRoute = () => (
-    <ScrollView
-      showsVerticalScrollIndicator={false}
-      style={styles.containerConteudo}
-    >
-      <View style={styles.containerApresentacoes}>
-        {espacos
-          ?.filter((espaco) => espaco.clima_ideal.includes("Sol"))
-          .map((espaco, index) => (
-            <ApresentacaoEspaco key={index} espaco={espaco} />
-          ))}
-      </View>
-    </ScrollView>
-  );
-
-  const renderScene = SceneMap({
-    first: FirstRoute,
-    second: SecondRoute,
-    third: ThirdRoute,
-    fourth: FourthRoute,
-  });
-
-  const handlePesquisaInput = async () => {
+  const handlePesquisaInput = useCallback(async () => {
     if (textoPesquisa.length > 2) {
       const response = await fetchEspacoCampoPesquisa(
         user?.idUsuario,
@@ -192,60 +175,64 @@ export default function Pesquisar() {
     } else {
       setTextoPesquisa("");
     }
-  };
+  }, [textoPesquisa, user?.idUsuario]);
 
-  const abrirFiltros = () => {
+  const abrirFiltros = useCallback(() => {
     setMostrarFiltros(true);
-    bottomSheetRef.current?.expand();
-  };
+  }, []);
 
-  const fecharPesquisa = () => {
+  const fecharPesquisa = useCallback(() => {
     setPesquisaFeita(false);
     setTextoPesquisa("");
-  };
+  }, []);
 
-  const filtrarEspacos = async (filtros) => {
-    try {
-      setIsLoading(true);
+  const filtrarEspacos = useCallback(
+    async (filtros) => {
+      try {
+        setIsLoading(true);
 
-      if (
-        filtros.preco_minimo > 0 &&
-        filtros.preco_maximo > 0 &&
-        filtros.preco_minimo > filtros.preco_maximo
-      ) {
+        if (
+          filtros.preco_minimo > 0 &&
+          filtros.preco_maximo > 0 &&
+          filtros.preco_minimo > filtros.preco_maximo
+        ) {
+          Toast.show({
+            type: "info",
+            text1: "Atenção!",
+            text2: "Preço mínimo não pode ser maior que o preço máximo",
+            visibilityTime: 3000,
+            autoHide: true,
+          });
+          setIsLoading(false);
+          return;
+        }
+
+        const response = await fetchEspacosWithFilters(
+          user?.idUsuario,
+          filtros
+        );
+        setEspacosFiltrados(response);
+        setMostrarFiltros(false);
+        setPesquisaFeita(true);
+      } catch (error) {
         Toast.show({
-          type: "info",
-          text1: "Atenção!",
-          text2: "Preço mínimo não pode ser maior que o preço máximo",
+          type: "error",
+          text1: "Erro!",
+          text2: `Erro ao filtrar espaços: ${error}`,
           visibilityTime: 3000,
           autoHide: true,
         });
+      } finally {
         setIsLoading(false);
-        return;
       }
-
-      const response = await fetchEspacosWithFilters(user?.idUsuario, filtros);
-      setEspacosFiltrados(response);
-      setMostrarFiltros(false);
-      bottomSheetRef.current?.close();
-      setPesquisaFeita(true);
-    } catch (error) {
-      Toast.show({
-        type: "error",
-        text1: "Erro!",
-        text2: `Erro ao filtrar espaços: ${error}`,
-        visibilityTime: 3000,
-        autoHide: true,
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [user?.idUsuario, setIsLoading]
+  );
 
   useFocusEffect(
     useCallback(() => {
       carregarEspacos();
-    }, [])
+    }, [carregarEspacos])
   );
 
   return (
@@ -253,7 +240,7 @@ export default function Pesquisar() {
       <StatusBar barStyle="light-content" />
       <View style={styles.containerFilter}>
         <CampoPesquisaFiltro
-          onPressSearchIcon={() => bottomSheetRef.current?.close()}
+          onPressSearchIcon={() => {}}
           onPressFilterIcon={abrirFiltros}
           onSubmitEditing={handlePesquisaInput}
           textoPesquisa={textoPesquisa}
@@ -273,7 +260,6 @@ export default function Pesquisar() {
       <Filtros
         mostrarFiltros={mostrarFiltros}
         setMostrarFiltros={setMostrarFiltros}
-        bottomSheetRef={bottomSheetRef}
         filtrarEspacos={filtrarEspacos}
       />
       {pesquisaFeita && (

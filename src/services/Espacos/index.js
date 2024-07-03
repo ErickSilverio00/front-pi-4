@@ -60,13 +60,16 @@ export const fetchEspacosWithFilters = async (idUsuario, filtros) => {
   let url = `${baseURL}/buscar-espacos-filtros/${idUsuario}`;
   const queryParameters = Object.keys(filtros)
     .map((key) => {
-      return `${key}=${filtros[key].join(",")}`;
+      if (Array.isArray(filtros[key])) {
+        return `${key}=${filtros[key].join(",")}`;
+      } else {
+        return `${key}=${filtros[key]}`;
+      }
     })
+    .filter((param) => param.split("=")[1] !== "undefined")
     .join("&");
 
   url = `${url}?${queryParameters}`;
-
-  console.log(url);
 
   try {
     const response = await Axios.get(url);

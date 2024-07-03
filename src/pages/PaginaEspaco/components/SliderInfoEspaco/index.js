@@ -1,5 +1,5 @@
 import React, { useRef, useState } from "react";
-import Pagination2 from "./Pagination";
+import Pagination from "./Pagination";
 import { TouchableOpacity } from "react-native";
 import Icon from "react-native-vector-icons/Feather";
 import { AntDesign } from "@expo/vector-icons";
@@ -18,7 +18,7 @@ export default function SliderInfoEspaco({
   blocks,
   curtido,
   aoClicarEmCurtir,
-  corDotPrimaria = true,
+  corDotPrimaria = false,
 }) {
   const [index, setIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -70,10 +70,12 @@ export default function SliderInfoEspaco({
               <Image
                 source={item.content}
                 style={styles.blockContainerImagem}
+                resizeMode="cover"
               />
             );
           }
         }}
+        keyExtractor={(item, index) => index.toString()}
         horizontal
         pagingEnabled
         snapToAlignment="center"
@@ -92,7 +94,7 @@ export default function SliderInfoEspaco({
         {curtido && <AntDesign name="heart" size={28} color={colors.branco} />}
         {!curtido && <Icon name="heart" size={28} color={colors.branco} />}
       </TouchableOpacity>
-      <Pagination2
+      <Pagination
         data={blocks}
         scrollX={scrollX}
         index={index}

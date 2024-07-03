@@ -101,7 +101,7 @@ export default function Filtros({
   const [valorMinimoErro, setValorMinimoErro] = useState("");
   const [valorMaximo, setValorMaximo] = useState("");
   const [valorMaximoErro, setValorMaximoErro] = useState("");
-  const [values, setValues] = useState([0, 100]);
+  const [distanciaRaio, setDistanciaRaio] = useState([0, 100]);
   const categories = {
     Situações: objectToArray(situacoes),
     Jogos: objectToArray(jogos),
@@ -134,10 +134,15 @@ export default function Filtros({
 
   const limparFiltros = () => {
     setSelected(initializeSelectedState(categories));
+    setDistanciaRaio([0, 100]);
+    setValorMinimo("");
+    setValorMaximo("");
+    valorMinimoRef.current.clear();
+    valorMaximoRef.current.clear();
   };
 
   const onValuesChange = (values) => {
-    setValues(values);
+    setDistanciaRaio(values);
   };
 
   const construirFiltros = () => {
@@ -161,6 +166,7 @@ export default function Filtros({
         (key) => selected["Serviços Adicionais"][key]
       ),
     };
+    console.log(filtros);
     return filtros;
   };
 
@@ -189,7 +195,7 @@ export default function Filtros({
               <Text style={styles.tituloCabecalho}>Filtros</Text>
               <TouchableOpacity
                 onPress={() => [
-                  bottomSheetRef.current?.close(),
+                  bottomSheetRef?.current?.close(),
                   setMostrarFiltros(false),
                 ]}
               >
@@ -210,14 +216,16 @@ export default function Filtros({
                     Distância da sua Localização
                   </Text>
                   <View style={styles.sliderContainer}>
-                    <Text style={styles.sliderText}>0 km</Text>
+                    <Text style={styles.sliderText}>{distanciaRaio[0]} km</Text>
                     <MultiSlider
-                      values={values}
+                      values={distanciaRaio}
                       onValuesChange={onValuesChange}
+                      min={0}
+                      max={100}
                       markerStyle={{ width: 24, height: 24 }}
                       selectedStyle={{ backgroundColor: colors.primaria }}
                     />
-                    <Text style={styles.sliderText}>100 km</Text>
+                    <Text style={styles.sliderText}>{distanciaRaio[1]} km</Text>
                   </View>
                 </View>
                 <View style={styles.containerSlider}>
@@ -226,6 +234,7 @@ export default function Filtros({
                     <View style={styles.containerCampoTexto}>
                       <CampoTexto
                         ref={valorMinimoRef}
+                        value={valorMinimo}
                         label="Mínimo"
                         tipoInput="number-pad"
                         returnKeyType="next"
@@ -240,6 +249,7 @@ export default function Filtros({
                     <View style={styles.containerCampoTexto}>
                       <CampoTexto
                         ref={valorMaximoRef}
+                        value={valorMaximo}
                         label="Máximo"
                         tipoInput="number-pad"
                         returnKeyType="next"

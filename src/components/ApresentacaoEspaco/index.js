@@ -1,19 +1,20 @@
-import React from "react";
+import React, { useMemo, memo } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import SliderCarrossel from "./SliderCarrossel";
 import { useNavigation } from "@react-navigation/native";
 import colors from "../../styles/colors";
 import { formatarMoeda } from "../../utils/funcoes";
 
-export default function ApresentacaoEspaco({ espaco }) {
+const ApresentacaoEspaco = ({ espaco }) => {
   const navigation = useNavigation();
 
-  const blocks =
-    espaco && espaco.imagens_espaco
+  const blocks = useMemo(() => {
+    return espaco?.imagens_espaco
       ? espaco.imagens_espaco
           .filter((foto) => typeof foto === "string")
           .map((foto) => ({ type: "image", content: { uri: foto } }))
       : [];
+  }, [espaco]);
 
   return (
     <View>
@@ -39,7 +40,7 @@ export default function ApresentacaoEspaco({ espaco }) {
       </View>
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   containerCarrossel: {
@@ -69,3 +70,5 @@ const styles = StyleSheet.create({
     color: colors.corTextoPreto,
   },
 });
+
+export default memo(ApresentacaoEspaco);

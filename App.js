@@ -13,11 +13,11 @@ import { ErroProvider } from "./src/contexts/ErroCampoTextoContext";
 import useAuthStore from "./src/hooks/useAuthStore";
 import { jwtDecode } from "jwt-decode";
 import Toast from "react-native-toast-message";
-import * as Location from "expo-location";
 import { LoadingProvider } from "./src/contexts/LoadingContext";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SairDeFormularioProvider } from "./src/contexts/SairDeFormulariosContext";
-
+import * as Location from "expo-location";
+import useLocationStore from "./src/hooks/useLocationStore";
 export default function App() {
   const [fonteCarregada] = useFonts({
     Quicksand300: Quicksand_300Light,
@@ -70,26 +70,37 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const solicitarPermissaoLocalizacao = async () => {
-      try {
-        const { status } = await Location.requestForegroundPermissionsAsync();
-        if (status !== "granted") {
-          console.log("Permissão para acessar a localização negada");
-          return;
-        }
-        const location = await Location.getCurrentPositionAsync({});
-      } catch (error) {
+    const obterLocalizacao = async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
         Toast.show({
           type: "error",
-          text1: "Erro!",
-          text2: `Erro ao solicitar permissão de localização: ${error}`,
+          text1: "Permissão de Localização Negada",
+          text2:
+            "Você precisa permitir o acesso à localização para usar este aplicativo.",
           visibilityTime: 3000,
           autoHide: true,
         });
+        return;
       }
+
+      let location = await Location.getCurrentPositionAsync({});
+      useLocationStore.getState().setLocalizacaoUsuario(location);
     };
 
-    solicitarPermissaoLocalizacao();
+    obterLocalizacao();
+  }, []);
+
+  useEffect(() => {
+    const subscription = Location.watchPositionAsync({}, (location) => {
+      useLocationStore.getState().setLocalizacaoUsuario(location);
+    });
+
+    return () => {
+      if (subscription) {
+        subscription.remove();
+      }
+    };
   }, []);
 
   if (!fonteCarregada) {
